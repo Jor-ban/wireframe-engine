@@ -1,23 +1,25 @@
-export interface Nameable {
+import {Vector3} from "three";
+
+export type Nameable = {
     name ?: string
 }
-export interface Positionable {
+export type Positionable = Vector3 | {
     x?: number
     y?: number
     z?: number
 }
-export interface Rotatable {
+export type Rotatable = {
     rotateX?: number
     rotateY?: number
     rotateZ?: number
 }
-export interface Scalable {
+export type Scalable = {
     scaleX?: number
     scaleY?: number
     scaleZ?: number
 }
 
-export type Custom3dObjectType = Nameable & Positionable & Rotatable & Scalable & {
+export type Custom3dObjectParameters = Positionable & Rotatable & Scalable & {
     castShadow?: boolean
     visible?: boolean
     receiveShadow?: boolean

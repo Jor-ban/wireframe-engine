@@ -1,3 +1,5 @@
+import {Font} from "three/examples/jsm/loaders/FontLoader";
+
 export type CustomPlaneGeometry = {
     width?: number
     height?: number
@@ -16,6 +18,8 @@ export type CustomCircleGeometry = {
     thetaLength?: number
 }
 export type CustomRingGeometry = CustomCircleGeometry & {
+    thetaSegments?: number,
+    phiSegments?: number
     outerRadius?: number
 }
 export type CustomConeGeometry = {
@@ -44,19 +48,21 @@ export type CustomSphereGeometry = {
     thetaLength?: number
 }
 export type CustomTextGeometry = {
-    text: string
-    size: number
-    height: number
-    font?: string
+    text?: string
+    size?: number
+    height?: number
+    font?: Font
 }
 
-export type CustomGeometry = ( CustomPlaneGeometry |
-    CustomBoxGeometry |
-    CustomCircleGeometry |
-    CustomRingGeometry |
-    CustomConeGeometry |
-    CustomCylinderGeometry |
-    CustomDodecahedronGeometry |
+export type CustomGeometry = (
+    CustomPlaneGeometry &
+    CustomBoxGeometry &
+    CustomCircleGeometry &
+    CustomRingGeometry &
+    CustomConeGeometry &
+    CustomCylinderGeometry &
+    CustomDodecahedronGeometry &
+    CustomTextGeometry &
     CustomSphereGeometry ) & {
         type: 'plane' | 'box' | 'cube' | 'circle' | 'ring' | 'cone' | 'cylinder' | 'dodecahedron' | 'sphere' | 'ball' | 'text'
     }

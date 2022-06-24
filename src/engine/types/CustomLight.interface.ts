@@ -9,7 +9,7 @@ export type CustomAmbientLight = Nameable & {
 export type CustomPointLight = CustomAmbientLight & {
     castShadow ?: boolean
     decay ?: number
-    distance: number
+    distance?: number
     power ?: number
     parameters?: Positionable
 }
@@ -22,6 +22,6 @@ export type CustomHemisphereLight = CustomAmbientLight & {
     parameters?: Positionable
 }
 
-export type CustomLight = (CustomAmbientLight | CustomPointLight | CustomDirectionalLight | CustomHemisphereLight) & {
+export type CustomLight = (CustomAmbientLight & CustomPointLight & CustomDirectionalLight & CustomHemisphereLight) & {
     type?: 'ambient' | 'point' | 'directional' | 'hemisphere'
 }

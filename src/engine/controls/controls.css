@@ -1,0 +1,38 @@
+.__wireframe-right-controls {
+    position: fixed;
+    width: 360px;
+    height: 100vh;
+    background: #28292E;
+    top: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0.8;
+    right: 0;
+}
+.__wireframe-right-controls > div {
+    padding-bottom: 30px;
+}
+.__wireframe-right-controls:hover {
+    opacity: 1
+}
+.__wireframe-right-controls::-webkit-scrollbar {
+    width: 7px;
+}
+.__wireframe-right-controls::-webkit-scrollbar-thumb {
+    background: #3E3F44;
+    border-radius: 3px;
+}
+.__wireframe-right-controls::-webkit-scrollbar-thumb:hover {
+    background: #BBBCC4;
+}
+.tp-btnv_t {
+    background: #25564d;
+    color: lightgrey
+}
+.__tweakpane-delete-btn .tp-btnv_t {
+    background-color: #461818;
+    color: grey;
+}
+.__tweakpane-delete-btn .tp-btnv_t:hover {
+    color: white;
+}

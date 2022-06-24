@@ -1,10 +1,7 @@
 import {Camera, OrthographicCamera, PerspectiveCamera} from "three";
-import {CustomCamera, OrthographicCameraSettings, PerspectiveCameraSettings} from "../types/CustomCamera.interface";
+import {CustomCamera} from "../types/CustomCamera.interface";
 import {CanvasProportion} from "../types/CanvasProportion.interface";
 
-export function parseCamera(camera: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera' | undefined) {
-
-}
 export class CameraParser {
     public static parse(
         canvas: CanvasProportion,
@@ -42,12 +39,9 @@ export class CameraParser {
         fov     : number = 60,
         aspect ?: number,
         near    : number = 0.1,
-        far     : number = 1000,
+        far     : number = 512,
     ): PerspectiveCamera {
-        const pc = new PerspectiveCamera(fov, aspect || canvas.width / canvas.height, near, far)
-        pc.position.set(1, 0, 3)
-        pc.rotation.set(0, 0.1, 0)
-        return pc
+        return new PerspectiveCamera(fov, aspect || canvas.width / canvas.height, near, far)
     }
     private static generateOrthographicCamera(
         canvas  : CanvasProportion,

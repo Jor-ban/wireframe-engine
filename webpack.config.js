@@ -55,7 +55,7 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   devServer: {
-    hot: false
+    hot: true
   },
   output: {
     publicPath: '/',

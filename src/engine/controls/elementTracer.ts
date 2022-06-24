@@ -1,24 +1,23 @@
 import {
     BackSide,
     BoxGeometry,
-    Camera,
     Mesh,
     MeshBasicMaterial, Object3D, OrthographicCamera,
     PerspectiveCamera,
     Raycaster,
     Scene,
     Vector2,
-    WebGLRenderer
 } from "three";
 import {CanvasProportion} from "../types/CanvasProportion.interface";
 import {GuiControls} from "./guiControls";
+import {TabPageApi} from "tweakpane";
 
 export class ElementTracer {
     mouse = new Vector2()
     private readonly canvasProportion: CanvasProportion
     private canvas: HTMLCanvasElement
-    private scene: Scene
-    private readonly camera: Camera
+    private readonly scene: Scene
+    private readonly camera: PerspectiveCamera | OrthographicCamera
     private rayCaster = new Raycaster()
     private guiControls: GuiControls
     private activeObject: Object3D | null = null
@@ -28,17 +27,17 @@ export class ElementTracer {
         new MeshBasicMaterial({
             color: 0xff0066,
             side: BackSide,
-            wireframe: true,
+            // wireframe: true,
             transparent: true,
-            opacity: 0.3,
+            opacity: 1,
         })
     )
     private clickedObjectWireframe: Mesh = new Mesh(
         new BoxGeometry(),
         new MeshBasicMaterial({
             color: 0xffffff,
-            wireframe: true,
-            opacity: 0.5,
+            // wireframe: true,
+            opacity: 0.6,
             transparent: true,
             side: BackSide
         })
@@ -49,33 +48,29 @@ export class ElementTracer {
         canvasProp: CanvasProportion,
         camera: PerspectiveCamera | OrthographicCamera,
         scene: Scene,
-        renderer: WebGLRenderer
     ) {
         this.canvas = canvas
         this.canvasProportion = canvasProp
-        this.scene = scene
         this.camera = camera
-        this.guiControls = new GuiControls(scene, renderer, camera) // here
-        this.guiControls.onChange((element: Object3D) => {
-            this.setHoveredObjectParameters(element)
-            this.setClickedObjectParameters()
-        })
+        this.scene = scene
         scene.add(this.hoveredObjectWireframe, this.clickedObjectWireframe)
         this.clickedObjectWireframe.scale.set(0, 0, 0)
         this.hoveredObjectWireframe.scale.set(0, 0, 0)
         canvas.addEventListener('click', this.onClick, false)
         canvas.addEventListener('mousemove', this.onMouseMove, false)
     }
-    private onClick = () => {
-        if(this.hoveredObjectWireframe.visible) {
+    public initPaneControls(pane: TabPageApi) {
+        this.guiControls = new GuiControls(this.scene, pane)
+        this.guiControls.onChange((element: Object3D) => {
+            this.setHoveredObjectParameters(element)
             this.setClickedObjectParameters()
-            this.clickedObjectWireframe.geometry = this.hoveredObjectWireframe.geometry
-            this.clickedObjectWireframe.visible = true
-            this.guiControls.select(this.activeObject)
-        } else {
-            this.clickedObjectWireframe.visible = false
-            this.guiControls.select(null)
-        }
+        })
+    }
+    private onClick = () => {
+        this.setClickedObjectParameters()
+        this.clickedObjectWireframe.geometry = this.hoveredObjectWireframe.geometry
+        this.clickedObjectWireframe.visible = true
+        this.guiControls.select(this.activeObject)
     }
     private setClickedObjectParameters() {
         const {position, scale, rotation} = this.hoveredObjectWireframe

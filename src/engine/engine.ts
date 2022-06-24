@@ -16,20 +16,21 @@ import {CustomScene} from "./types/CustomScene.interface";
 import {SceneParser} from "./parsers/sceneParser";
 import {CustomRenderer} from "./types/CustomRenderer.interface";
 import {RendererParser} from "./parsers/rendererParser";
-import {CustomAmbientLight} from "./types/CustomAmbientLight";
+import {CustomAmbientLight, CustomLight} from "./types/CustomLight.interface";
 import {LightParser} from "./parsers/lightParser";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {Controller} from "./controls/controller";
+import {MeshParser} from "./parsers/MeshParser";
+import {EngineState} from './shared/engineState';
 
 export class WireframeEngine {
     public canvasProportion: CanvasProportion;
     private readonly canvas: HTMLCanvasElement
     private renderer: WebGLRenderer
-    private debugger: Controller
-    private tickIntervalId: NodeJS.Timer | null = null
+    private controller: Controller
     private mainCamera: PerspectiveCamera | OrthographicCamera | null = null
     private scene: Scene
-    private stats: Stats | null = null
+    private fpsGraph: any | null = null
     private orbitControls: OrbitControls
     private ambientLight: Light | null = null
 
@@ -44,17 +45,15 @@ export class WireframeEngine {
         this.setRenderer(projectSettings.renderer)
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.objects?.length) {
-            this.add(...projectSettings.objects)
+            this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
         }
         if(projectSettings.lights?.length) {
-            this.add(...projectSettings.lights)
+            this.add(...projectSettings.lights.map((light: CustomLight | Light) => LightParser.parse(light)))
         }
         this.setOrbitControls(projectSettings.orbitControls)
         this.renderer.render(this.scene, this.mainCamera)
         this.initTick(projectSettings.disableTick, projectSettings.renderOnMaxFPS)
         this.enableDebug(projectSettings.debug)
-        console.log(this)
-        this.clearMemoryBeforeClose()
     }
 
     public setCanvasSizes(canvasSizes ?: CanvasProportion, noResize?: boolean): WireframeEngine {
@@ -93,12 +92,13 @@ export class WireframeEngine {
     private initTick(disable ?: boolean, renderOnMaxFPS ?: boolean) {
         if(!disable) {
             const tick = () => {
-                this.stats?.begin()
+                this.fpsGraph?.begin()
                 this.renderer.render(this.scene, this.mainCamera)
-                this.stats?.end()
+                this.fpsGraph?.end();
             }
             if(renderOnMaxFPS) {
-                this.tickIntervalId = setInterval(tick)
+                const id = setInterval(tick)
+                EngineState.addIntervalId(id)
             } else {
                 (function windowTick() {
                     tick()
@@ -111,7 +111,7 @@ export class WireframeEngine {
         if(this.ambientLight) {
             this.scene.remove(this.ambientLight)
         }
-        this.ambientLight = LightParser.parse(ambientLight)
+        this.ambientLight = LightParser.parseAmbientLight(ambientLight || {})
         this.scene.add(this.ambientLight)
         return this
     }
@@ -129,10 +129,10 @@ export class WireframeEngine {
     }
     public enableDebug(yesNo ?: boolean): WireframeEngine {
         if(yesNo ?? true) {
-            const dbg = new Controller(this.scene, this.mainCamera, this.renderer)
-            this.debugger = dbg
-            dbg.initRayTracer(this.canvas, this.canvasProportion, this.mainCamera)
-            this.stats = dbg.stats
+            const controller = new Controller(this.scene, this.mainCamera, this.renderer)
+            this.controller = controller
+            controller.initRayTracer(this.canvas, this.canvasProportion, this.mainCamera)
+            this.fpsGraph = controller.fpsGraph
         }
         return this
     }
@@ -141,14 +141,8 @@ export class WireframeEngine {
             this.scene.remove(this.mainCamera)
         }
         this.mainCamera = CameraParser.parse(this.canvasProportion, camera)
+        this.mainCamera.position.set(1, 0.5, 3)
         this.scene.add(this.mainCamera)
         return this
-    }
-
-    private clearMemoryBeforeClose() {
-        window.onbeforeunload = () => {
-            clearTimeout(this.debugger.memoryIntervalId)
-            clearTimeout(this.tickIntervalId)
-        }
     }
 }
