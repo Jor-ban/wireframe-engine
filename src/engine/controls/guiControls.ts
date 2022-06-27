@@ -92,7 +92,7 @@ export class GuiControls {
             const material = materials[i]
             const folder = pane.addFolder({
                 title: i === 0 ? 'Material' : 'Material #' + (i + 1),
-                expanded: false
+                expanded: true
             })
             MaterialControls.materialConverter(material, mesh, folder, () => {
                 this.updateMaterialsControls(mesh, pane)

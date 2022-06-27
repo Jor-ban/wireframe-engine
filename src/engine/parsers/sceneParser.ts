@@ -12,7 +12,7 @@ export class SceneParser {
         let { skybox, loadingManager, encoding } = scene
         if(skybox) {
             if(!Array.isArray(skybox)) {
-                skybox = [skybox.negY, skybox.posY, skybox.negX, skybox.posX, skybox.negZ, skybox.posZ]
+                skybox = [skybox.posX, skybox.negX, skybox.posY, skybox.negY, skybox.posZ, skybox.negZ]
             }
             const cubeTextureLoader = new CubeTextureLoader(loadingManager)
             const envMap = cubeTextureLoader.load(skybox)

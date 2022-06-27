@@ -13,16 +13,31 @@ import {
     MeshDepthMaterial,
     MeshNormalMaterial,
     MeshPhysicalMaterial,
-    Mesh, Texture, TextureLoader
-} from "three";
+    Mesh, TextureLoader,
+    Texture,
+} from 'three';
 import {FolderApi} from "tweakpane";
 import { TxLoader } from '../../shared/textureLoader';
+// @ts-ignore
+import white from './assets/white.png'
+import {
+    AddOperation, BasicDepthPacking,
+    MixOperation,
+    MultiplyOperation,
+    ObjectSpaceNormalMap, RGBADepthPacking,
+    TangentSpaceNormalMap,
+} from 'three/src/constants';
+
+export let defaultMapTexture: Texture
+(async function() {
+   defaultMapTexture = await TxLoader.loadAsync(white)
+})()
 
 export class MaterialControls {
     textureLoader: TextureLoader = new TextureLoader()
     static addForMaterial(material: Material, folder: FolderApi) {
         material.needsUpdate = true
-        // material.transparent = true; // TODO dynamize by trigger on opacity
+        folder.addInput(material, 'transparent')
         folder.addInput(material, 'opacity', {min: 0, max: 1})
             .on('change', ({value}) => {
                 material.opacity = value
@@ -42,8 +57,7 @@ export class MaterialControls {
         folder.addInput(material, 'clipShadows')
         folder.addInput(material, 'colorWrite')
         folder.addInput(material, 'fog')
-        folder.addSeparator() // !!!SEPARATOR!!!
-        const details = folder.addFolder({ title: 'Material details', expanded: true })
+        const details = folder.addFolder({ title: 'Material details', expanded: false })
         // TODO add depthFunc: DepthModes
         details.addInput(material, 'depthTest')
         details.addInput(material, 'depthWrite')
@@ -77,14 +91,33 @@ export class MaterialControls {
 
     static addForToonMaterial(material: MeshToonMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        // TODO add gradientMap : Texture & map : Texture & lightMap : Texture
-        // TODO add lightMapIntensity: number & aoMap : Texture & aoMapIntensity : number
-        this.addForEmissive(material, folder)
+        folder.addSeparator() // -------------------------------------------------
+        this.addForMap(material, folder)
+        folder.addSeparator() // -------------------------------------------------
+        this.addForGradientMap(material, folder)
+        folder.addSeparator() // -------------------------------------------------
+        this.addForLightMap(material, folder)
+        folder.addInput(material, 'lightMapIntensity')
+        folder.addSeparator()   // -------------------------------------------------
+        this.addForAoMap(material, folder)
+        folder.addInput(material, 'aoMapIntensity')
+        folder.addSeparator()   // -------------------------------------------------
+        this.addForEmissiveMap(material, folder)
         folder.addInput(material, 'emissiveIntensity')
-        // TODO add emissiveMap : Texture & bumpMap : Texture & bumpMapScale : number
-        // TODO add normalMap : Texture & normalMapType : NormalMapTypes & normalScale : Vector2
-        // TODO add displacementMap : Texture & displacementScale : number & displacementBias : number
-        // TODO add alphaMap : Texture
+        folder.addSeparator()   // -------------------------------------------------
+        this.addForBumpMap(material, folder)
+        folder.addInput(material, 'bumpScale')
+        folder.addSeparator()   // -------------------------------------------------
+        this.addForNormalMap(material, folder)
+        this.addForNormalMapTypes(material, folder)
+        folder.addInput(material, 'normalScale')
+        folder.addSeparator()   // -------------------------------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator() // -------------------------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // --------------------------------------------
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
         folder.addInput(material, 'wireframeLinecap')
@@ -92,16 +125,37 @@ export class MaterialControls {
     }
     static addForMatcapMaterial(material: MeshMatcapMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        // TODO add matcap: Texture | null & map: Texture | null & bumpMap: Texture | null & bumpMapScale: number
-        // TODO add normalMap: Texture | null & normalMapType: NormalMapTypes & normalScale: Vector2
-        // TODO add displacementMap: Texture | null & displacementScale: number & displacementBias: number
-        // TODO add alphaMap: Texture | null
+        folder.addSeparator() // ------------------------------------------------
+        this.addForMap(material, folder)
+        folder.addSeparator() // --------------------------------
+        this.addForMatcap(material, folder)
+        folder.addSeparator() // --------------------------------
+        this.addForBumpMap(material, folder)
+        folder.addInput(material, 'bumpScale')
+        folder.addSeparator()   // ---------------------------------
+        this.addForNormalMap(material, folder)
+        folder.addInput(material, 'normalScale')
+        folder.addSeparator()   // ------------------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator()   // ----------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // -----------------------------------
         folder.addInput(material, 'flatShading')
     }
     static addForNormalMaterial(material: MeshNormalMaterial, folder: FolderApi) {
-        // TODO add bumpMap: Texture | null & bumpScale: number & normapMap: Texture | null
-        // TODO add normalMapType: NormalMapTypes & normalScale: Vector2
-        // TODO add displacementMap: Texture | null & displacementScale: number & displacementBias: number
+        this.addForNormalMap(material, folder)
+        folder.addInput(material, 'normalScale')
+        this.addForNormalMapTypes(material, folder)
+        folder.addSeparator() // ----------------------------------
+        this.addForBumpMap(material, folder)
+        folder.addInput(material, 'bumpScale')
+        folder.addSeparator() // ----------------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator()   // -------------------------------
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
         folder.addInput(material, 'flatShading')
@@ -110,36 +164,83 @@ export class MaterialControls {
         this.addForColor(material, folder)
         this.addForSpecular(material, folder)
         folder.addInput(material, 'shininess')
-        // TODO add map: Texture | null & lightMap: Texture | null & lightMapIntensity: number
-        // TODO add aoMap: Texture | null & aoMapIntensity: number
-        this.addForEmissive(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
-        // TODO add bumpMap: Texture | null & bumpScale: number & normalMap: Texture | null & normalMapType: NormalMapTypes
-        // TODO add normalScale: Vector2 &  displacementMap: Texture | null & displacementScale: Vector2
-        // TODO add displacementBias: number & specularMap: Texture | null & envMap: Texture | null
-        // TODO add alphaMap: Texture | null & combine: Combine
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'refractionRatio')
+        folder.addSeparator()   // ------------------------------
+        this.addForMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForLightMap(material, folder)
+        folder.addInput(material, 'lightMapIntensity')
+        folder.addSeparator() // --------------------------------
+        this.addForAoMap(material, folder)
+        folder.addInput(material, 'aoMapIntensity')
+        folder.addSeparator()   // -----------------------------
+        this.addForEmissiveMap(material, folder)
+        folder.addInput(material, 'emissiveIntensity')
+        folder.addSeparator()   // ----------------------------
+        this.addForBumpMap(material, folder)
+        folder.addInput(material, 'bumpScale')
+        folder.addSeparator()   // ------------------------------
+        this.addForNormalMap(material, folder)
+        this.addForNormalMapTypes(material, folder)
+        folder.addInput(material, 'normalScale')
+        folder.addSeparator()   // -----------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator()   // -----------------------------
+        this.addForSpecularMap(material, folder)
+        folder.addSeparator() // -----------------------------
+        this.addForEnvMap(material, folder)
+        folder.addSeparator() // --------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // --------------------------
+        this.addForCombine(material, folder)
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
         folder.addInput(material, 'wireframeLinejoin')
         folder.addInput(material, 'flatShading')
     }
     static addForDepthMaterial(material: MeshDepthMaterial, folder: FolderApi) {
-        // TODO add map: Texture | null & alphaMap: Texture | null
-        // TODO add depthPacking : DepthPackingStrategies & displacementMap : Texture | null
-        // TODO add displacementScale : number & displacementBias : number
+        this.addForMap(material, folder)
+        folder.addSeparator() // -------------------------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // -------------------------------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator() // -------------------------------------------------
+        folder.addInput({depthPacking: material.depthPacking}, 'depthPacking', {
+            options: {
+                'Basic': BasicDepthPacking,
+                'RGBA': RGBADepthPacking,
+            }
+        }).on('change', ({value}) => {
+                material.depthPacking = value
+            })
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
     }
     static addForBasicMaterial(material: MeshBasicMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        this.addForMap(material, folder)
-        // TODO add aoMap: Texture | null & lightMap : Texture | null
-        // TODO add aoMapIntensity : number & alphaMap: Texture | null & lightMapIntensity : number
-        // TODO add specularMap : Texture | null & envMap : Texture | null & combine : Combine
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'refractionRatio')
+        folder.addSeparator() // -------------------------------------
+        this.addForMap(material, folder)
+        folder.addSeparator() // -------------------------------------
+        this.addForAoMap(material, folder)
+        folder.addInput(material, 'aoMapIntensity')
+        folder.addSeparator()   // -----------------------------------
+        this.addForLightMap(material, folder)
+        folder.addInput(material, 'lightMapIntensity')
+        folder.addSeparator()   // -----------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // ------------------------------------
+        this.addForSpecularMap(material, folder)
+        folder.addSeparator() // ------------------------------------
+        this.addForEnvMap(material, folder)
+        folder.addSeparator() // ---------------------------------
+        this.addForCombine(material, folder)
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
         folder.addInput(material, 'wireframeLinecap')
@@ -149,15 +250,36 @@ export class MaterialControls {
         this.addForColor(material, folder)
         folder.addInput(material, 'roughness')
         folder.addInput(material, 'metalness')
+        folder.addSeparator() // ----------------------------------
         this.addForMap(material, folder)
-        // TODO add map: lightMap: Texture | null & lightMapIntensity: number
-        // TODO add aoMap: Texture | null & aoMapIntensity: number
-        this.addForEmissive(material, folder)
+        folder.addSeparator() // ---------------------------------
+        this.addForLightMap(material, folder)
+        folder.addInput(material, 'lightMapIntensity')
+        folder.addSeparator()   // -------------------------------
+        this.addForAoMap(material, folder)
+        folder.addInput(material, 'aoMapIntensity')
+        folder.addSeparator()   // -------------------------------
+        this.addForEmissiveMap(material, folder)
         folder.addInput(material, 'emissiveIntensity')
-        // TODO add emissiveMap: Texture | null & bumpMap: Texture | null & normalMapType: NormalMapTypes
-        // TODO add normalScale: Vector2 & displacementMap; Texture | null & displacementScale: number
-        // TODO add displacementBias: number & roughnessMap: Texture | null & metalnessMap: Texture | null
-        // TODO add alphaMap: Texture | null & envMap: Texture | null & envMapIntensity: number
+        this.addForEmissiveMap(material, folder)
+        folder.addSeparator() // -----------------------------
+        this.addForBumpMap(material, folder)
+        folder.addSeparator()   // ----------------------------
+        this.addForDisplacementMap(material, folder)
+        folder.addInput(material, 'displacementScale')
+        folder.addInput(material, 'displacementBias')
+        folder.addSeparator() // ------------------------------
+        this.addForRoughnessMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForMetalnessMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForEnvMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForNormalMapTypes(material, folder)
+        folder.addInput(material, 'normalScale')
+        folder.addInput(material, 'envMapIntensity')
         folder.addInput(material, 'refractionRatio')
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
@@ -165,13 +287,25 @@ export class MaterialControls {
     }
     static addForLambertMaterial(material: MeshLambertMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        this.addForEmissive(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
-        // TODO add emissiveMap: Texture | null
+        folder.addSeparator() // ------------------------------
         this.addForMap(material, folder)
-        // TODO add map: & aoMap: Texture | null & lightMap : Texture | null & lightMapIntensity : number
-        // TODO add aoMapIntensity : number & specularMap : Texture | null & alphaMap: Texture | null
-        // TODO add envMap : Texture | null & combine : Combine
+        folder.addSeparator() // ------------------------------
+        this.addForEmissiveMap(material, folder)
+        folder.addInput(material, 'emissiveIntensity')
+        folder.addSeparator() // ------------------------------
+        this.addForAoMap(material, folder)
+        folder.addInput(material, 'aoMapIntensity')
+        folder.addSeparator() // ------------------------------
+        this.addForLightMap(material, folder)
+        folder.addInput(material, 'lightMapIntensity')
+        folder.addSeparator() // ------------------------------
+        this.addForAlphaMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForSpecularMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForEnvMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addForCombine(material, folder)
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'refractionRatio')
         folder.addInput(material, 'wireframe')
@@ -181,39 +315,196 @@ export class MaterialControls {
     }
     static addForPhysicalMaterial(material: MeshPhysicalMaterial, folder: FolderApi) {
         this.addForStandardMaterial(material as MeshStandardMaterial, folder)
+        folder.addSeparator() // ------------------------------
         folder.addInput(material, 'clearcoat')
-        // TODO add clearcoatMap: Texture | null
+        this.addForClearcoatMap(material, folder)
+        folder.addSeparator() // ------------------------------
+        this.addMapable(material, folder, 'clearcoatRoughnessMap')
         folder.addInput(material, 'clearcoatRoughness')
-        // TODO add clearcoatRoughnessMap: Texture | null & clearcoatNormalScale: Vector2 & clearcoatNormalMap: Texture | null
+        this.addMapable(material, folder, 'clearcoatNormalMap')
+        folder.addSeparator()   // -----------------------------
+        this.addMapable(material, folder, 'transmissionMap')
+        folder.addInput(material, 'transmission')
+        folder.addSeparator()   // -----------------------------
+        folder.addInput(material, 'specularIntensity')
+        this.addForSpecularColor(material, folder)
+        this.addMapable(material, folder, 'specularIntensityMap')
+        this.addMapable(material, folder, 'specularColorMap')
+        folder.addSeparator()   // -----------------------------
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'ior')
         folder.addInput(material, 'sheen')
         this.addForSheenColor(material, folder)
         folder.addInput(material, 'sheenRoughness')
-        folder.addInput(material, 'transmission')
-        // TODO add transmissionMap: Texture | null
         folder.addInput(material, 'attenuationDistance')
         this.addForAttenuationColor(material, folder)
-        folder.addInput(material, 'specularIntensity')
-        this.addForSpecularColor(material, folder)
-        // TODO add specularIntensityMap: Texture | null & specularColorMap: Texture | null
     }
 
-    private addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T) {
-        console.log('addForMap', material[keyName])
-        const workingMaterial = material as any
-        const obj = {  }
-    }
-    private static addForMap(material: MeshBasicMaterial | MeshStandardMaterial | MeshLambertMaterial | MeshPhongMaterial | MeshPhysicalMaterial, folder: FolderApi) {
-        console.log('addForMap', material.map)
-        folder.addInput({map: material.map?.image || 'placeholder'}, 'map', {
-            view: 'input-image'
+    private static addForNormalMapTypes(material:
+        | MeshToonMaterial
+        | MeshNormalMaterial
+        | MeshStandardMaterial,
+        folder: FolderApi
+    ) {
+        folder.addInput({ 'Normal Map Type':  material.normalMapType }, 'Normal Map Type', {
+            options: {
+                'TangentSpaceNormalMap': TangentSpaceNormalMap,
+                'ObjectSpaceNormalMap': ObjectSpaceNormalMap,
+            }
         }).on('change', ({value}) => {
-            console.log({src: value.src})
-            material.map = TxLoader.load(value.src)
-            material.needsUpdate = false
-        }).disabled = true
+            material.normalMapType = value
+        })
     }
+
+    private static addForCombine(material:
+        | MeshBasicMaterial
+        | MeshPhongMaterial,
+        folder: FolderApi
+    ) {
+        folder.addInput({ combine: material.combine }, 'combine', {
+            options: {
+                'Multiply': MultiplyOperation,
+                'Mix': MixOperation,
+                'Add': AddOperation
+            }
+        }).on('change', ({value}) => {
+            material.combine = value
+        })
+    }
+
+    private static async addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T) {
+        const obj: {[key: string | number | symbol]: string} = {}
+        const workingMaterial = material as any
+        obj.image = workingMaterial[keyName]?.image?.src || defaultMapTexture.image.src
+        folder.addInput(obj, 'image', {
+            view: 'input-image',
+            label: keyName as string,
+        }).on('change', async (change) => {
+            const value = change.value as unknown as {src: string}
+            if(value.src !== defaultMapTexture.image.src && workingMaterial[keyName]?.image?.src !== value.src) {
+                workingMaterial[keyName] = await TxLoader.loadAsync(value.src)
+                material.needsUpdate = true
+            } else if(value.src === defaultMapTexture.image.src){
+                material[keyName] = null
+            }
+        })
+        folder.addInput({a: 0}, 'a', {
+            view: 'radiogrid',
+            groupName: 'scale',
+            size: [1, 1],
+            cells: () => ({
+                title: '[X]',
+            }),
+            label: 'Remove',
+        })
+        .on('change', (ev) => {
+            workingMaterial[keyName] = null
+            obj.image = defaultMapTexture.image.src
+        })
+        .element.classList.add('__tweakpane-delete-btn', '__tweakpane-material-deleter')
+    }
+    private static addForMap(material:
+            | MeshToonMaterial
+            | MeshMatcapMaterial
+            | MeshBasicMaterial
+            | MeshStandardMaterial
+            | MeshLambertMaterial
+            | MeshDepthMaterial
+            | MeshPhongMaterial
+            | MeshPhysicalMaterial,
+         folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'map')
+    }
+    private static addForGradientMap(material: MeshToonMaterial, folder: FolderApi) {
+        this.addMapable(material, folder, 'gradientMap')
+    }
+    private static addForLightMap(material:
+        | MeshToonMaterial
+        | MeshBasicMaterial
+        | MeshStandardMaterial
+        | MeshPhongMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'lightMap')
+    }
+    private static addForAoMap(material:
+        | MeshStandardMaterial
+        | MeshToonMaterial
+        | MeshBasicMaterial
+        | MeshPhongMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'aoMap')
+    }
+    private static addForBumpMap(material:
+         | MeshToonMaterial
+         | MeshNormalMaterial
+         | MeshMatcapMaterial,
+         folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'bumpMap')
+    }
+    private static addForNormalMap(material:
+       | MeshToonMaterial
+       | MeshNormalMaterial
+       | MeshMatcapMaterial,
+       folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'normalMap')
+    }
+    private static addForDisplacementMap(material:
+        | MeshToonMaterial
+        | MeshNormalMaterial
+        | MeshDepthMaterial
+        | MeshMatcapMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'displacementMap')
+    }
+    private static addForAlphaMap(material:
+        | MeshStandardMaterial
+        | MeshToonMaterial
+        | MeshPhongMaterial
+        | MeshBasicMaterial
+        | MeshDepthMaterial
+        | MeshMatcapMaterial,
+        folder: FolderApi) {
+        this.addMapable(material, folder, 'alphaMap')
+    }
+    private static addForMatcap(material: MeshMatcapMaterial, folder: FolderApi) {
+        this.addMapable(material, folder, 'matcap')
+    }
+    private static addForMetalnessMap(material: MeshStandardMaterial, folder: FolderApi) {
+        this.addMapable(material, folder, 'metalnessMap')
+    }
+    private static addForSpecularMap(material:
+        | MeshBasicMaterial
+        | MeshPhongMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'specularMap')
+    }
+    private static addForRoughnessMap(material:
+        | MeshStandardMaterial
+        | MeshPhysicalMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'roughnessMap')
+    }
+    private static addForEnvMap(material:
+        | MeshStandardMaterial
+        | MeshBasicMaterial
+        | MeshPhongMaterial,
+        folder: FolderApi
+    ) {
+        this.addMapable(material, folder, 'envMap')
+    }
+    private static addForClearcoatMap(material: MeshPhysicalMaterial, folder: FolderApi) {
+        this.addMapable(material, folder, 'clearcoatMap')
+    }
+
+
     private static addColorable<T extends Material>(material: T, folder: FolderApi, colorName: keyof T) {
         const color = material[colorName] as unknown as Color
         const headerName: string = typeof colorName === 'string' ? colorName : 'color'
@@ -231,11 +522,14 @@ export class MaterialControls {
     ) {
         this.addColorable(material, folder, 'color')
     }
-    private static addForEmissive(material:
-        | MeshToonMaterial | MeshLambertMaterial | MeshPhongMaterial | MeshStandardMaterial,
+    private static addForEmissiveMap(material:
+        | MeshToonMaterial
+        | MeshLambertMaterial
+        | MeshPhongMaterial
+        | MeshStandardMaterial,
         folder: FolderApi
     ) {
-        this.addColorable(material, folder, 'emissive')
+        this.addMapable(material, folder, 'emissive')
     }
     private static addForSpecular(material: MeshPhongMaterial, folder: FolderApi) {
         this.addColorable(material, folder, 'specular')

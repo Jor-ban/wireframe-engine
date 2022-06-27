@@ -1,9 +1,9 @@
 import {
-    ACESFilmicToneMapping,
+    ACESFilmicToneMapping, AmbientLight,
     AxesHelper, CineonToneMapping, LinearToneMapping, NoToneMapping,
     OrthographicCamera, PerspectiveCamera, ReinhardToneMapping,
     Scene, WebGLRenderer,
-} from "three";
+} from 'three';
 import {CanvasProportion} from "../types/CanvasProportion.interface";
 import {ElementTracer} from "./elementTracer";
 import {BladeApi, FolderApi, Pane, TabPageApi} from "tweakpane";
@@ -17,6 +17,7 @@ import {BladeController, View} from "@tweakpane/core";
 import {CameraControls} from "./utils/CameraControls";
 import './controls.css'
 import {EngineState} from '../shared/engineState';
+import { LightControls } from './utils/LightControls';
 
 export const debugParams = {
     axesHelperLength: 5,
@@ -34,7 +35,7 @@ export class Controller {
     protected statsTab: TabPageApi
     private readonly axesHelper: AxesHelper
 
-    constructor(scene: Scene, camera: PerspectiveCamera | OrthographicCamera, renderer: WebGLRenderer) {
+    constructor(scene: Scene, camera: PerspectiveCamera | OrthographicCamera, renderer: WebGLRenderer, ambientLight: AmbientLight) {
         this.scene = scene
         this.camera = camera
         this.renderer = renderer
@@ -43,6 +44,8 @@ export class Controller {
         this.setUpPane()
         const mainCameraFolder = Object3DControls.createFolder('Main Camera', this.sceneTab)
         CameraControls.addForCamera(this.camera, mainCameraFolder)
+        const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
+        LightControls.addAmbientLight(ambientLight, ambientLightFolder)
         this.addScene(this.sceneTab)
         this.logMemory(this.statsTab)
     }

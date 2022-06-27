@@ -32,7 +32,7 @@ export class WireframeEngine {
     private scene: Scene
     private fpsGraph: any | null = null
     private orbitControls: OrbitControls
-    private ambientLight: Light | null = null
+    private ambientLight: AmbientLight | null = null
 
     constructor(selector: string = "#canvas", projectSettings: ProjectSettings = {}) {
         this.canvas = document.querySelector(selector) as HTMLCanvasElement
@@ -129,7 +129,7 @@ export class WireframeEngine {
     }
     public enableDebug(yesNo ?: boolean): WireframeEngine {
         if(yesNo ?? true) {
-            const controller = new Controller(this.scene, this.mainCamera, this.renderer)
+            const controller = new Controller(this.scene, this.mainCamera, this.renderer, this.ambientLight)
             this.controller = controller
             controller.initRayTracer(this.canvas, this.canvasProportion, this.mainCamera)
             this.fpsGraph = controller.fpsGraph

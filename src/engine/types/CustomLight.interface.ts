@@ -11,17 +11,15 @@ export type CustomPointLight = CustomAmbientLight & {
     decay ?: number
     distance?: number
     power ?: number
-    parameters?: Positionable
 }
 export type CustomDirectionalLight = CustomAmbientLight & {
     castShadow ?: boolean
-    parameters?: Positionable & Rotatable
 }
 export type CustomHemisphereLight = CustomAmbientLight & {
     groundColor: string | Color
-    parameters?: Positionable
 }
 
 export type CustomLight = (CustomAmbientLight & CustomPointLight & CustomDirectionalLight & CustomHemisphereLight) & {
     type?: 'ambient' | 'point' | 'directional' | 'hemisphere'
+    parameters?: Positionable & Rotatable
 }

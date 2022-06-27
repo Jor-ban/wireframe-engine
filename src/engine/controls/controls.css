@@ -29,10 +29,33 @@
     background: #25564d;
     color: lightgrey
 }
-.__tweakpane-delete-btn .tp-btnv_t {
+.__tweakpane-delete-btn .tp-btnv_t, .__tweakpane-delete-btn .tp-radv_t {
     background-color: #461818;
     color: grey;
 }
 .__tweakpane-delete-btn .tp-btnv_t:hover {
     color: white;
+}
+
+.__tweakpane-material-deleter {
+    margin-top: -10px !important;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+}
+.__tweakpane-material-deleter .tp-radv_b {
+    background: transparent !important;
+    opacity: 1 !important;
+}
+.__tweakpane-material-deleter .tp-lblv_l {
+    display: none;
+}
+.__tweakpane-material-deleter .tp-radv_t {
+    max-width: max-content;
+    margin-left: auto;
+    background: #710f0f;
+    border-radius: 3px;
+}
+.__tweakpane-material-deleter .tp-radv_t:hover {
+    color: white !important;
+    background: #a50000 !important;
 }
