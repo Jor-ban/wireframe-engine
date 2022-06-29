@@ -9,20 +9,39 @@
     opacity: 0.8;
     right: 0;
 }
-.__wireframe-right-controls > div {
-    padding-bottom: 30px;
+.__wireframe-left-controls {
+    position: fixed;
+    width: 260px;
+    height: 100vh;
+    background: #28292E;
+    top: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0.8;
+    left: 0;
 }
-.__wireframe-right-controls:hover {
+.__wireframe-controls {
+    overflow: hidden;
+}
+.__wireframe-controls * {
+    font-family: sans-serif !important;
+}
+.__wireframe-controls:hover {
     opacity: 1
 }
-.__wireframe-right-controls::-webkit-scrollbar {
+.tp-brkv {
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.tp-brkv::-webkit-scrollbar {
     width: 7px;
 }
-.__wireframe-right-controls::-webkit-scrollbar-thumb {
+.tp-brkv::-webkit-scrollbar-thumb {
     background: #3E3F44;
     border-radius: 3px;
 }
-.__wireframe-right-controls::-webkit-scrollbar-thumb:hover {
+.tp-brkv::-webkit-scrollbar-thumb:hover {
     background: #BBBCC4;
 }
 .tp-btnv_t {
@@ -50,7 +69,7 @@
     display: none;
 }
 .__tweakpane-material-deleter .tp-radv_t {
-    max-width: max-content;
+    max-width: 20px;
     margin-left: auto;
     background: #710f0f;
     border-radius: 3px;
@@ -58,4 +77,65 @@
 .__tweakpane-material-deleter .tp-radv_t:hover {
     color: white !important;
     background: #a50000 !important;
+}
+
+.__wireframe-objects-invisible-folder > button {
+    display: none;
+}
+.__wireframe-objects-invisible-folder > div {
+    padding: 0;
+    border: none;
+}
+
+.__wireframe-object-select {
+    display: flex;
+    align-items: center;
+    color: #ADAFB8;
+    padding-right: 5px;
+    border-left: 2px solid transparent;
+    /*padding-left: 5px;*/
+    margin-left: -4px;
+}
+.__wireframe-object-select:hover {
+    border-color: #ff0066;
+}
+.__wireframe-object-select > .__wireframe-object-text {
+    padding-top: 5px;
+    padding-left: 5px;
+    min-height: 17px;
+    margin-right: 5px;
+    width: 100%;
+}
+.__wireframe-object-select > button:first-child {
+    background: #3E3F44;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    margin-left: auto;
+    margin-right: 3px;
+}
+.__wireframe-object-select > button:first-child:hover {
+    background: #ADAFB8;
+    color: #3E3F44;
+}
+.__wireframe-object-select > button:last-child {
+    background: #28292E;
+    border-radius: 3px;
+    border: 2px solid #3E3F44;
+    color: white;
+}
+.__wireframe-object-select > button:last-child:hover {
+    background: #710f0f;
+    border-color: #710f0f;
+}
+.__wireframe-object-select > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 24px;
+}
+.__wireframe-object-select.__wireframe-active > .__wireframe-object-text {
+    background: white;
+    color: #28292E;
 }

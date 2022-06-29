@@ -17,17 +17,14 @@ export class CameraControls {
             });
     }
     static addForPerspectiveCamera(camera: PerspectiveCamera, folder: FolderApi | TabPageApi) {
-        // folder.addInput(camera, 'near')
-        // folder.addInput(camera, 'far')
         folder.addInput({'near-far': { min: camera.near, max: camera.far }}, 'near-far', {
             min: 0.1,
             max: 4096,
             step: 10,
         }).on('change', ({value}) => {
-            // camera.near = value.min
-            // camera.far = value.max
-            // camera.updateProjectionMatrix()
-            console.log(value)
+            camera.near = value.min < 0.1 ? 0.1 : value.min
+            camera.far = value.max
+            camera.updateProjectionMatrix()
         })
         folder.addInput(camera, 'fov', {
             view: 'cameraring',

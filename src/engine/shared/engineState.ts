@@ -1,19 +1,17 @@
+import { nativeClearInterval } from './memoryCleaner';
+
 class EngineStateClass {
 	intervalIds: NodeJS.Timer[] = []
-	timeoutIds: NodeJS.Timer[] = []
 	monitors: any[] = []
 
 	constructor() {
 		window.onbeforeunload = () => {
-			for(let id of this.intervalIds) {
-				clearInterval(id)
+			for(let i = 0; i < this.intervalIds.length; i++) {
+				nativeClearInterval(this.intervalIds[i])
 			}
-			for(let id of this.timeoutIds) {
-				clearTimeout(id)
-			}
-			for(let monitor of this.monitors) {
-				monitor.disabled = true
-				monitor.dispose()
+			for(let i = 0; i < this.monitors.length; i++) {
+				this.monitors[i].disabled = true
+				this.monitors[i].dispose()
 			}
 		}
 	}
@@ -21,12 +19,9 @@ class EngineStateClass {
 	addIntervalId(...id: NodeJS.Timer[]) {
 		this.intervalIds.push(...id)
 	}
-	addTimeoutId(...id: NodeJS.Timer[]) {
-		this.timeoutIds.push(...id)
-	}
 	addMonitor(...monitor: any[]) {
 		this.monitors.push(...monitor)
 	}
 }
 
-export const EngineState =  new EngineStateClass()
+export const EngineState = new EngineStateClass()

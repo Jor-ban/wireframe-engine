@@ -19,20 +19,24 @@ import {
 } from "three";
 import {Object3DControls} from "./utils/Object3DControls";
 import {MaterialControls} from "./utils/MaterialControls";
+import { clickedObject$ } from './elementTracer';
 
-export class GuiControls {
+export class ActiveElementControls {
     private readonly scene: Scene
     private readonly pane: TabPageApi
-    private triggerOnChange: Function = () => {}
+    private selectedObj: Object3D | null = null
 
     constructor(scene: Scene, pane: TabPageApi) {
-        this.scene = scene;
+        this.scene = scene
         this.pane = pane
+        clickedObject$.subscribe((obj: Object3D) => {
+            if(obj !== this.selectedObj) {
+                this.selectedObj = obj
+                this.select(obj)
+            }
+        })
     }
-    public select(selectedObj: Object3D | null) : void {
-        if(!selectedObj) {
-            return;
-        }
+    public select(selectedObj: Object3D) : void {
         for(let child of this.pane.children) {
             this.pane.remove(child)
         }
@@ -46,9 +50,6 @@ export class GuiControls {
         }
     }
 
-    public onChange(callback: Function) {
-        this.triggerOnChange = callback
-    }
     private forLight(child: Light, pane: FolderApi| TabPageApi) : void {
         pane.addInput(child, 'intensity', {min: 0, max: child.intensity + 10})
         pane.addInput(child, 'visible')
@@ -130,7 +131,7 @@ export class GuiControls {
                     }).element.classList.add('__tweakpane-delete-btn')
             }
         }
-        const addMaterialBtn = pane.addButton({ title: 'Add a new material' })
+        pane.addButton({ title: 'Add a new material' })
             .on('click', () => {
                 if(mesh.material instanceof Array) {
                     mesh.material.push(new MeshBasicMaterial())
@@ -147,18 +148,20 @@ export class GuiControls {
     private addScale(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addScale(child, pane)
             .on('change', () => {
-                this.triggerOnChange(child)
+                clickedObject$.next(child)
             });
     }
     private addRotation(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addRotation(child, pane)
             .on('change', () => {
-                this.triggerOnChange(child)
+                clickedObject$.next(child)
             });
     }
     private addPositions(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addPositions(child, pane)
-            .on('change', () => { this.triggerOnChange(child) });
+            .on('change', () => {
+                clickedObject$.next(child)
+            });
     }
 
 }

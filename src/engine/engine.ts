@@ -1,3 +1,4 @@
+import './shared/memoryCleaner'
 import {ProjectSettings} from "./types/ProjectSetings.interface";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 import {
