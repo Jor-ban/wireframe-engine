@@ -13,8 +13,16 @@ import {
     MeshDepthMaterial,
     MeshNormalMaterial,
     MeshPhysicalMaterial,
-    Mesh, TextureLoader,
+    Mesh,
+    TextureLoader,
     Texture,
+    MeshDepthMaterialParameters,
+    MeshToonMaterialParameters,
+    MeshBasicMaterialParameters,
+    MeshMatcapMaterialParameters,
+    MeshNormalMaterialParameters,
+    MeshPhongMaterialParameters,
+    MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters,
 } from 'three';
 import {FolderApi} from "tweakpane";
 import { TxLoader } from '../../shared/textureLoader';
@@ -385,7 +393,7 @@ export class MaterialControls {
                 workingMaterial[keyName] = await TxLoader.loadAsync(value.src)
                 material.needsUpdate = true
             } else if(value.src === defaultMapTexture.image.src){
-                material[keyName] = null
+                workingMaterial[keyName] = null
             }
         })
         folder.addInput({a: 0}, 'a', {
@@ -397,7 +405,7 @@ export class MaterialControls {
             }),
             label: 'Remove',
         })
-        .on('change', (ev) => {
+        .on('change', () => {
             workingMaterial[keyName] = null
             obj.image = defaultMapTexture.image.src
         })
@@ -602,31 +610,31 @@ export class MaterialControls {
             }
             switch (value) {
                 case 'MeshDepthMaterial':
-                    newMaterial = new MeshDepthMaterial(materialParams)
+                    newMaterial = new MeshDepthMaterial(materialParams as MeshDepthMaterialParameters)
                     break;
                 case 'MeshToonMaterial':
-                    newMaterial = new MeshToonMaterial(materialParams)
+                    newMaterial = new MeshToonMaterial(materialParams as MeshToonMaterialParameters)
                     break;
                 case 'MeshBasicMaterial':
-                    newMaterial = new MeshBasicMaterial(materialParams)
+                    newMaterial = new MeshBasicMaterial(materialParams as MeshBasicMaterialParameters)
                     break;
                 case 'MeshMatcapMaterial':
-                    newMaterial = new MeshMatcapMaterial(materialParams)
+                    newMaterial = new MeshMatcapMaterial(materialParams as MeshMatcapMaterialParameters)
                     break;
                 case 'MeshNormalMaterial':
-                    newMaterial = new MeshNormalMaterial(materialParams)
+                    newMaterial = new MeshNormalMaterial(materialParams as MeshNormalMaterialParameters)
                     break;
                 case 'MeshPhongMaterial':
-                    newMaterial = new MeshPhongMaterial(materialParams)
+                    newMaterial = new MeshPhongMaterial(materialParams as MeshPhongMaterialParameters)
                     break;
                 case 'MeshStandardMaterial':
-                    newMaterial = new MeshStandardMaterial(materialParams)
+                    newMaterial = new MeshStandardMaterial(materialParams as MeshStandardMaterialParameters)
                     break;
                 case 'MeshLambertMaterial':
-                    newMaterial = new MeshLambertMaterial(materialParams)
+                    newMaterial = new MeshLambertMaterial(materialParams as MeshLambertMaterialParameters)
                     break;
                 default:
-                    newMaterial = new MeshPhysicalMaterial(materialParams)
+                    newMaterial = new MeshPhysicalMaterial(materialParams as MeshPhysicalMaterialParameters)
             }
             if(mesh.material instanceof Array) {
                 mesh.material[mesh.material.indexOf(material)] = newMaterial

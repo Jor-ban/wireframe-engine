@@ -22,7 +22,7 @@ export class Controller {
     private readonly scene: Scene
     private readonly rightControls: RightControls
     private leftControls: LeftControls
-    private elementTracer: ElementTracer
+    private elementTracer !: ElementTracer
 
     constructor(scene: Scene, camera: PerspectiveCamera | OrthographicCamera, renderer: WebGLRenderer, ambientLight: AmbientLight) {
         this.scene = scene

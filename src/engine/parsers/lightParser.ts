@@ -1,5 +1,5 @@
 import {AmbientLight, Color, ColorRepresentation, DirectionalLight, HemisphereLight, Light, PointLight} from "three";
-import { CustomAmbientLight, CustomLight, CustomPointLight } from '../types/CustomLight.interface';
+import { CustomAmbientLight, CustomLight } from '../types/CustomLight.interface';
 import {MeshParser} from "./MeshParser";
 
 export class LightParser {
@@ -12,13 +12,6 @@ export class LightParser {
             const intensity = light.intensity
             if(light.type === 'ambient') {
                 lightInstance = new AmbientLight(color, intensity)
-            } else if(light.type === 'point' || light.type === undefined) {
-                lightInstance = new PointLight(color, intensity, light.distance, light.decay)
-                if(light.power) {
-                    lightInstance.power = light.power
-                }
-                lightInstance.castShadow = light.castShadow
-                MeshParser.position(lightInstance, light.parameters)
             } else if(light.type === 'directional') {
                 lightInstance = new DirectionalLight(color, intensity)
                 light.castShadow = light.castShadow || false
@@ -26,6 +19,13 @@ export class LightParser {
                 MeshParser.rotate(lightInstance, light.parameters)
             } else if(light.type === 'hemisphere') {
                 lightInstance = new HemisphereLight(color, this.parseColor(light.groundColor), intensity)
+                MeshParser.position(lightInstance, light.parameters)
+            } else { // point or undefined
+                lightInstance = new PointLight(color, intensity, light.distance, light.decay)
+                if(light.power) {
+                    lightInstance.power = light.power
+                }
+                lightInstance.castShadow = light.castShadow ?? false
                 MeshParser.position(lightInstance, light.parameters)
             }
 

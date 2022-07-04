@@ -20,10 +20,10 @@ import { LightControls } from './utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 
 export class RightControls {
-	private rightPane: Pane
-	public objectTab: TabPageApi
-	protected sceneTab: TabPageApi
-	protected statsTab: TabPageApi
+	private rightPane !: Pane
+	public objectTab !: TabPageApi
+	protected sceneTab !: TabPageApi
+	protected statsTab !: TabPageApi
 	private renderer: WebGLRenderer
 	private readonly axesHelper: AxesHelper
 	private camera: PerspectiveCamera | OrthographicCamera

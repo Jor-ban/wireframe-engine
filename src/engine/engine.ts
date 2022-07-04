@@ -25,15 +25,15 @@ import {MeshParser} from "./parsers/MeshParser";
 import {EngineState} from './shared/engineState';
 
 export class WireframeEngine {
-    public canvasProportion: CanvasProportion;
+    public canvasProportion !: CanvasProportion;
     private readonly canvas: HTMLCanvasElement
-    private renderer: WebGLRenderer
-    private controller: Controller
-    private mainCamera: PerspectiveCamera | OrthographicCamera | null = null
-    private scene: Scene
+    private renderer !: WebGLRenderer
+    private controller !: Controller
+    private mainCamera !: PerspectiveCamera | OrthographicCamera
+    private scene !: Scene
     private fpsGraph: any | null = null
-    private orbitControls: OrbitControls
-    private ambientLight: AmbientLight | null = null
+    private orbitControls !: OrbitControls
+    private ambientLight !: AmbientLight
 
     constructor(selector: string = "#canvas", projectSettings: ProjectSettings = {}) {
         this.canvas = document.querySelector(selector) as HTMLCanvasElement
@@ -124,7 +124,7 @@ export class WireframeEngine {
         this.scene.add(...objects)
         return this
     }
-    public setRenderer(renderer: WebGLRenderer | CustomRenderer): WireframeEngine {
+    public setRenderer(renderer: WebGLRenderer | CustomRenderer | undefined): WireframeEngine {
         this.renderer = RendererParser.parse(this.canvas, this.canvasProportion, renderer)
         return this
     }

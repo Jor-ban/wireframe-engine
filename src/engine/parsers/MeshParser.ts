@@ -11,8 +11,11 @@ import {Custom3dObjectParameters, Positionable, Rotatable, Scalable} from "../ty
 import {CustomMesh} from "../types/CustomMesh.type";
 import {CustomMaterial} from "../types/CustomMaterial.type";
 import {CustomGeometry} from "../types/CustomGeometry.type";
-import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
+import { TextGeometry, TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
+import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+
+const fl = new FontLoader()
 
 export class MeshParser {
     static parse(object: CustomMesh): Object3D {
@@ -27,7 +30,7 @@ export class MeshParser {
             return mesh
         }
     }
-    static parseGeometry(geometry: BufferGeometry | CustomGeometry): BufferGeometry {
+    static parseGeometry(geometry: BufferGeometry | CustomGeometry | undefined): BufferGeometry {
         if(!geometry) {
             return new BoxGeometry(1, 1, 1)
         } else if(geometry instanceof BufferGeometry) {
@@ -105,14 +108,24 @@ export class MeshParser {
                         geometry.phiLength
                     )
                 case 'text':
-                    return new TextGeometry(
-                        geometry.text ?? 'text',
-                        {
-                            size: geometry.size,
-                            height: geometry.height,
-                            font: geometry.font
+                    const text = geometry.text ?? ''
+                    let font !: Font
+                    if(geometry.font) {
+                        if(geometry.font instanceof Font) {
+                            font = geometry.font
+                        } else {
+                            fl.load(geometry.font, (loadedFont) => {
+                                font = loadedFont
+                            })
                         }
-                    )
+                    } else {
+                        fl.load('./assets/helvetiker_regular.typeface.json', (loadedFont) => {
+                            font = loadedFont
+                        })
+                    }
+                    geometry.font = font
+                    delete geometry.text
+                    return new TextGeometry(text, geometry as TextGeometryParameters)
             }
         }
     }
@@ -148,7 +161,7 @@ export class MeshParser {
             }
         }
     }
-    static setParameters(mesh: Object3D, parameters: Custom3dObjectParameters): Object3D {
+    static setParameters(mesh: Object3D, parameters: Custom3dObjectParameters | undefined): Object3D {
         this.position(mesh, parameters)
         this.scale(mesh, parameters)
         this.rotate(mesh, parameters)
@@ -166,7 +179,7 @@ export class MeshParser {
         }
         return object
     }
-    static rotate(object: Object3D, rotation: Rotatable): Object3D {
+    static rotate(object: Object3D, rotation: Rotatable | undefined): Object3D {
         if(rotation){
             object.rotation.set(
                 rotation.rotateX ? rotation.rotateX * Math.PI / 180 : 0,

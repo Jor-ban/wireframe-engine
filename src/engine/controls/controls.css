@@ -105,6 +105,7 @@
     min-height: 17px;
     margin-right: 5px;
     width: 100%;
+    border-radius: 3px;
 }
 .__wireframe-object-select > button:first-child {
     background: #3E3F44;

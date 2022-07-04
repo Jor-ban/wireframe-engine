@@ -9,14 +9,12 @@ import {
     Vector2,
 } from "three";
 import { CanvasProportion } from "../types/CanvasProportion.interface";
-import { ActiveElementControls } from "./activeElementControls";
 import { Subject } from 'rxjs';
 
-export const clickedObject$: Subject<Mesh | Object3D> = new Subject()
-export const hoveredObject$: Subject<Mesh | Object3D> = new Subject()
+export const clickedObject$: Subject<Mesh | Object3D | null> = new Subject()
+export const hoveredObject$: Subject<Mesh | Object3D | null> = new Subject()
 
 export class ElementTracer {
-    public guiControls: ActiveElementControls
     protected mouse = new Vector2()
     private readonly canvasProportion: CanvasProportion
     private canvas: HTMLCanvasElement
@@ -65,11 +63,21 @@ export class ElementTracer {
             clickedObject$.next(this.activeObject)
         })
         canvas.addEventListener('mousemove', this.onMouseMove)
-        clickedObject$.subscribe(mesh => {
-            this.emitCLick(mesh)
+        clickedObject$.subscribe((mesh) => {
+            console.log('mesh', mesh)
+            if(mesh === null) {
+                this.clickedObject.visible = false
+                this.activeObject = null
+            } else if(this.activeObject !== null) {
+                this.emitCLick(mesh)
+            }
         })
-        hoveredObject$.subscribe(mesh => {
-            this.emitHover(mesh)
+        hoveredObject$.subscribe((mesh) => {
+            if(mesh === null) {
+                this.hoveredObject.visible = false
+            } else {
+                this.emitHover(mesh)
+            }
         })
     }
     private emitCLick = (mesh?: Mesh | Object3D) => {

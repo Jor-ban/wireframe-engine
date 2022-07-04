@@ -49,9 +49,15 @@ export type CustomSphereGeometry = {
 }
 export type CustomTextGeometry = {
     text?: string
-    size?: number
-    height?: number
-    font?: Font
+    size?: number | undefined;
+    height?: number | undefined;
+    curveSegments?: number | undefined;
+    bevelEnabled?: boolean | undefined;
+    bevelThickness?: number | undefined;
+    bevelSize?: number | undefined;
+    bevelOffset?: number | undefined;
+    bevelSegments?: number | undefined;
+    font?: Font | string
 }
 
 export type CustomGeometry = (

@@ -29,24 +29,26 @@ export class ActiveElementControls {
     constructor(scene: Scene, pane: TabPageApi) {
         this.scene = scene
         this.pane = pane
-        clickedObject$.subscribe((obj: Object3D) => {
-            if(obj !== this.selectedObj) {
+        clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
+            if(obj !== this.selectedObj || obj === null) {
                 this.selectedObj = obj
                 this.select(obj)
             }
         })
     }
-    public select(selectedObj: Object3D) : void {
+    public select(selectedObj: Object3D | null) : void {
         for(let child of this.pane.children) {
             this.pane.remove(child)
         }
-        this.pane.addInput(selectedObj, 'name')
-        if(selectedObj instanceof Light) {
-            this.forLight(selectedObj, this.pane)
-        } else if(selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
-            this.forCamera(selectedObj, this.pane)
-        } else if(selectedObj instanceof Mesh) {
-            this.forObject(selectedObj, this.pane)
+        if(selectedObj !== null) {
+            this.pane.addInput(selectedObj, 'name')
+            if (selectedObj instanceof Light) {
+                this.forLight(selectedObj, this.pane)
+            } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
+                this.forCamera(selectedObj, this.pane)
+            } else if (selectedObj instanceof Mesh) {
+                this.forObject(selectedObj, this.pane)
+            }
         }
     }
 

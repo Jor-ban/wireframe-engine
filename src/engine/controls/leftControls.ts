@@ -1,19 +1,19 @@
 import { BladeApi, FolderApi, Pane, TabPageApi } from 'tweakpane';
 import { BladeController, View } from '@tweakpane/core';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import { AmbientLight, AxesHelper, Group, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
+import { AmbientLight, AxesHelper, Group, Mesh, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 import { RightControls } from './rightControls';
 import { clickedObject$, hoveredObject$ } from './elementTracer';
 
 export type SceneFolder = Object3D & {opened: boolean}
 
 export class LeftControls {
-	public fpsGraph: BladeApi<BladeController<View>>
-	public leftPane: Pane
-	private instrumentsTab: TabPageApi
-	private objectsTab: TabPageApi
+	public fpsGraph !: BladeApi<BladeController<View>>
+	public leftPane !: Pane
+	private instrumentsTab !: TabPageApi
+	private objectsTab !: TabPageApi
 	private rightControls: RightControls
-	private clickedElement: HTMLElement | null = null
+	private clickedElement: HTMLElement | undefined = undefined
 	private objectMap: WeakMap<Object3D, HTMLElement> = new WeakMap()
 
 	constructor(scene: Scene, rightControlsRef: RightControls) {
@@ -21,11 +21,13 @@ export class LeftControls {
 		this.rightControls = rightControlsRef
 		const folder = this.objectsTab.addFolder({title: '', expanded: true})
 		this.parseScene(scene.children, folder)
-		clickedObject$.subscribe(obj => {
-			const element = this.objectMap.get(obj)
-			this.clickedElement?.classList.remove('__wireframe-active')
-			element?.classList.add('__wireframe-active')
-			this.clickedElement = element
+		clickedObject$.subscribe((obj: Object3D | Mesh | null) => {
+			if(obj) {
+				const element = this.objectMap.get(obj)
+				this.clickedElement?.classList.remove('__wireframe-active')
+				element?.classList.add('__wireframe-active')
+				this.clickedElement = element
+			}
 		})
 	}
 
@@ -68,11 +70,14 @@ export class LeftControls {
 					obj.uuid !== "__wireframe-hoveredObject__" &&
 					obj.uuid !== "__wireframe-clickedObject__"
 				) {
-					const div = document.createElement("div")
-					div.classList.add('__wireframe-object-select')
+
 					const text = document.createElement('div')
 					text.classList.add('__wireframe-object-text')
 					text.innerText = obj.name || obj.type
+					text.addEventListener('mouseover', () => {
+						hoveredObject$.next(obj)
+					})
+
 					const showButton = document.createElement("button")
 					showButton.innerHTML = "👁"
 					showButton.addEventListener("click",() => {
@@ -84,22 +89,19 @@ export class LeftControls {
 							showButton.innerText = "👁"
 						}
 					})
+
 					const deleteButton = document.createElement("button")
 					deleteButton.innerHTML = "x"
-					deleteButton.addEventListener("click", () => {
-						if(window.confirm(`Are you sure you want to delete ${obj.name}?`)) {
-							obj.parent.remove(obj)
-						}
-					})
+					deleteButton.addEventListener("click", () => { this.deleteObject(obj) })
+
+					const div = document.createElement("div")
+					div.classList.add('__wireframe-object-select')
 					div.appendChild(text)
 					div.appendChild(showButton)
 					div.appendChild(deleteButton)
-
 					tab.appendChild(div)
-					div.addEventListener('mouseover', () => {
-						hoveredObject$.next(obj)
-					})
 					div.addEventListener('click', () => {
+						console.log("EMIT!")
 						this.clickedElement?.classList.remove('__wireframe-active')
 						div.classList.add('__wireframe-active')
 						this.clickedElement = div
@@ -108,6 +110,17 @@ export class LeftControls {
 					this.objectMap.set(obj, div)
 				}
 			}
+		}
+	}
+	deleteObject(obj: Object3D) {
+		if(window.confirm(`Are you sure you want to delete ${obj.name}?`)) {
+			const element = this.objectMap.get(obj)
+			if(element) {
+				element.parentNode?.removeChild(element)
+				this.clickedElement = undefined
+			}
+			obj.parent?.remove(obj)
+			clickedObject$.next(null)
 		}
 	}
 }
