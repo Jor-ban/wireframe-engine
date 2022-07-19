@@ -1,5 +1,5 @@
 import {CubeTextureLoader, Scene, sRGBEncoding} from "three";
-import {CustomScene} from "../types/CustomScene.interface";
+import {CustomScene} from "./types/CustomScene.interface";
 
 export class SceneParser {
     public static parse(scene ?: Scene | CustomScene): Scene {

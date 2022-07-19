@@ -7,10 +7,10 @@ import {
     MeshToonMaterial,
     Object3D, PlaneGeometry, RingGeometry, SphereGeometry
 } from "three";
-import {Custom3dObjectParameters, Positionable, Rotatable, Scalable} from "../types/Custom3dObject.type";
-import {CustomMesh} from "../types/CustomMesh.type";
-import {CustomMaterial} from "../types/CustomMaterial.type";
-import {CustomGeometry} from "../types/CustomGeometry.type";
+import {Custom3dObjectParameters, Positionable, Rotatable, Scalable} from "./types/Custom3dObject.type";
+import {CustomMesh} from "./types/CustomMesh.type";
+import {CustomMaterial} from "./types/CustomMaterial.type";
+import {CustomGeometry} from "./types/CustomGeometry.type";
 import { TextGeometry, TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';

@@ -1,5 +1,5 @@
 import { FolderApi, Pane, TabPageApi } from 'tweakpane';
-import { Object3DControls } from './utils/Object3DControls';
+import { Object3DControls } from '../utils/Object3DControls';
 import {
 	ACESFilmicToneMapping, AmbientLight, AxesHelper,
 	CineonToneMapping,
@@ -8,15 +8,15 @@ import {
 	PerspectiveCamera,
 	ReinhardToneMapping, Scene, WebGLRenderer,
 } from 'three';
-import { debugParams } from './controller';
+import { debugParams } from '../controller';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 // @ts-ignore
 import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
-import { EngineState } from '../shared/engineState';
-import { CameraControls } from './utils/CameraControls';
-import { LightControls } from './utils/LightControls';
+import { EngineState } from '../../shared/engineState';
+import { CameraControls } from '../utils/CameraControls';
+import { LightControls } from '../utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 
 export class RightControls {
@@ -36,12 +36,12 @@ export class RightControls {
 		this.axesHelper = new AxesHelper( 5 );
 		this.scene.add(this.axesHelper)
 		this.addScene(this.sceneTab)
-		this.logMemory(this.statsTab)
 		const mainCameraFolder = Object3DControls.createFolder('Main Camera', this.sceneTab)
 		CameraControls.addForCamera(mainCamera, mainCameraFolder)
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
 		LightControls.addAmbientLight(ambientLight, ambientLightFolder)
 		new ActiveElementControls(this.scene, this.objectTab)
+		this.logMemory()
 	}
 
 	private setUpPane() {
@@ -95,7 +95,7 @@ export class RightControls {
 		})
 		pane.addInput({ shadowMap: this.renderer.shadowMap.enabled }, 'shadowMap')
 	}
-	private logMemory(pane: FolderApi | TabPageApi): void {
+	private logMemory(): void {
 		if(window.performance) {
 			const perf = window.performance as unknown as {memory: {
 					usedJSHeapSize: number,
@@ -103,7 +103,17 @@ export class RightControls {
 					jsHeapSizeLimit: number,
 				}} || null
 
-			const usedMemory = pane.addMonitor({'Used Memory (MB)': perf.memory.usedJSHeapSize / Math.pow(1000, 2)},
+			if(!perf.memory) {
+				const folder = this.statsTab.addFolder({ title: '[WIREFRAME ERROR]' })
+				folder.element.innerHTML = `
+				<h3 style="color: palevioletred">
+				Your browser does not support memory checking, <br>  
+				please use chromium-based browser <br>
+				(for ex. <a href="https://www.google.com/intl/en/chrome/" style="color: white">chrome</a>)
+				</h3>`
+				return ;
+			}
+			const usedMemory = this.statsTab.addMonitor({'Used Memory (MB)': perf.memory.usedJSHeapSize / Math.pow(1000, 2)},
 				'Used Memory (MB)', {
 					view: 'graph',
 					interval: 3000,
@@ -111,7 +121,7 @@ export class RightControls {
 					max: 3900,
 				}
 			)
-			const heap = pane.addMonitor({'Total Heap (MB)': perf.memory.totalJSHeapSize / Math.pow(1000, 2)},
+			const heap = this.statsTab.addMonitor({'Total Heap (MB)': perf.memory.totalJSHeapSize / Math.pow(1000, 2)},
 				'Total Heap (MB)', {
 					view: 'graph',
 					interval: 5000,
@@ -119,11 +129,11 @@ export class RightControls {
 					max: 3900,
 				}
 			)
-			const heapLimit = pane.addMonitor(
+			const heapLimit = this.statsTab.addMonitor(
 				{'Heap Limit (MB)': perf.memory.jsHeapSizeLimit / Math.pow(1000, 2)},
 				'Heap Limit (MB)'
 			)
-			const triangles = pane.addMonitor(
+			const triangles = this.statsTab.addMonitor(
 				this.renderer.info.render, 'triangles', {
 					interval: 3000,
 				}

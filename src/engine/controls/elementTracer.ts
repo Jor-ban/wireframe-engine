@@ -8,7 +8,7 @@ import {
     Scene,
     Vector2,
 } from "three";
-import { CanvasProportion } from "../types/CanvasProportion.interface";
+import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
 import { Subject } from 'rxjs';
 
 export const clickedObject$: Subject<Mesh | Object3D | null> = new Subject()
@@ -64,7 +64,6 @@ export class ElementTracer {
         })
         canvas.addEventListener('mousemove', this.onMouseMove)
         clickedObject$.subscribe((mesh) => {
-            console.log('mesh', mesh)
             if(mesh === null) {
                 this.clickedObject.visible = false
                 this.activeObject = null

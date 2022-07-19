@@ -14,7 +14,6 @@ import {
     MeshNormalMaterial,
     MeshPhysicalMaterial,
     Mesh,
-    TextureLoader,
     Texture,
     MeshDepthMaterialParameters,
     MeshToonMaterialParameters,
@@ -42,7 +41,6 @@ export let defaultMapTexture: Texture
 })()
 
 export class MaterialControls {
-    textureLoader: TextureLoader = new TextureLoader()
     static addForMaterial(material: Material, folder: FolderApi) {
         material.needsUpdate = true
         folder.addInput(material, 'transparent')
@@ -390,6 +388,7 @@ export class MaterialControls {
         }).on('change', async (change) => {
             const value = change.value as unknown as {src: string}
             if(value.src !== defaultMapTexture.image.src && workingMaterial[keyName]?.image?.src !== value.src) {
+                workingMaterial[keyName].dispose()
                 workingMaterial[keyName] = await TxLoader.loadAsync(value.src)
                 material.needsUpdate = true
             } else if(value.src === defaultMapTexture.image.src){

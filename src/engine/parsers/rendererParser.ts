@@ -1,6 +1,6 @@
 import {NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer} from "three";
-import {CustomRenderer} from "../types/CustomRenderer.interface";
-import {CanvasProportion} from "../types/CanvasProportion.interface";
+import {CustomRenderer} from "./types/CustomRenderer.interface";
+import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class RendererParser {
     static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WebGLRenderer | CustomRenderer): WebGLRenderer {
@@ -10,7 +10,7 @@ export class RendererParser {
         renderer = renderer || {}
         const webglRenderer = new WebGLRenderer({
             canvas,
-            antialias: renderer.antialias || false
+            antialias: renderer.antialias
         })
         webglRenderer.setSize(sizes.width, sizes.height, sizes.updateStyle)
         webglRenderer.physicallyCorrectLights = renderer.physicallyCorrectLights ?? false

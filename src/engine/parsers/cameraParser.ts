@@ -1,6 +1,6 @@
 import {Camera, OrthographicCamera, PerspectiveCamera} from "three";
-import {CustomCamera} from "../types/CustomCamera.interface";
-import {CanvasProportion} from "../types/CanvasProportion.interface";
+import {CustomCamera} from "./types/CustomCamera.interface";
+import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class CameraParser {
     public static parse(

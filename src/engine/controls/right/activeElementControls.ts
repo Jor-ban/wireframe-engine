@@ -17,9 +17,9 @@ import {
     PerspectiveCamera,
     Scene,
 } from "three";
-import {Object3DControls} from "./utils/Object3DControls";
-import {MaterialControls} from "./utils/MaterialControls";
-import { clickedObject$ } from './elementTracer';
+import {Object3DControls} from "../utils/Object3DControls";
+import {MaterialControls} from "../utils/MaterialControls";
+import { clickedObject$ } from '../elementTracer';
 
 export class ActiveElementControls {
     private readonly scene: Scene
@@ -68,8 +68,7 @@ export class ActiveElementControls {
         this.addPositions(child, pane)
         this.addRotation(child, pane)
         this.addScale(child, pane)
-        const materialsFolder = pane.addFolder({ title: 'Materials', expanded: true })
-        this.addMaterial(child, materialsFolder)
+        this.addMaterial(child, pane)
         pane.addInput(child, 'castShadow')
         pane.addInput(child, 'visible');
         pane.addInput(child, 'receiveShadow');
@@ -133,15 +132,6 @@ export class ActiveElementControls {
                     }).element.classList.add('__tweakpane-delete-btn')
             }
         }
-        pane.addButton({ title: 'Add a new material' })
-            .on('click', () => {
-                if(mesh.material instanceof Array) {
-                    mesh.material.push(new MeshBasicMaterial())
-                } else {
-                    mesh.material = [mesh.material, new MeshBasicMaterial()]
-                }
-                this.updateMaterialsControls(mesh, pane)
-            })
     }
     private updateMaterialsControls(mesh: Mesh, folder: FolderApi | TabPageApi) {
         folder.children.forEach(child => folder.remove(child))

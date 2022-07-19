@@ -1,5 +1,5 @@
 import {AmbientLight, Color, ColorRepresentation, DirectionalLight, HemisphereLight, Light, PointLight} from "three";
-import { CustomAmbientLight, CustomLight } from '../types/CustomLight.interface';
+import { CustomAmbientLight, CustomLight } from './types/CustomLight.interface';
 import {MeshParser} from "./MeshParser";
 
 export class LightParser {

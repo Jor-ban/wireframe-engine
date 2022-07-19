@@ -1,6 +1,6 @@
 import './shared/memoryCleaner'
 import {ProjectSettings} from "./types/ProjectSetings.interface";
-import {CanvasProportion} from "./types/CanvasProportion.interface";
+import {CanvasProportion} from "./parsers/types/CanvasProportion.interface";
 import {
     AmbientLight,
     Camera,
@@ -12,28 +12,29 @@ import {
     WebGLRenderer
 } from "three";
 import {CameraParser} from "./parsers/cameraParser";
-import {CustomCamera} from "./types/CustomCamera.interface";
-import {CustomScene} from "./types/CustomScene.interface";
+import {CustomCamera} from "./parsers/types/CustomCamera.interface";
+import {CustomScene} from "./parsers/types/CustomScene.interface";
 import {SceneParser} from "./parsers/sceneParser";
-import {CustomRenderer} from "./types/CustomRenderer.interface";
+import {CustomRenderer} from "./parsers/types/CustomRenderer.interface";
 import {RendererParser} from "./parsers/rendererParser";
-import {CustomAmbientLight, CustomLight} from "./types/CustomLight.interface";
+import {CustomAmbientLight, CustomLight} from "./parsers/types/CustomLight.interface";
 import {LightParser} from "./parsers/lightParser";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {Controller} from "./controls/controller";
 import {MeshParser} from "./parsers/MeshParser";
 import {EngineState} from './shared/engineState';
+import { EngineInterface } from './types/Engine.interface';
 
-export class WireframeEngine {
+export class WireframeEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
-    private readonly canvas: HTMLCanvasElement
-    private renderer !: WebGLRenderer
-    private controller !: Controller
-    private mainCamera !: PerspectiveCamera | OrthographicCamera
-    private scene !: Scene
-    private fpsGraph: any | null = null
-    private orbitControls !: OrbitControls
-    private ambientLight !: AmbientLight
+    public readonly canvas: HTMLCanvasElement
+    public renderer !: WebGLRenderer
+    public controller !: Controller
+    public mainCamera !: PerspectiveCamera | OrthographicCamera
+    public scene !: Scene
+    public fpsGraph: any | null = null
+    public orbitControls !: OrbitControls
+    public ambientLight !: AmbientLight
 
     constructor(selector: string = "#canvas", projectSettings: ProjectSettings = {}) {
         this.canvas = document.querySelector(selector) as HTMLCanvasElement
@@ -76,7 +77,7 @@ export class WireframeEngine {
                     }
                     this.mainCamera.updateProjectionMatrix()
                     // Update renderer
-                    this.renderer.setSize(window.innerWidth, window.innerHeight)
+                    this.renderer?.setSize(window.innerWidth, window.innerHeight)
                 })
             }
             return this
@@ -130,10 +131,16 @@ export class WireframeEngine {
     }
     public enableDebug(yesNo ?: boolean): WireframeEngine {
         if(yesNo ?? true) {
-            const controller = new Controller(this.scene, this.mainCamera, this.renderer, this.ambientLight)
-            this.controller = controller
-            controller.initRayTracer(this.canvas, this.canvasProportion, this.mainCamera)
+            const controller = new Controller({
+                mainCamera: this.mainCamera,
+                renderer: this.renderer,
+                ambientLight: this.ambientLight,
+                scene: this.scene,
+                canvas: this.canvas,
+                canvasProportion: this.canvasProportion,
+            })
             this.fpsGraph = controller.fpsGraph
+            this.controller = controller
         }
         return this
     }

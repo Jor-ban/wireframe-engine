@@ -1,11 +1,11 @@
 import { AmbientLight, Camera, Scene, WebGLRenderer } from "three";
-import { CustomCamera } from "./CustomCamera.interface";
-import { CanvasProportion } from "./CanvasProportion.interface";
-import { CustomAmbientLight } from "./CustomLight.interface";
-import { CustomRenderer } from "./CustomRenderer.interface";
-import { CustomScene } from "./CustomScene.interface";
-import { CustomLight } from "./CustomLight.interface";
-import { CustomMesh } from "./CustomMesh.type";
+import { CustomCamera } from "../parsers/types/CustomCamera.interface";
+import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
+import { CustomAmbientLight } from "../parsers/types/CustomLight.interface";
+import { CustomRenderer } from "../parsers/types/CustomRenderer.interface";
+import { CustomScene } from "../parsers/types/CustomScene.interface";
+import { CustomLight } from "../parsers/types/CustomLight.interface";
+import { CustomMesh } from "../parsers/types/CustomMesh.type";
 
 export interface ProjectSettings {
     camera ?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera', // DONE

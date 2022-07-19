@@ -2,8 +2,9 @@ import { BladeApi, FolderApi, Pane, TabPageApi } from 'tweakpane';
 import { BladeController, View } from '@tweakpane/core';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AmbientLight, AxesHelper, Group, Mesh, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
-import { RightControls } from './rightControls';
-import { clickedObject$, hoveredObject$ } from './elementTracer';
+import { RightControls } from '../right/rightControls';
+import { clickedObject$, hoveredObject$ } from '../elementTracer';
+import { dispose } from '../../utils/dispose';
 
 export type SceneFolder = Object3D & {opened: boolean}
 
@@ -40,11 +41,11 @@ export class LeftControls {
 			container,
 		});
 		this.leftPane.registerPlugin(EssentialsPlugin);
-		this.fpsGraph = this.leftPane.addBlade({
-			view: 'fpsgraph',
-			label: 'FPS',
-			lineCount: 2,
-		});
+		// this.fpsGraph = this.leftPane.addBlade({
+		// 	view: 'fpsgraph',
+		// 	label: 'FPS',
+		// 	lineCount: 2,
+		// });
 		const folders = this.leftPane.addTab({
 			pages: [
 				{title: 'Instruments'},
@@ -101,7 +102,6 @@ export class LeftControls {
 					div.appendChild(deleteButton)
 					tab.appendChild(div)
 					div.addEventListener('click', () => {
-						console.log("EMIT!")
 						this.clickedElement?.classList.remove('__wireframe-active')
 						div.classList.add('__wireframe-active')
 						this.clickedElement = div
@@ -119,7 +119,7 @@ export class LeftControls {
 				element.parentNode?.removeChild(element)
 				this.clickedElement = undefined
 			}
-			obj.parent?.remove(obj)
+			dispose(obj)
 			clickedObject$.next(null)
 		}
 	}
