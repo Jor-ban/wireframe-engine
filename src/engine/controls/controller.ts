@@ -5,8 +5,9 @@ import { RightControls } from './right/rightControls';
 import { ElementTracer } from './elementTracer';
 import { LeftControls } from './left/leftControls';
 import { BottomControls } from './bottom/bottomControls';
-import { WireframeEngine } from '../engine';
 import { EngineInterface } from '../types/Engine.interface';
+import {Shortcuts} from "./shortcuts";
+import {hideContextMenu} from "./utils/hideContextMenu";
 
 export const debugParams = {
     axesHelperLength: 5,
@@ -26,5 +27,7 @@ export class Controller {
         this.fpsGraph = this.leftControls.fpsGraph
         this.bottomControls = new BottomControls()
         this.elementTracer = new ElementTracer(canvas, canvasProportion, mainCamera, scene)
+        Shortcuts.init()
+        hideContextMenu()
     }
 }

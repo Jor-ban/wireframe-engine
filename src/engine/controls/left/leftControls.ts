@@ -3,8 +3,8 @@ import { BladeController, View } from '@tweakpane/core';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AmbientLight, AxesHelper, Group, Mesh, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 import { RightControls } from '../right/rightControls';
-import { clickedObject$, hoveredObject$ } from '../elementTracer';
-import { dispose } from '../../utils/dispose';
+import { clickedObject$, hoveredObject$ } from '../shared/activeObjects';
+import { deleteObjectFromMap, htmlObjectsMap } from "../shared/objectMap";
 
 export type SceneFolder = Object3D & {opened: boolean}
 
@@ -15,9 +15,10 @@ export class LeftControls {
 	private objectsTab !: TabPageApi
 	private rightControls: RightControls
 	private clickedElement: HTMLElement | undefined = undefined
-	private objectMap: WeakMap<Object3D, HTMLElement> = new WeakMap()
+	private objectMap !: WeakMap<Object3D, HTMLElement>
 
 	constructor(scene: Scene, rightControlsRef: RightControls) {
+		this.objectMap = htmlObjectsMap
 		this.setupPane()
 		this.rightControls = rightControlsRef
 		const folder = this.objectsTab.addFolder({title: '', expanded: true})
@@ -113,14 +114,7 @@ export class LeftControls {
 		}
 	}
 	deleteObject(obj: Object3D) {
-		if(window.confirm(`Are you sure you want to delete ${obj.name}?`)) {
-			const element = this.objectMap.get(obj)
-			if(element) {
-				element.parentNode?.removeChild(element)
-				this.clickedElement = undefined
-			}
-			dispose(obj)
-			clickedObject$.next(null)
-		}
+		deleteObjectFromMap(obj)
+		this.clickedElement = undefined
 	}
 }

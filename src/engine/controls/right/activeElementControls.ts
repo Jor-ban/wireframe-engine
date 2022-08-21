@@ -1,4 +1,4 @@
-import {FolderApi, TabPageApi} from 'tweakpane';
+import { FolderApi, TabPageApi } from 'tweakpane';
 import {
     AmbientLight,
     Light,
@@ -17,9 +17,9 @@ import {
     PerspectiveCamera,
     Scene,
 } from "three";
-import {Object3DControls} from "../utils/Object3DControls";
-import {MaterialControls} from "../utils/MaterialControls";
-import { clickedObject$ } from '../elementTracer';
+import { Object3DControls } from "../utils/Object3DControls";
+import { MaterialControls } from "../utils/MaterialControls";
+import { clickedObject$ } from '../shared/activeObjects';
 
 export class ActiveElementControls {
     private readonly scene: Scene
@@ -82,7 +82,7 @@ export class ActiveElementControls {
                 view: 'cameraring',
                 min: 1,
                 max: 179
-            }).on('change', (value) => {
+            }).on('change', ({value}) => {
                 camera.fov = value
                 camera.updateProjectionMatrix()
             });

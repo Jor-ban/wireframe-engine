@@ -96,6 +96,7 @@ export class MaterialControls {
     }
 
     static addForToonMaterial(material: MeshToonMaterial, folder: FolderApi) {
+        // TODO add onchange event
         this.addForColor(material, folder)
         folder.addSeparator() // -------------------------------------------------
         this.addForMap(material, folder)
@@ -378,7 +379,7 @@ export class MaterialControls {
         })
     }
 
-    private static async addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T) {
+    private static addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T) {
         const obj: {[key: string | number | symbol]: string} = {}
         const workingMaterial = material as any
         obj.image = workingMaterial[keyName]?.image?.src || defaultMapTexture.image.src
@@ -387,12 +388,10 @@ export class MaterialControls {
             label: keyName as string,
         }).on('change', async (change) => {
             const value = change.value as unknown as {src: string}
-            if(value.src !== defaultMapTexture.image.src && workingMaterial[keyName]?.image?.src !== value.src) {
-                workingMaterial[keyName].dispose()
-                workingMaterial[keyName] = await TxLoader.loadAsync(value.src)
+            if(value.src !== defaultMapTexture.image.src) {
+                const texture = await TxLoader.loadAsync(value.src)
+                workingMaterial[keyName] = texture
                 material.needsUpdate = true
-            } else if(value.src === defaultMapTexture.image.src){
-                workingMaterial[keyName] = null
             }
         })
         folder.addInput({a: 0}, 'a', {

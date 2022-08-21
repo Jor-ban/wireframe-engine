@@ -9,10 +9,7 @@ import {
     Vector2,
 } from "three";
 import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
-import { Subject } from 'rxjs';
-
-export const clickedObject$: Subject<Mesh | Object3D | null> = new Subject()
-export const hoveredObject$: Subject<Mesh | Object3D | null> = new Subject()
+import { clickedObject$, hoveredObject$ } from "./shared/activeObjects";
 
 export class ElementTracer {
     protected mouse = new Vector2()

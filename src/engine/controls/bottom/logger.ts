@@ -1,4 +1,5 @@
 import { TabPageApi } from 'tweakpane';
+import {BehaviorSubject} from "rxjs";
 
 const defaultConsole = {
 	error : console.error,
@@ -7,6 +8,12 @@ const defaultConsole = {
 	clear : console.clear,
 	info  : console.info
 }
+
+const errorsNum = new BehaviorSubject(0)
+export const errorsCount = errorsNum.asObservable()
+const warnsNum = new BehaviorSubject(0)
+export const warnsCount = warnsNum.asObservable()
+
 export class Logger {
 	element: HTMLElement;
 	constructor(pane: TabPageApi) {
@@ -20,6 +27,7 @@ export class Logger {
 		console.info = this.info.bind(this)
 	}
 	private error(...message: (any)[]): void {
+		errorsNum.next(errorsNum.value + 1)
 		const err = document.createElement('div')
 		err.classList.add('__wireframe-error')
 		this.element.appendChild(err)
@@ -51,6 +59,7 @@ export class Logger {
 		defaultConsole.log(...message)
 	}
 	private warn(...message: (any)[]): void {
+		warnsNum.next(warnsNum.value + 1)
 		const warn = document.createElement('div')
 		warn.classList.add('__wireframe-warn')
 		this.element.appendChild(warn)
