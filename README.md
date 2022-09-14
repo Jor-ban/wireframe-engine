@@ -1,6 +1,5 @@
 # Wireframe-engine
 Wireframe Engine is threejs engine to work with 3D graphics on websites
------
 ## Steps to run:
  - download this repo using git clone
  - cd wireframe-engine
