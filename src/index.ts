@@ -7,7 +7,7 @@ const posX = require("../assets/skybox/sky_posX.jpg");
 const posZ = require("../assets/skybox/sky_posZ.jpg");
 const negZ = require("../assets/skybox/sky_negZ.jpg");
 
-new WireframeEngine('#canvas', {
+const app = new WireframeEngine('#canvas', {
     scene: {
         skybox: { negY, negX, negZ, posY, posX, posZ },
     },
@@ -27,5 +27,5 @@ new WireframeEngine('#canvas', {
     ],
     renderer: {
         antialias: true,
-    }
+    },
 })

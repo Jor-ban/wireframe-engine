@@ -18,6 +18,8 @@ import { EngineState } from '../../shared/engineState';
 import { CameraControls } from '../utils/CameraControls';
 import { LightControls } from '../utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
+import {logMemory} from "../shared/PerformanceMonitors";
+import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";
 
 export class RightControls {
 	private rightPane !: Pane
@@ -41,12 +43,15 @@ export class RightControls {
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
 		LightControls.addAmbientLight(ambientLight, ambientLightFolder)
 		new ActiveElementControls(this.scene, this.objectTab)
-		this.logMemory()
+		logMemory(this.statsTab, this.renderer)
 	}
 
 	private setUpPane() {
 		const container = document.createElement('div')
 		container.classList.add('__wireframe-right-controls', '__wireframe-controls')
+		container.style.width = rightControlsWidth + 'px'
+		container.style.top = topBarHeight + 'px'
+		container.style.height = `calc(100vh - ${topBarHeight}px)`
 		document.body.appendChild(container)
 		this.rightPane = new Pane({
 			title: 'Wireframe Engine Gui',
@@ -94,51 +99,5 @@ export class RightControls {
 			Object3DControls.updateAllMaterials(this.scene)
 		})
 		pane.addInput({ shadowMap: this.renderer.shadowMap.enabled }, 'shadowMap')
-	}
-	private logMemory(): void {
-		if(window.performance) {
-			const perf = window.performance as unknown as {memory: {
-					usedJSHeapSize: number,
-					totalJSHeapSize: number,
-					jsHeapSizeLimit: number,
-				}} || null
-
-			if(!perf.memory) {
-				const folder = this.statsTab.addFolder({ title: '[WIREFRAME ERROR]' })
-				folder.element.innerHTML = `
-				<h3 style="color: palevioletred">
-				Your browser does not support memory checking, <br>  
-				please use chromium-based browser <br>
-				(for ex. <a href="https://www.google.com/intl/en/chrome/" style="color: white">chrome</a>)
-				</h3>`
-				return ;
-			}
-			const usedMemory = this.statsTab.addMonitor({'Used Memory (MB)': perf.memory.usedJSHeapSize / Math.pow(1000, 2)},
-				'Used Memory (MB)', {
-					view: 'graph',
-					interval: 3000,
-					min: 0,
-					max: 3900,
-				}
-			)
-			const heap = this.statsTab.addMonitor({'Total Heap (MB)': perf.memory.totalJSHeapSize / Math.pow(1000, 2)},
-				'Total Heap (MB)', {
-					view: 'graph',
-					interval: 5000,
-					min: 0,
-					max: 3900,
-				}
-			)
-			const heapLimit = this.statsTab.addMonitor(
-				{'Heap Limit (MB)': perf.memory.jsHeapSizeLimit / Math.pow(1000, 2)},
-				'Heap Limit (MB)'
-			)
-			const triangles = this.statsTab.addMonitor(
-				this.renderer.info.render, 'triangles', {
-					interval: 3000,
-				}
-			)
-			EngineState.addMonitor(usedMemory, heap, heapLimit, triangles)
-		}
 	}
 }

@@ -2,7 +2,7 @@ import { EngineState } from "./engineState";
 
 const nativeInterval = setInterval;
 // @ts-ignore
-setInterval = function(callback, delay) {
+window.setInterval = function(callback: () => any, delay: number | undefined) {
 	const interval = nativeInterval(callback, delay);
 	EngineState.addIntervalId(interval);
 	return interval;
@@ -10,7 +10,10 @@ setInterval = function(callback, delay) {
 
 export const nativeClearInterval = clearInterval;
 // @ts-ignore
-clearInterval = function(interval) {
-	EngineState.intervalIds.splice(EngineState.intervalIds.indexOf(interval), 1);
+window.clearInterval = function(interval: NodeJS.Timer) {
+	const index = EngineState.intervalIds.indexOf(interval)
+	if(index !== -1) {
+		EngineState.intervalIds.splice(index, 1);
+	}
 	nativeClearInterval(interval);
 }

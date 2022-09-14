@@ -10,6 +10,7 @@ import {
 } from "three";
 import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
 import { clickedObject$, hoveredObject$ } from "./shared/activeObjects";
+import {leftControlsWidth, topBarHeight} from "../shared/consts/controlsStyles";
 
 export class ElementTracer {
     protected mouse = new Vector2()
@@ -99,8 +100,16 @@ export class ElementTracer {
         this.hoveredObject.visible = true
     }
     private onMouseMove = (event: MouseEvent) => {
-        this.mouse.x = (event.clientX / this.canvasProportion.width) * 2 - 1
-        this.mouse.y = -(event.clientY / this.canvasProportion.height) * 2 + 1
+        // console.log({
+        //     x: Math.round((((event.clientX - leftControlsWidth) / this.canvasProportion.width) * 2 - 1) * 100) / 100,
+        //     y: Math.round(( -((event.clientY - topBarHeight) / this.canvasProportion.height) * 2 + 1) * 100) / 100,
+        //     width: this.canvasProportion.width,
+        //     height: this.canvasProportion.height,
+        // })
+        const xPosition = (event.clientX - leftControlsWidth) / this.canvasProportion.width
+        const yPosition = - (event.clientY - topBarHeight) / this.canvasProportion.height
+        this.mouse.x = xPosition * 2 - 1
+        this.mouse.y = yPosition * 2 + 1
         this.rayCaster.setFromCamera(this.mouse, this.camera)
         const intersects = this.rayCaster.intersectObjects(this.scene.children)
         const mesh = intersects

@@ -1,6 +1,7 @@
 import { Pane, TabPageApi } from 'tweakpane';
 import {errorsCount, Logger, warnsCount} from './logger';
 import { AssetsManager } from "./assetsManager";
+import {bottomControlsHeight, leftControlsWidth, rightControlsWidth} from "../../shared/consts/controlsStyles";
 
 export class BottomControls {
 	pane: Pane
@@ -10,11 +11,14 @@ export class BottomControls {
 	constructor() {
 		const container = document.createElement('div')
 		container.classList.add('__wireframe-bottom-controls', '__wireframe-controls')
+		container.style.height = bottomControlsHeight + 'px'
+		container.style.width = `calc(100vw - ${leftControlsWidth}px - ${rightControlsWidth}px)`
+		container.style.left = leftControlsWidth + 'px'
 		document.body.appendChild(container)
 		this.pane = new Pane({ title: 'Wireframe Engine', container })
 		const tabs = this.pane.addTab({
 			pages: [
-				{ title: 'Assets' },
+				{ title: 'Explorer' },
 				{ title: 'Logs' }
 			]
 		})

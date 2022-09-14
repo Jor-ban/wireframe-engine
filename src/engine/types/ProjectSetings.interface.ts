@@ -6,18 +6,17 @@ import { CustomRenderer } from "../parsers/types/CustomRenderer.interface";
 import { CustomScene } from "../parsers/types/CustomScene.interface";
 import { CustomLight } from "../parsers/types/CustomLight.interface";
 import { CustomMesh } from "../parsers/types/CustomMesh.type";
+import { LoadingMode } from "../shared/loadingModes.enum";
 
 export interface ProjectSettings {
-    camera ?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera', // DONE
-    scene ?: Scene | CustomScene, // DONE
-    renderer ?: WebGLRenderer | CustomRenderer, // DONE
-    ambientLight ?: AmbientLight | CustomAmbientLight, // DONE
-    lights ?: CustomLight[], //
-    objects ?: CustomMesh[], //
-    canvasSizes ?: CanvasProportion // DONE
-    orbitControls ?: boolean
-    debug ?: boolean
-    disableTick ?: boolean
-    renderOnMaxFPS ?: boolean
-    disableResizeUpdate ?: boolean
+    camera ?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera', // only 2 types of cameras are supported
+    scene ?: Scene | CustomScene, // skyBoxes, encoding and loaders are supported
+    renderer ?: WebGLRenderer | CustomRenderer, // antialias, physicallyCorrectLights, encoding, toneMapping, toneMappingExposure, shadowMap, shadowMapType, pixelRatio
+    ambientLight ?: AmbientLight | CustomAmbientLight, // only 1 main ambient light
+    lights ?: CustomLight[], // array of lights
+    objects ?: CustomMesh[], // array of objects
+    canvasSizes ?: CanvasProportion // canvas sizes on prod and test modes
+    orbitControls ?: boolean // orbit controls // TODO add orbit controls settings
+    maxFPS ?: number // max fps <= 0 is no tick ; default is 60; Infinity is for max possible
+    mode?: LoadingMode // loading mode (only for specific cases)
 }

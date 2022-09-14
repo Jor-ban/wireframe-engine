@@ -1,6 +1,6 @@
 import { nativeClearInterval } from './memoryCleaner';
 
-class EngineStateClass {
+class EngineStateFactory {
 	intervalIds: NodeJS.Timer[] = []
 	monitors: any[] = []
 
@@ -22,6 +22,13 @@ class EngineStateClass {
 	addMonitor(...monitor: any[]) {
 		this.monitors.push(...monitor)
 	}
+	clearInterval(id: NodeJS.Timer) {
+		const index = this.intervalIds.indexOf(id)
+		if(index !== -1) {
+			this.intervalIds.splice(index, 1)
+		}
+		nativeClearInterval(id)
+	}
 }
 
-export const EngineState = new EngineStateClass()
+export const EngineState = new EngineStateFactory()
