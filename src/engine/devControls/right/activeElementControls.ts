@@ -18,8 +18,9 @@ import {
     Scene,
 } from "three";
 import { Object3DControls } from "../utils/Object3DControls";
-import { MaterialControls } from "../utils/MaterialControls";
+import { MaterialControlsUtil } from "../utils/MaterialControls.util";
 import { clickedObject$ } from '../shared/activeObjects';
+import {GeometryControls} from "../utils/GeometryControls.util";
 
 export class ActiveElementControls {
     private readonly scene: Scene
@@ -68,6 +69,7 @@ export class ActiveElementControls {
         this.addPositions(child, pane)
         this.addRotation(child, pane)
         this.addScale(child, pane)
+        this.addMesh(child, pane)
         this.addMaterial(child, pane)
         pane.addInput(child, 'castShadow')
         pane.addInput(child, 'visible');
@@ -88,6 +90,10 @@ export class ActiveElementControls {
             });
         }
     }
+    private addMesh(child: Mesh, pane: FolderApi | TabPageApi) {
+        const folder = pane.addFolder({title: 'Geometry', expanded: true})
+        GeometryControls.addMeshControls(child.geometry, folder)
+    }
     private addMaterial(mesh: Mesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
         for(let i = 0; i < materials.length; i++) {
@@ -96,40 +102,30 @@ export class ActiveElementControls {
                 title: i === 0 ? 'Material' : 'Material #' + (i + 1),
                 expanded: true
             })
-            MaterialControls.materialConverter(material, mesh, folder, () => {
+            MaterialControlsUtil.materialConverter(material, mesh, folder, () => {
                 this.updateMaterialsControls(mesh, pane)
             })
-            MaterialControls.addForMaterial(material, folder)
+            MaterialControlsUtil.addForMaterial(material, folder)
             folder.addSeparator()
-            const typeFolder = folder.addFolder({title: material.type, expanded: true})
+            const typeFolder = folder.addFolder({title: material.type, expanded: false})
             if(material instanceof MeshToonMaterial) {
-                MaterialControls.addForToonMaterial(material, typeFolder)
+                MaterialControlsUtil.addForToonMaterial(material, typeFolder)
             } else if(material instanceof MeshDepthMaterial) {
-                MaterialControls.addForDepthMaterial(material, typeFolder)
+                MaterialControlsUtil.addForDepthMaterial(material, typeFolder)
             } else if(material instanceof MeshBasicMaterial) {
-                MaterialControls.addForBasicMaterial(material, typeFolder)
+                MaterialControlsUtil.addForBasicMaterial(material, typeFolder)
             } else if(material instanceof MeshLambertMaterial) {
-                MaterialControls.addForLambertMaterial(material, typeFolder)
+                MaterialControlsUtil.addForLambertMaterial(material, typeFolder)
             } else if(material instanceof MeshMatcapMaterial) {
-                MaterialControls.addForMatcapMaterial(material, typeFolder)
+                MaterialControlsUtil.addForMatcapMaterial(material, typeFolder)
             } else if(material instanceof MeshNormalMaterial) {
-                MaterialControls.addForNormalMaterial(material, typeFolder)
+                MaterialControlsUtil.addForNormalMaterial(material, typeFolder)
             } else if(material instanceof MeshPhongMaterial) {
-                MaterialControls.addForPhongMaterial(material, typeFolder)
+                MaterialControlsUtil.addForPhongMaterial(material, typeFolder)
             } else if(material instanceof MeshStandardMaterial) {
-                MaterialControls.addForStandardMaterial(material, typeFolder)
+                MaterialControlsUtil.addForStandardMaterial(material, typeFolder)
             } else if(material instanceof MeshPhysicalMaterial) {
-                MaterialControls.addForPhysicalMaterial(material, typeFolder)
-            }
-            folder.addSeparator()
-            if(i !== 0) {
-                folder.addButton({ title: 'Delete this material' })
-                    .on('click', () => {
-                        if(mesh.material instanceof Array) {
-                            mesh.material.splice(i, 1)
-                        }
-                        this.updateMaterialsControls(mesh, pane)
-                    }).element.classList.add('__tweakpane-delete-btn')
+                MaterialControlsUtil.addForPhysicalMaterial(material, typeFolder)
             }
         }
     }

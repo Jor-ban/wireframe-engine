@@ -40,7 +40,7 @@ export let defaultMapTexture: Texture
    defaultMapTexture = await TxLoader.loadAsync(white)
 })()
 
-export class MaterialControls {
+export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi) {
         material.needsUpdate = true
         folder.addInput(material, 'transparent')
