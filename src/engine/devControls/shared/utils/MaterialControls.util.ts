@@ -24,9 +24,9 @@ import {
     MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters,
 } from 'three';
 import {FolderApi} from "tweakpane";
-import { TxLoader } from '../../shared/textureLoader';
+import { WireframeTextureLoader } from '../../../shared/loaders';
 // @ts-ignore
-import white from './assets/white.png'
+import white from '../../assets/white.png'
 import {
     AddOperation, BasicDepthPacking,
     MixOperation,
@@ -37,7 +37,7 @@ import {
 
 export let defaultMapTexture: Texture
 (async function() {
-   defaultMapTexture = await TxLoader.loadAsync(white)
+   defaultMapTexture = await WireframeTextureLoader.loadAsync(white)
 })()
 
 export class MaterialControlsUtil {
@@ -389,7 +389,7 @@ export class MaterialControlsUtil {
         }).on('change', async (change) => {
             const value = change.value as unknown as {src: string}
             if(value.src !== defaultMapTexture.image.src) {
-                const texture = await TxLoader.loadAsync(value.src)
+                const texture = await WireframeTextureLoader.loadAsync(value.src)
                 workingMaterial[keyName] = texture
                 material.needsUpdate = true
             }

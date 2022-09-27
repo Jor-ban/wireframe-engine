@@ -1,5 +1,5 @@
 import {AssetsTree} from "../../types/AssetsTree.interface";
-import { ExplorerService } from "../explorer.service";
+import { ExplorerService } from "../../bottom/explorer.service";
 
 const folderIcon: string = require('../../assets/folder.png')
 const other: string = require('../../assets/other.png');

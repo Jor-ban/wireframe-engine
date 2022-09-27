@@ -1,6 +1,6 @@
 import {Euler, Mesh, MeshStandardMaterial, Object3D, Scene} from "three";
 import {FolderApi, InputBindingApi, Pane, TabPageApi} from "tweakpane";
-import {debugParams} from "../controller";
+import {debugParams} from "../../controller";
 
 export class Object3DControls {
     static addScale(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
