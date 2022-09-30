@@ -1,11 +1,11 @@
 import {deleteObjectFromMap} from "../shared/objectMap";
-import {clickedObject$} from "../shared/activeObjects";
 import {Mesh, Object3D} from "three";
+import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 
 export class Shortcuts {
     static init(): void {
         let activeElement: Object3D | null = null;
-        clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
             activeElement = obj;
         })
         window.addEventListener('keyup', (e: KeyboardEvent) => {

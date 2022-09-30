@@ -1,11 +1,7 @@
-export interface WireframeDropdownOption {
-    name: string;
-    onclick: (event: MouseEvent) => void;
-    subOptions?: WireframeDropdownOption[];
-}
+import {HiddenMenu, HiddenMenuOption} from "./hiddenMenu";
 
 export class WireframeDropdown {
-    static addDropdown(element: HTMLElement, name: string, options: WireframeDropdownOption[]) {
+    constructor(element: HTMLElement, name: string, options: HiddenMenuOption[]) {
         const dropdownContainer = document.createElement("div")
         dropdownContainer.classList.add("__wireframe-dropdown-container")
         element.appendChild(dropdownContainer)
@@ -17,29 +13,17 @@ export class WireframeDropdown {
 
         const dropdownContent = document.createElement("div")
         dropdownContent.classList.add("__wireframe-dropdown-content")
-        dropdownContent.style.display = "none"
         dropdownContainer.appendChild(dropdownContent);
 
+        const menu = new HiddenMenu(dropdownContent, options)
         window.addEventListener("click", (event) => {
-            if(event.target === dropdownButton && dropdownContent.style.display === "none") {
-                dropdownContent.style.display = "block"
+            if(event.target === dropdownButton && menu.isClosed) {
+                menu.open()
                 dropdownContainer.classList.add("__wireframe-dropdown-container--active")
             } else {
-                dropdownContent.style.display = "none"
+                menu.close()
                 dropdownContainer.classList.remove("__wireframe-dropdown-container--active")
             }
         })
-
-        for (let option of options) {
-            const optionElement = document.createElement("button")
-            optionElement.classList.add("__wireframe-dropdown-option")
-            optionElement.innerHTML = option.name
-            optionElement.addEventListener("click", option.onclick)
-            dropdownContent.appendChild(optionElement)
-
-            if (option.subOptions) {
-                
-            }
-        }
     }
 }

@@ -7,7 +7,11 @@
     "dev": "npm start",
     "start": "cross-env NODE_ENV=dev concurrently --kill-others \"node ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
     "dev:watch": "cross-env NODE_ENV=dev concurrently --kill-others \"nodemon ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
-    "build": "cross-env NODE_ENV=PROD webpack"
+    "dev:frontend-only": "cross-env NODE_ENV=dev webpack-dev-server",
+    "build": "cross-env NODE_ENV=PROD webpack",
+
+    "precommit": "npm run build && firebase deploy",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -21,8 +25,6 @@
   "homepage": "https://github.com/random-jordan/",
   "devDependencies": {
     "@tweakpane/core": "^1.1.0",
-    "@types/dat.gui": "^0.7.7",
-    "@types/stats.js": "^0.17.0",
     "@types/three": "^0.137.0",
     "axios": "^0.27.2",
     "concurrently": "^7.3.0",
@@ -30,6 +32,7 @@
     "cross-env": "^7.0.3",
     "dat.gui": "^0.7.9",
     "html-webpack-plugin": "^5.4.0",
+    "husky": "^8.0.1",
     "nodemon": "^2.0.19",
     "three": "^0.137.5",
     "ts-loader": "^9.3.0",

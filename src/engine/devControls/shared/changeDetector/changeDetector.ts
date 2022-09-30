@@ -1,18 +1,9 @@
-import {BehaviorSubject} from "rxjs";
-import {Object3D} from "three";
+import {Subject} from "rxjs";
+import {Mesh, Object3D} from "three";
 
-export interface DetectedChange {
-    type: ChangeType,
-    object?: Object3D,
+export class ChangeDetector {
+    static clickedObject$: Subject<Mesh | Object3D | null> = new Subject()
+    static hoveredObject$: Subject<Mesh | Object3D | null> = new Subject()
+    static addedObject$: Subject<Object3D> = new Subject()
+    static removedObject$: Subject<Object3D> = new Subject()
 }
-export enum ChangeType {
-    CLICKED_OBJECT,
-    HOVERED_OBJECT,
-    ADDED_OBJECT,
-    REMOVED_OBJECT,
-    UPDATED_OBJECT,
-    VOID,
-}
-export const changeDetector = new BehaviorSubject<DetectedChange>({ type: ChangeType.VOID })
-
-

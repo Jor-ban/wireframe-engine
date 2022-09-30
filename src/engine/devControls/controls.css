@@ -117,6 +117,7 @@ button.tp-rotv_b {
 }
 
 .__wireframe-object-select {
+    cursor: pointer;
     display: flex;
     align-items: center;
     color: #ADAFB8;
@@ -157,15 +158,21 @@ button.tp-rotv_b {
     background: #ADAFB8;
     color: #3E3F44;
 }
-.__wireframe-object-select > button:last-child {
-    background: #28292E;
+.__wireframe-object-select > button {
+    background: transparent;
     border-radius: 3px;
     border: 2px solid #3E3F44;
     color: white;
 }
+.__wireframe-object-select > button:hover {
+    background-color: lightgrey;
+    border-color: lightgrey;
+    color: black;
+}
 .__wireframe-object-select > button:last-child:hover {
     background: #710f0f;
     border-color: #710f0f;
+    color: white;
 }
 .__wireframe-object-select > button {
     display: flex;
@@ -296,4 +303,43 @@ button.tp-rotv_b {
     word-wrap: break-word;
     hyphens: auto;
     white-space: normal;
+}
+/*DROPDOWN STYLES*/
+.__wireframe-top-bar button.__wireframe-dropdown-button {
+    font-size: 12px !important;
+}
+
+.__wireframe-dropdown-container > button.__wireframe-dropdown-button {
+    height: 100%;
+    background: transparent;
+    color: white;
+    border: none;
+}
+.__wireframe-dropdown-container--active > button.__wireframe-dropdown-button {
+    background: #BBBCC4 !important;
+    color: black !important;
+}
+.__wireframe-dropdown-container > button.__wireframe-dropdown-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.__wireframe-dropdown-container > .__wireframe-dropdown-content {
+    background: #28292E;
+}
+.__wireframe-dropdown-content button.__wireframe-hidden-menu-option {
+    width: 180px;
+    max-width: 180px;
+    display: block;
+    background: #28292E;
+    color: white;
+    border: none;
+    padding: 5px;
+    text-align: left;
+}
+.__wireframe-dropdown-content button.__wireframe-hidden-menu-option:hover {
+    background: #3E3F44;
+}
+.__wireframe-hidden-menu-option > .__wireframe-submenu-container {
+    position: absolute;
+    margin-top: -20px;
+    margin-left: 175px;
 }

@@ -1,6 +1,6 @@
 import {Object3D} from "three";
 import {dispose} from "../../utils/dispose";
-import {clickedObject$} from "./activeObjects";
+import {ChangeDetector} from "./changeDetector/changeDetector";
 
 export const htmlObjectsMap = new WeakMap<Object3D, HTMLElement>();
 
@@ -11,6 +11,6 @@ export function deleteObjectFromMap(obj: Object3D) {
             element.parentNode?.removeChild(element)
         }
         dispose(obj)
-        clickedObject$.next(null)
+        ChangeDetector.clickedObject$.next(null)
     }
 }

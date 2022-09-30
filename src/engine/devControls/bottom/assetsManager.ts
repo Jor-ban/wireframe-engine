@@ -1,7 +1,7 @@
 import {TabPageApi} from "tweakpane";
 import {AssetsTree} from "../types/AssetsTree.interface";
 import {ExplorerService} from "./explorer.service";
-import {getIconUrl} from "./utils/getIconUrl";
+import {getIconUrl} from "../shared/utils/getIconUrl";
 const folderIconUrl = require("../assets/folder.png")
 
 export class AssetsManager {
@@ -43,7 +43,13 @@ export class AssetsManager {
     async updateExplorerView() {
         this.viewElement.innerHTML = ''
         const path = this.currentDirectory.path.replace(/root\/?/,"")
-        const elements = await ExplorerService.getElements(path).catch(ignored => {}) as AssetsTree[]
+        let elements: AssetsTree[]
+        try {
+            elements = await ExplorerService.getElements(path) as AssetsTree[]
+        } catch(e) {
+            elements = []
+            this.viewElement.innerHTML = '<h3 style="color: #d7d7d7">Explorer is not available in production mode</h3>'
+        }
         for(let el of elements) {
             const grid = document.createElement('div')
             grid.classList.add('__wireframe-assets-grid')

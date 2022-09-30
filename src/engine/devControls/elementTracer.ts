@@ -9,8 +9,8 @@ import {
     Vector2,
 } from "three";
 import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
-import { clickedObject$, hoveredObject$ } from "./shared/activeObjects";
 import {leftControlsWidth, topBarHeight} from "../shared/consts/controlsStyles";
+import {ChangeDetector} from "./shared/changeDetector/changeDetector";
 
 export class ElementTracer {
     protected mouse = new Vector2()
@@ -20,6 +20,7 @@ export class ElementTracer {
     private readonly camera: PerspectiveCamera | OrthographicCamera
     private rayCaster = new Raycaster()
     private activeObject: Object3D | null = null
+    private clickFrozen: boolean = false
 
     private hoveredObject: Mesh = new Mesh(
         new BoxGeometry(),
@@ -36,7 +37,7 @@ export class ElementTracer {
         new MeshBasicMaterial({
             color: 0xffffff,
             // wireframe: true,
-            opacity: 0.6,
+            opacity: 0.8,
             transparent: true,
             side: BackSide
         })
@@ -57,11 +58,10 @@ export class ElementTracer {
         this.hoveredObject.scale.set(0, 0, 0)
         this.hoveredObject.uuid = "__wireframe-hoveredObject__"
         this.clickedObject.uuid = "__wireframe-clickedObject__"
-        canvas.addEventListener('click', () => {
-            clickedObject$.next(this.activeObject)
-        })
+        canvas.addEventListener('mouseup', this.mouseUp.bind(this))
         canvas.addEventListener('mousemove', this.onMouseMove)
-        clickedObject$.subscribe((mesh) => {
+        canvas.addEventListener('mousedown', this.mouseDown.bind(this))
+        ChangeDetector.clickedObject$.subscribe((mesh) => {
             if(mesh === null) {
                 this.clickedObject.visible = false
                 this.activeObject = null
@@ -69,7 +69,7 @@ export class ElementTracer {
                 this.emitCLick(mesh)
             }
         })
-        hoveredObject$.subscribe((mesh) => {
+        ChangeDetector.hoveredObject$.subscribe((mesh) => {
             if(mesh === null) {
                 this.hoveredObject.visible = false
             } else {
@@ -81,7 +81,7 @@ export class ElementTracer {
         const {position, scale, rotation} = mesh || this.hoveredObject
         this.clickedObject.position.set(position.x, position.y, position.z)
         this.clickedObject.rotation.set(rotation.x, rotation.y, rotation.z)
-        this.clickedObject.scale.set(1.02 * scale.x, 1.02 * scale.y, 1.02 * scale.z)
+        this.clickedObject.scale.set(1.07 * scale.x, 1.07 * scale.y, 1.07 * scale.z)
         this.clickedObject.geometry = mesh instanceof Mesh ? mesh.geometry : this.hoveredObject.geometry
         this.clickedObject.visible = true
     }
@@ -89,7 +89,7 @@ export class ElementTracer {
         const {position, scale, rotation} = mesh
         this.hoveredObject.rotation.set(rotation.x, rotation.y, rotation.z)
         this.hoveredObject.position.set(position.x, position.y, position.z)
-        this.hoveredObject.scale.set(1.01 * scale.x, 1.01 * scale.y, 1.01 * scale.z)
+        this.hoveredObject.scale.set(1.03 * scale.x, 1.03 * scale.y, 1.03 * scale.z)
     }
     private emitHover(mesh: Object3D | Mesh) {
         this.activeObject = mesh
@@ -100,12 +100,6 @@ export class ElementTracer {
         this.hoveredObject.visible = true
     }
     private onMouseMove = (event: MouseEvent) => {
-        // console.log({
-        //     x: Math.round((((event.clientX - leftControlsWidth) / this.canvasProportion.width) * 2 - 1) * 100) / 100,
-        //     y: Math.round(( -((event.clientY - topBarHeight) / this.canvasProportion.height) * 2 + 1) * 100) / 100,
-        //     width: this.canvasProportion.width,
-        //     height: this.canvasProportion.height,
-        // })
         const xPosition = (event.clientX - leftControlsWidth) / this.canvasProportion.width
         const yPosition = - (event.clientY - topBarHeight) / this.canvasProportion.height
         this.mouse.x = xPosition * 2 - 1
@@ -124,5 +118,16 @@ export class ElementTracer {
         } else {
             this.hoveredObject.visible = false
         }
+    }
+    private mouseUp(event: MouseEvent): void {
+        if(!this.clickFrozen) {
+            ChangeDetector.clickedObject$.next(this.activeObject)
+        }
+    }
+    private mouseDown(event: MouseEvent): void {
+        this.clickFrozen = false
+        setTimeout(() => {
+            this.clickFrozen = true
+        }, 300)
     }
 }

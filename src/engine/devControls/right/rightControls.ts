@@ -1,5 +1,5 @@
 import { FolderApi, Pane, TabPageApi } from 'tweakpane';
-import { Object3DControls } from '../utils/Object3DControls';
+import { Object3DControls } from '../shared/utils/Object3DControls';
 import {
 	ACESFilmicToneMapping, AmbientLight, AxesHelper,
 	CineonToneMapping,
@@ -14,9 +14,8 @@ import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 // @ts-ignore
 import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
-import { EngineState } from '../../shared/engineState';
-import { CameraControls } from '../utils/CameraControls';
-import { LightControls } from '../utils/LightControls';
+import { CameraControls } from '../shared/utils/CameraControls';
+import { LightControls } from '../shared/utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "../shared/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";

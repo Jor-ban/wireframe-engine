@@ -15,7 +15,6 @@ class Explorer {
     public async getFile(path: string): Promise<string> {
         path = String(path).replace(/^.\/src/,"")
         const { data } = await this.http.get(path)
-        console.log(data)
         return data
     }
     // public createFolder(name: string, path: string = this.path): AssetsTree {

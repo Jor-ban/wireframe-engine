@@ -11,9 +11,10 @@ import {Custom3dObjectParameters, Positionable, Rotatable, Scalable} from "./typ
 import {CustomMesh} from "./types/CustomMesh.type";
 import {CustomMaterial} from "./types/CustomMaterial.type";
 import {CustomGeometry} from "./types/CustomGeometry.type";
-import { TextGeometry, TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
+import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import {WireframeTextGeometry} from "../shared/classes/WireframeTextGeometry";
 
 const fl = new FontLoader()
 
@@ -125,7 +126,7 @@ export class MeshParser {
                     }
                     geometry.font = font
                     delete geometry.text
-                    return new TextGeometry(text, geometry as TextGeometryParameters)
+                    return new WireframeTextGeometry(text, geometry as TextGeometryParameters)
             }
         }
     }

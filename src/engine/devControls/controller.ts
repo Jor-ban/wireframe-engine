@@ -6,7 +6,7 @@ import { LeftControls } from './left/leftControls';
 import { BottomControls } from './bottom/bottomControls';
 import { EngineInterface } from '../types/Engine.interface';
 import {Shortcuts} from "./shortcuts";
-import {hideContextMenu} from "./utils/hideContextMenu";
+import {hideContextMenu} from "./shared/utils/hideContextMenu";
 import {TopBar} from "./topBar/topBar";
 
 export const debugParams = {
@@ -28,7 +28,7 @@ export class Controller {
         this.fpsGraph = this.leftControls.fpsGraph
         this.bottomControls = new BottomControls()
         this.elementTracer = new ElementTracer(canvas, canvasProportion, mainCamera, scene)
-        new TopBar()
+        new TopBar(mainCamera, scene)
         Shortcuts.init()
         hideContextMenu()
     }

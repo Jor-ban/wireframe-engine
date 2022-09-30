@@ -3,11 +3,11 @@ import {
     Mesh,
     MeshBasicMaterial,
     OrthographicCamera,
-    PerspectiveCamera, RingGeometry,
+    PerspectiveCamera, PlaneGeometry, RingGeometry,
     SphereGeometry,
 } from "three";
-import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
 import {Font} from "three/examples/jsm/loaders/FontLoader";
+import {WireframeTextGeometry} from "../../../../shared/classes/WireframeTextGeometry";
 const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
 
 export class MeshGenerator {
@@ -29,13 +29,16 @@ export class MeshGenerator {
     static addCylinder(camera: PerspectiveCamera | OrthographicCamera): Mesh {
         return this.createMesh(new CylinderGeometry(), camera)
     }
+    static addPlane(camera: PerspectiveCamera | OrthographicCamera): Mesh {
+        return this.createMesh(new PlaneGeometry(), camera)
+    }
     static addDodecahedron(camera: PerspectiveCamera | OrthographicCamera): Mesh {
         return this.createMesh(new DodecahedronGeometry(), camera)
     }
     static async addText(camera: PerspectiveCamera | OrthographicCamera): Promise<Mesh | undefined> {
         const text = prompt("Enter text to add")
         if (text) {
-            const textGeometry = new TextGeometry(text, {
+            const textGeometry = new WireframeTextGeometry(text, {
                 font: new Font(helvetiker),
                 size: 0.5,
                 height: 0.2,

@@ -17,20 +17,21 @@ import {
     PerspectiveCamera,
     Scene,
 } from "three";
-import { Object3DControls } from "../utils/Object3DControls";
-import { MaterialControlsUtil } from "../utils/MaterialControls.util";
-import { clickedObject$ } from '../shared/activeObjects';
-import {GeometryControls} from "../utils/GeometryControls.util";
+import { Object3DControls } from "../shared/utils/Object3DControls";
+import { MaterialControlsUtil } from "../shared/utils/MaterialControls.util";
+import {GeometryControls} from "./utils/GeometryControls.util";
+import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 
 export class ActiveElementControls {
     private readonly scene: Scene
     private readonly pane: TabPageApi
     private selectedObj: Object3D | null = null
+    private geometryControls: GeometryControls | null = null
 
     constructor(scene: Scene, pane: TabPageApi) {
         this.scene = scene
         this.pane = pane
-        clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
             if(obj !== this.selectedObj || obj === null) {
                 this.selectedObj = obj
                 this.select(obj)
@@ -91,8 +92,9 @@ export class ActiveElementControls {
         }
     }
     private addMesh(child: Mesh, pane: FolderApi | TabPageApi) {
+        this.geometryControls?.dispose()
         const folder = pane.addFolder({title: 'Geometry', expanded: true})
-        GeometryControls.addMeshControls(child.geometry, folder)
+        this.geometryControls = new GeometryControls(child, folder)
     }
     private addMaterial(mesh: Mesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
@@ -136,19 +138,19 @@ export class ActiveElementControls {
     private addScale(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addScale(child, pane)
             .on('change', () => {
-                clickedObject$.next(child)
+                ChangeDetector.clickedObject$.next(child)
             });
     }
     private addRotation(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addRotation(child, pane)
             .on('change', () => {
-                clickedObject$.next(child)
+                ChangeDetector.clickedObject$.next(child)
             });
     }
     private addPositions(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addPositions(child, pane)
             .on('change', () => {
-                clickedObject$.next(child)
+                ChangeDetector.clickedObject$.next(child)
             });
     }
 

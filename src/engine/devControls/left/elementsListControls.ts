@@ -1,15 +1,25 @@
-import {AmbientLight, AxesHelper, Group, Mesh, Object3D, OrthographicCamera, PerspectiveCamera, Scene} from "three";
+import {
+    AmbientLight,
+    AxesHelper,
+    Group,
+    Light,
+    Mesh,
+    Object3D,
+    OrthographicCamera,
+    PerspectiveCamera,
+    Scene
+} from "three";
 import {FolderApi} from "tweakpane";
-import {clickedObject$, hoveredObject$} from "../shared/activeObjects";
 import {deleteObjectFromMap, htmlObjectsMap} from "../shared/objectMap";
 import {SceneFolder} from "./leftControls";
+import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 
 export class ElementsListControls {
     private clickedElement: HTMLElement | undefined = undefined
     private objectMap !: WeakMap<Object3D, HTMLElement>
     constructor(scene: Scene, folder: FolderApi) {
         this.objectMap = htmlObjectsMap
-        clickedObject$.subscribe((obj: Object3D | Mesh | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: Object3D | Mesh | null) => {
             if(obj) {
                 const element = this.objectMap.get(obj)
                 this.clickedElement?.classList.remove('__wireframe-active')
@@ -17,6 +27,8 @@ export class ElementsListControls {
                 this.clickedElement = element
             }
         })
+        ChangeDetector.addedObject$.subscribe(() => this.parseScene(scene.children, folder))
+        ChangeDetector.removedObject$.subscribe(() => this.parseScene(scene.children, folder))
         this.parseScene(scene.children, folder)
     }
     parseScene(children: Object3D[], folder: FolderApi) {
@@ -37,9 +49,16 @@ export class ElementsListControls {
 
                     const text = document.createElement('div')
                     text.classList.add('__wireframe-object-text')
-                    text.innerText = obj.name || obj.type
+                    if(obj instanceof Mesh && obj.geometry) {
+                        text.innerText = obj.geometry.type.replace("Geometry", "")
+                    } else if(obj instanceof Light) {
+                        text.innerText = obj.type
+                    } else {
+                        text.innerText = obj.name || obj.type
+                    }
+
                     text.addEventListener('mouseover', () => {
-                        hoveredObject$.next(obj)
+                        ChangeDetector.hoveredObject$.next(obj)
                     })
 
                     const showButton = document.createElement("button")
@@ -68,7 +87,7 @@ export class ElementsListControls {
                         this.clickedElement?.classList.remove('__wireframe-active')
                         div.classList.add('__wireframe-active')
                         this.clickedElement = div
-                        clickedObject$.next(obj)
+                        ChangeDetector.clickedObject$.next(obj)
                     })
                     this.objectMap.set(obj, div)
                 }
