@@ -3,22 +3,22 @@ import {
     CircleGeometry,
     ConeGeometry,
     CylinderGeometry,
-    DodecahedronGeometry, Mesh,
+    DodecahedronGeometry,
     PlaneGeometry,
     RingGeometry, SphereGeometry
 } from "three";
 import {FolderApi, TabPageApi, TpChangeEvent} from "tweakpane";
 import {debounceTime, Subject, Subscription} from "rxjs";
-import {WireframeTextGeometry} from "../../../shared/classes/WireframeTextGeometry";
+import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
 import {GeometryRedactor} from "./GeometryRedactor";
 import {ChangeDetector} from "../../shared/changeDetector/changeDetector";
 
 export class GeometryControls {
-    mesh: Mesh
+    mesh: WireframeMesh
     folder: TabPageApi | FolderApi
     changeListenersList: { [key: string]: Subscription } = {}
 
-    constructor(mesh: Mesh, folder: TabPageApi | FolderApi) {
+    constructor(mesh: WireframeMesh, folder: TabPageApi | FolderApi) {
         this.mesh = mesh
         this.folder = folder
         this.addMeshControls()

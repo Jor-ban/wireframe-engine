@@ -1,7 +1,7 @@
 import {
     BoxGeometry,
     BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
-    Material, Mesh, MeshBasicMaterial, MeshDepthMaterial,
+    Material, MeshBasicMaterial, MeshDepthMaterial,
     MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial,
     MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
     MeshToonMaterial,
@@ -14,7 +14,7 @@ import {CustomGeometry} from "./types/CustomGeometry.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import {WireframeTextGeometry} from "../shared/classes/WireframeTextGeometry";
+import {WireframeMesh, WireframeTextGeometry} from "../lib";
 
 const fl = new FontLoader()
 
@@ -23,7 +23,7 @@ export class MeshParser {
         if(object instanceof Object3D) {
             return object
         } else {
-            const mesh = new Mesh(
+            const mesh = new WireframeMesh(
                 this.parseGeometry(object.geometry),
                 this.parseMaterial(object.material)
             )

@@ -1,15 +1,13 @@
 import { BladeApi, Pane, TabPageApi } from 'tweakpane';
 import { BladeController, View } from '@tweakpane/core';
-import { Object3D, Scene } from 'three';
-import { RightControls } from '../right/rightControls';
+import { Object3D } from 'three';
 import {ElementsListControls} from "./elementsListControls";
 import {InstrumentsControls} from "./instrumentsControls";
 import {
-	bottomControlsHeight,
 	leftControlsWidth,
-	rightControlsWidth,
 	topBarHeight
 } from "../../shared/consts/controlsStyles";
+import {EngineInterface} from "../../types/Engine.interface";
 
 export type SceneFolder = Object3D & {opened: boolean}
 
@@ -19,14 +17,12 @@ export class LeftControls {
 	public leftBottomPane !: Pane
 	private instrumentsTab !: TabPageApi
 	private objectsTab !: TabPageApi
-	private rightControls: RightControls
 
-	constructor(scene: Scene, rightControlsRef: RightControls) {
+	constructor(engineState: EngineInterface) {
 		this.setupPane()
-		this.rightControls = rightControlsRef
 		const objectsFolder = this.objectsTab.addFolder({title: '', expanded: true})
-		new ElementsListControls(scene, objectsFolder)
-		new InstrumentsControls(this.instrumentsTab)
+		new ElementsListControls(engineState.scene, objectsFolder)
+		new InstrumentsControls(this.instrumentsTab, engineState)
 	}
 
 	setupPane() {

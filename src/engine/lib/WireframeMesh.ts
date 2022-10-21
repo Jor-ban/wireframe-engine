@@ -1,0 +1,9 @@
+import {BufferGeometry, Mesh} from "three";
+import {Material} from "three/src/materials/Material";
+
+export class WireframeMesh<
+    TGeometry extends BufferGeometry = BufferGeometry,
+    TMaterial extends Material | Material[] = Material | Material[],
+> extends Mesh<TGeometry, TMaterial> {
+    public isWireframe: true = true;
+}

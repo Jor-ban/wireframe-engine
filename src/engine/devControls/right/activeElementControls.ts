@@ -2,7 +2,6 @@ import { FolderApi, TabPageApi } from 'tweakpane';
 import {
     AmbientLight,
     Light,
-    Mesh,
     MeshBasicMaterial,
     MeshDepthMaterial,
     MeshLambertMaterial,
@@ -17,10 +16,11 @@ import {
     PerspectiveCamera,
     Scene,
 } from "three";
-import { Object3DControls } from "../shared/utils/Object3DControls";
-import { MaterialControlsUtil } from "../shared/utils/MaterialControls.util";
+import { Object3DControls } from "./utils/Object3DControls";
+import { MaterialControlsUtil } from "./utils/MaterialControls.util";
 import {GeometryControls} from "./utils/GeometryControls.util";
 import {ChangeDetector} from "../shared/changeDetector/changeDetector";
+import {WireframeMesh} from "../../lib";
 
 export class ActiveElementControls {
     private readonly scene: Scene
@@ -31,7 +31,7 @@ export class ActiveElementControls {
     constructor(scene: Scene, pane: TabPageApi) {
         this.scene = scene
         this.pane = pane
-        ChangeDetector.clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: WireframeMesh | Object3D | null) => {
             if(obj !== this.selectedObj || obj === null) {
                 this.selectedObj = obj
                 this.select(obj)
@@ -48,17 +48,19 @@ export class ActiveElementControls {
                 this.forLight(selectedObj, this.pane)
             } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
                 this.forCamera(selectedObj, this.pane)
-            } else if (selectedObj instanceof Mesh) {
+            } else if (selectedObj instanceof WireframeMesh) {
                 this.forObject(selectedObj, this.pane)
             }
         }
     }
 
     private forLight(child: Light, pane: FolderApi| TabPageApi) : void {
-        pane.addInput(child, 'intensity', {min: 0, max: child.intensity + 10})
+        pane.addInput(child, 'intensity', {min: 0, max: child.intensity + 10}).on('change', ({ value }) => {
+            console.log(value)
+        })
         pane.addInput(child, 'visible')
         pane.addInput(child, 'castShadow')
-        pane.addInput({color: child.color.getHex()}, 'color').on('change', ({value}) => {
+        pane.addInput({color: '#' + child.color.getHexString()}, 'color').on('change', ({value}) => {
             child.color.set(value)
         })
         if(!(child instanceof AmbientLight)) {
@@ -66,7 +68,7 @@ export class ActiveElementControls {
             this.addRotation(child, pane)
         }
     }
-    private forObject(child: Mesh, pane: FolderApi | TabPageApi) {
+    private forObject(child: WireframeMesh, pane: FolderApi | TabPageApi) {
         this.addPositions(child, pane)
         this.addRotation(child, pane)
         this.addScale(child, pane)
@@ -91,12 +93,12 @@ export class ActiveElementControls {
             });
         }
     }
-    private addMesh(child: Mesh, pane: FolderApi | TabPageApi) {
+    private addMesh(child: WireframeMesh, pane: FolderApi | TabPageApi) {
         this.geometryControls?.dispose()
         const folder = pane.addFolder({title: 'Geometry', expanded: true})
         this.geometryControls = new GeometryControls(child, folder)
     }
-    private addMaterial(mesh: Mesh, pane: FolderApi | TabPageApi) {
+    private addMaterial(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
         for(let i = 0; i < materials.length; i++) {
             const material = materials[i]
@@ -131,7 +133,7 @@ export class ActiveElementControls {
             }
         }
     }
-    private updateMaterialsControls(mesh: Mesh, folder: FolderApi | TabPageApi) {
+    private updateMaterialsControls(mesh: WireframeMesh, folder: FolderApi | TabPageApi) {
         folder.children.forEach(child => folder.remove(child))
         this.addMaterial(mesh, folder)
     }

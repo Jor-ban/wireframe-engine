@@ -199,14 +199,7 @@ export class WireframeEngine implements EngineInterface {
         return this
     }
     private enableDevControls() {
-        const controller = new Controller({
-            mainCamera: this.mainCamera,
-            renderer: this.renderer,
-            ambientLight: this.ambientLight,
-            scene: this.scene,
-            canvas: this.canvas,
-            canvasProportion: this.canvasProportion,
-        })
+        const controller = new Controller(this)
         this.fpsGraph = controller.fpsGraph
         this.controller = controller
     }

@@ -1,7 +1,7 @@
 import {BladeApi} from "tweakpane";
 import {BladeController, View} from "@tweakpane/core";
 import { RightControls } from './right/rightControls';
-import { ElementTracer } from './elementTracer';
+import { ElementTracer } from './left/utils/elementTracer';
 import { LeftControls } from './left/leftControls';
 import { BottomControls } from './bottom/bottomControls';
 import { EngineInterface } from '../types/Engine.interface';
@@ -19,15 +19,16 @@ export class Controller {
     private readonly rightControls: RightControls
     private readonly bottomControls: BottomControls
     private leftControls: LeftControls
-    private elementTracer !: ElementTracer
+    // private elementTracer !: ElementTracer
 
-    constructor({scene, renderer, mainCamera, ambientLight, canvas, canvasProportion}: EngineInterface) {
+    constructor(engineData: EngineInterface) {
         require('./controls.css')
-        this.rightControls = new RightControls(scene, renderer, mainCamera, ambientLight)
-        this.leftControls = new LeftControls(scene, this.rightControls)
+        const { mainCamera, scene } = engineData
+        this.rightControls = new RightControls(engineData)
+        this.leftControls = new LeftControls(engineData)
         this.fpsGraph = this.leftControls.fpsGraph
         this.bottomControls = new BottomControls()
-        this.elementTracer = new ElementTracer(canvas, canvasProportion, mainCamera, scene)
+        // this.elementTracer = new ElementTracer(engineData)
         new TopBar(mainCamera, scene)
         Shortcuts.init()
         hideContextMenu()

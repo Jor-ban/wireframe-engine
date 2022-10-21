@@ -1,25 +1,21 @@
 import {
-    AmbientLight,
-    AxesHelper,
     Group,
     Light,
-    Mesh,
     Object3D,
-    OrthographicCamera,
-    PerspectiveCamera,
     Scene
 } from "three";
 import {FolderApi} from "tweakpane";
 import {deleteObjectFromMap, htmlObjectsMap} from "../shared/objectMap";
 import {SceneFolder} from "./leftControls";
 import {ChangeDetector} from "../shared/changeDetector/changeDetector";
+import {WireframeMesh} from "../../lib";
 
 export class ElementsListControls {
     private clickedElement: HTMLElement | undefined = undefined
     private objectMap !: WeakMap<Object3D, HTMLElement>
     constructor(scene: Scene, folder: FolderApi) {
         this.objectMap = htmlObjectsMap
-        ChangeDetector.clickedObject$.subscribe((obj: Object3D | Mesh | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: Object3D | WireframeMesh | null) => {
             if(obj) {
                 const element = this.objectMap.get(obj)
                 this.clickedElement?.classList.remove('__wireframe-active')
@@ -39,17 +35,13 @@ export class ElementsListControls {
 
             } else if(obj instanceof Object3D) {
                 if(
-                    !(obj instanceof AxesHelper) &&
-                    !(obj instanceof PerspectiveCamera) &&
-                    !(obj instanceof OrthographicCamera) &&
-                    !(obj instanceof AmbientLight) &&
-                    obj.uuid !== "__wireframe-hoveredObject__" &&
-                    obj.uuid !== "__wireframe-clickedObject__"
+                    obj instanceof WireframeMesh ||
+                    obj instanceof Light
                 ) {
 
                     const text = document.createElement('div')
                     text.classList.add('__wireframe-object-text')
-                    if(obj instanceof Mesh && obj.geometry) {
+                    if(obj instanceof WireframeMesh && obj.geometry) {
                         text.innerText = obj.geometry.type.replace("Geometry", "")
                     } else if(obj instanceof Light) {
                         text.innerText = obj.type

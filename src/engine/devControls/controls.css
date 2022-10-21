@@ -146,6 +146,17 @@ button.tp-rotv_b {
     width: 100%;
     border-radius: 3px;
 }
+.__wireframe-object-select > button {
+    background: transparent;
+    border-radius: 3px;
+    border: none;
+    color: white;
+}
+.__wireframe-object-select > button:hover {
+    background-color: lightgrey;
+    border-color: lightgrey;
+    color: black;
+}
 .__wireframe-object-select > button:first-child {
     background: #3E3F44;
     border: none;
@@ -157,17 +168,6 @@ button.tp-rotv_b {
 .__wireframe-object-select > button:first-child:hover {
     background: #ADAFB8;
     color: #3E3F44;
-}
-.__wireframe-object-select > button {
-    background: transparent;
-    border-radius: 3px;
-    border: 2px solid #3E3F44;
-    color: white;
-}
-.__wireframe-object-select > button:hover {
-    background-color: lightgrey;
-    border-color: lightgrey;
-    color: black;
 }
 .__wireframe-object-select > button:last-child:hover {
     background: #710f0f;
@@ -342,4 +342,23 @@ button.tp-rotv_b {
     position: absolute;
     margin-top: -20px;
     margin-left: 175px;
+}
+.__wireframe-instruments {
+    display: flex;
+    flex-wrap: wrap;
+}
+.__wireframe-instruments > button.__wireframe-instruments__button {
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+}
+.__wireframe-instruments > button.__wireframe-instruments__button.__wireframe-instruments__button-active {
+    background: var(--cnt-bg);
+}
+.__wireframe-instruments > button.__wireframe-instruments__button > img {
+    width: 100%;
 }

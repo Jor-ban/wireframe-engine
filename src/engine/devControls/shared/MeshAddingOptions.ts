@@ -1,9 +1,10 @@
 
 import {MeshGenerator} from "./utils/generators/MeshGenerator";
-import {Light, Mesh, OrthographicCamera, PerspectiveCamera, Scene} from "three";
+import {Light, OrthographicCamera, PerspectiveCamera, Scene} from "three";
 import {HiddenMenuOption} from "./UI/hiddenMenu";
 import {LightGenerator} from "./utils/generators/lightGenerator";
 import {ChangeDetector} from "./changeDetector/changeDetector";
+import {WireframeMesh} from "../../lib";
 
 export function getMeshAddingOptions(scene: Scene, mainCamera: PerspectiveCamera | OrthographicCamera): HiddenMenuOption[] {
     return [{
@@ -48,7 +49,7 @@ export function getMeshAddingOptions(scene: Scene, mainCamera: PerspectiveCamera
         ]
     }
 ]}
-function addMesh(mesh: Mesh | Light | undefined, scene: Scene) {
+function addMesh(mesh: WireframeMesh | Light | undefined, scene: Scene) {
     if(mesh) {
         scene.add(mesh)
         ChangeDetector.addedObject$.next(mesh)

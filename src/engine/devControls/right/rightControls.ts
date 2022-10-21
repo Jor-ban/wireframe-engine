@@ -1,5 +1,5 @@
 import { FolderApi, Pane, TabPageApi } from 'tweakpane';
-import { Object3DControls } from '../shared/utils/Object3DControls';
+import { Object3DControls } from './utils/Object3DControls';
 import {
 	ACESFilmicToneMapping, AmbientLight, AxesHelper,
 	CineonToneMapping,
@@ -14,11 +14,12 @@ import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 // @ts-ignore
 import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
-import { CameraControls } from '../shared/utils/CameraControls';
+import { CameraControls } from './utils/CameraControls';
 import { LightControls } from '../shared/utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "../shared/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";
+import {EngineInterface} from "../../types/Engine.interface";
 
 export class RightControls {
 	private rightPane !: Pane
@@ -29,7 +30,7 @@ export class RightControls {
 	private readonly axesHelper: AxesHelper
 	private camera: PerspectiveCamera | OrthographicCamera
 	private readonly scene: Scene
-	constructor(scene: Scene, renderer: WebGLRenderer, mainCamera: PerspectiveCamera | OrthographicCamera, ambientLight: AmbientLight) {
+	constructor({scene, renderer, mainCamera, ambientLight}: EngineInterface) {
 		this.scene = scene
 		this.renderer = renderer
 		this.camera = mainCamera

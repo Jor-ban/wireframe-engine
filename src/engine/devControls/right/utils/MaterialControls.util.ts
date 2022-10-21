@@ -13,7 +13,6 @@ import {
     MeshDepthMaterial,
     MeshNormalMaterial,
     MeshPhysicalMaterial,
-    Mesh,
     Texture,
     MeshDepthMaterialParameters,
     MeshToonMaterialParameters,
@@ -34,6 +33,7 @@ import {
     ObjectSpaceNormalMap, RGBADepthPacking,
     TangentSpaceNormalMap,
 } from 'three/src/constants';
+import {WireframeMesh} from "../../../lib";
 
 export let defaultMapTexture: Texture
 (async function() {
@@ -550,7 +550,7 @@ export class MaterialControlsUtil {
         this.addColorable(material, folder, 'specularColor')
     }
 
-    static materialConverter(material: Material, mesh: Mesh, folder: FolderApi, callback: () => void) {
+    static materialConverter(material: Material, mesh: WireframeMesh, folder: FolderApi, callback: () => void) {
         folder.addInput({'Change Material Type': material.type}, 'Change Material Type', {
             options: {
                 'DepthMaterial': 'MeshDepthMaterial',

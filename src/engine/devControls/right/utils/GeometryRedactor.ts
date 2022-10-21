@@ -4,18 +4,17 @@ import {
     ConeGeometry,
     CylinderGeometry,
     DodecahedronGeometry,
-    Mesh,
     PlaneGeometry, RingGeometry,
     SphereGeometry
 } from "three";
 import {TpChangeEvent} from "tweakpane";
-import {WireframeTextGeometry} from "../../../shared/classes/WireframeTextGeometry";
+import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
 
 export class GeometryRedactor {
-    static recreateMesh(mesh: Mesh, change: TpChangeEvent<any>): Mesh | undefined {
+    static recreateMesh(mesh: WireframeMesh, change: TpChangeEvent<any>): WireframeMesh | undefined {
         const geometry = mesh.geometry
         if(geometry instanceof BoxGeometry) {
             const newGeometry = this.recreateBoxGeometry(geometry, change)
@@ -46,9 +45,9 @@ export class GeometryRedactor {
             return this.createMesh(mesh, newGeometry)
         }
     }
-    static createMesh(mesh: Mesh, geometry: BufferGeometry): Mesh {
+    static createMesh(mesh: WireframeMesh, geometry: BufferGeometry): WireframeMesh {
         const material = mesh.material
-        return new Mesh(geometry, material)
+        return new WireframeMesh(geometry, material)
     }
     // @ts-ignore
     private static setParameter<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<{ presetKey: keyof T }>): T['parameters'] {

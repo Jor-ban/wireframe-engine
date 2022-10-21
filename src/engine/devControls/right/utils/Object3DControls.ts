@@ -1,6 +1,7 @@
-import {Euler, Mesh, MeshStandardMaterial, Object3D, Scene} from "three";
+import {Euler, MeshStandardMaterial, Object3D, Scene} from "three";
 import {FolderApi, InputBindingApi, Pane, TabPageApi} from "tweakpane";
 import {debugParams} from "../../controller";
+import {WireframeMesh} from "../../../lib";
 
 export class Object3DControls {
     static addScale(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
@@ -31,7 +32,7 @@ export class Object3DControls {
     static updateAllMaterials(scene: Scene) {
         scene.traverse((child: Object3D) =>
         {
-            if(child instanceof Mesh && child.material instanceof MeshStandardMaterial)
+            if(child instanceof WireframeMesh && child.material instanceof MeshStandardMaterial)
             {
                 child.material.envMapIntensity = debugParams.envMapIntensity
                 child.material.needsUpdate = true
