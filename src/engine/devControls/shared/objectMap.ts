@@ -4,13 +4,16 @@ import {ChangeDetector} from "./changeDetector/changeDetector";
 
 export const htmlObjectsMap = new WeakMap<Object3D, HTMLElement>();
 
-export function deleteObjectFromMap(obj: Object3D) {
+export function deleteObjectFromMap(obj: Object3D): boolean {
     if(window.confirm(`Are you sure you want to delete ${obj.name}?`)) {
         const element = htmlObjectsMap.get(obj)
         if(element) {
             element.parentNode?.removeChild(element)
         }
         dispose(obj)
+        ChangeDetector.hoveredObject$.next(null)
         ChangeDetector.clickedObject$.next(null)
+        return true
     }
+    return false
 }

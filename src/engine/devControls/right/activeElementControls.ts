@@ -140,19 +140,31 @@ export class ActiveElementControls {
     private addScale(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addScale(child, pane)
             .on('change', () => {
-                ChangeDetector.clickedObject$.next(child)
+                ChangeDetector.activeObjectUpdated$.next({
+                    target: child,
+                    changedPropertyName: 'scale',
+                    value: child.scale
+                })
             });
     }
     private addRotation(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addRotation(child, pane)
             .on('change', () => {
-                ChangeDetector.clickedObject$.next(child)
+                ChangeDetector.activeObjectUpdated$.next({
+                    target: child,
+                    changedPropertyName: 'rotation',
+                    value: child.rotation
+                })
             });
     }
     private addPositions(child: Object3D, pane: FolderApi | TabPageApi) {
         Object3DControls.addPositions(child, pane)
             .on('change', () => {
-                ChangeDetector.clickedObject$.next(child)
+                ChangeDetector.activeObjectUpdated$.next({
+                    target: child,
+                    changedPropertyName: 'position',
+                    value: child.position
+                })
             });
     }
 

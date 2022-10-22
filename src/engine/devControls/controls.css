@@ -348,17 +348,26 @@ button.tp-rotv_b {
     flex-wrap: wrap;
 }
 .__wireframe-instruments > button.__wireframe-instruments__button {
-    width: 35px;
-    height: 35px;
-    margin: 5px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 120px;
+    margin: 0;
+    padding: 10px;
     border: none;
     background: transparent;
     color: white;
     cursor: pointer;
 }
+.__wireframe-instruments > button.__wireframe-instruments__button > .__wireframe-instruments__button__tooltip {
+    margin-left: 5px;
+}
+/*.__wireframe-instruments > button.__wireframe-instruments__button:hover > .__wireframe-instruments__button__tooltip {*/
+/*    visibility: visible;*/
+/*}*/
 .__wireframe-instruments > button.__wireframe-instruments__button.__wireframe-instruments__button-active {
     background: var(--cnt-bg);
 }
 .__wireframe-instruments > button.__wireframe-instruments__button > img {
-    width: 100%;
+    width: 20px;
 }

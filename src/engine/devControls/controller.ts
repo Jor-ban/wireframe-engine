@@ -5,7 +5,7 @@ import { ElementTracer } from './left/utils/elementTracer';
 import { LeftControls } from './left/leftControls';
 import { BottomControls } from './bottom/bottomControls';
 import { EngineInterface } from '../types/Engine.interface';
-import {Shortcuts} from "./shortcuts";
+import { DefinedShortcuts } from "./shortcuts/DefinedShortcuts";
 import {hideContextMenu} from "./shared/utils/hideContextMenu";
 import {TopBar} from "./topBar/topBar";
 
@@ -30,7 +30,7 @@ export class Controller {
         this.bottomControls = new BottomControls()
         // this.elementTracer = new ElementTracer(engineData)
         new TopBar(mainCamera, scene)
-        Shortcuts.init()
+        DefinedShortcuts.init()
         hideContextMenu()
     }
 }

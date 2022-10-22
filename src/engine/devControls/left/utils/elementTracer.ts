@@ -61,6 +61,9 @@ export class ElementTracer {
         canvas.addEventListener('mouseup', this.mouseUp.bind(this))
         canvas.addEventListener('mousemove', this.onMouseMove)
         canvas.addEventListener('mousedown', this.mouseDown.bind(this))
+        this.initListeners()
+    }
+    private initListeners() {
         ChangeDetector.clickedObject$.subscribe((mesh) => {
             if(mesh === null) {
                 this.clickedObject.visible = false
@@ -75,6 +78,17 @@ export class ElementTracer {
                 this.hoveredObject.visible = false
             } else if(mesh instanceof WireframeMesh) {
                 this.emitHover(mesh)
+            }
+        })
+        ChangeDetector.activeObjectUpdated$.subscribe((update) => {
+            this.hoveredObject.visible = false
+            const { position, rotation, scale } = update.target
+            if(update.changedPropertyName === 'position') {
+                this.clickedObject.position.set(position.x, position.y, position.z)
+            } else if(update.changedPropertyName === 'rotation') {
+                this.clickedObject.rotation.set(rotation.x, rotation.y, rotation.z)
+            } else if(update.changedPropertyName === 'scale') {
+                this.clickedObject.scale.set(1.07 * scale.x, 1.07 * scale.y, 1.07 * scale.z)
             }
         })
         ChangeDetector.activeInstrument$.subscribe((instrument) => {

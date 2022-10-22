@@ -47,18 +47,15 @@ export class InstrumentsControls {
         ChangeDetector.activeInstrument$.next(InstrumentsEnum.pointer)
     }
     addButtons() {
-        this.addButton(InstrumentsEnum.pointer, pointerIconUrl)
-        this.addButton(InstrumentsEnum.move, moveIconUrl)
-        this.addButton(InstrumentsEnum.rotation, rotateIconUrl)
-        this.addButton(InstrumentsEnum.scale, scaleIconUrl)
+        this.addButton(InstrumentsEnum.pointer, pointerIconUrl, 'Pointer [X]')
+        this.addButton(InstrumentsEnum.move, moveIconUrl, 'Move [V]')
+        this.addButton(InstrumentsEnum.rotation, rotateIconUrl, 'Rotate [R]')
+        this.addButton(InstrumentsEnum.scale, scaleIconUrl, 'Scale [S]')
     }
     addButton(name: InstrumentsEnum, iconUrl: string, tooltipDescription: string = '') {
         const button = document.createElement('button')
         button.classList.add('__wireframe-instruments__button')
         button.classList.add(`__wireframe-instruments__button-${name}`)
-        if(name === InstrumentsEnum.pointer) {
-            button.classList.add('__wireframe-instruments__button-active')
-        }
         button.name = name
         this.buttonsList.push(button)
         button.addEventListener('click', () => {
