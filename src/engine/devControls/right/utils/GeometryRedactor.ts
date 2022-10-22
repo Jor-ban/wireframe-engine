@@ -8,46 +8,32 @@ import {
     SphereGeometry
 } from "three";
 import {TpChangeEvent} from "tweakpane";
-import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
+import {WireframeTextGeometry} from "../../../lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
 
 export class GeometryRedactor {
-    static recreateMesh(mesh: WireframeMesh, change: TpChangeEvent<any>): WireframeMesh | undefined {
-        const geometry = mesh.geometry
+    static recreateGeometry<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<any>): T | undefined {
         if(geometry instanceof BoxGeometry) {
-            const newGeometry = this.recreateBoxGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateBoxGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof PlaneGeometry) {
-            const newGeometry = this.recreatePlaneGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreatePlaneGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof CircleGeometry) {
-            const newGeometry = this.recreateCircleGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateCircleGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof ConeGeometry) {
-            const newGeometry = this.recreateConeGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateConeGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof CylinderGeometry) {
-            const newGeometry = this.recreateCylinderGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateCylinderGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof DodecahedronGeometry) {
-            const newGeometry = this.recreateDodecahedronGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateDodecahedronGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof SphereGeometry) {
-            const newGeometry = this.recreateSphereGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateSphereGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof RingGeometry) {
-            const newGeometry = this.recreateRingGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateRingGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof WireframeTextGeometry) {
-            const newGeometry = this.recreateTextGeometry(geometry, change)
-            return this.createMesh(mesh, newGeometry)
+            return this.recreateTextGeometry(geometry, change) as unknown as T
         }
-    }
-    static createMesh(mesh: WireframeMesh, geometry: BufferGeometry): WireframeMesh {
-        const material = mesh.material
-        return new WireframeMesh(geometry, material)
     }
     // @ts-ignore
     private static setParameter<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<{ presetKey: keyof T }>): T['parameters'] {

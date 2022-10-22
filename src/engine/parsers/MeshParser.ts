@@ -15,12 +15,13 @@ import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeomet
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import {WireframeMesh, WireframeTextGeometry} from "../lib";
+const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
 
 const fl = new FontLoader()
 
 export class MeshParser {
-    static parse(object: CustomMesh): Object3D {
-        if(object instanceof Object3D) {
+    static parse(object: CustomMesh): WireframeMesh {
+        if(object instanceof WireframeMesh) {
             return object
         } else {
             const mesh = new WireframeMesh(
@@ -120,9 +121,7 @@ export class MeshParser {
                             })
                         }
                     } else {
-                        fl.load('./assets/helvetiker_regular.typeface.json', (loadedFont) => {
-                            font = loadedFont
-                        })
+                        font = new Font(helvetiker)
                     }
                     geometry.font = font
                     delete geometry.text

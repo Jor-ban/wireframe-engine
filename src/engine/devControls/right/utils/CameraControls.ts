@@ -5,7 +5,7 @@ import {Object3DControls} from "./Object3DControls";
 export class CameraControls {
     static addForCamera(camera: PerspectiveCamera | OrthographicCamera, folder: FolderApi | TabPageApi) {
         Object3DControls.addPositions(camera, folder)
-        Object3DControls.addRotation(camera, folder)
+        Object3DControls.addRotationDeg(camera, folder)
         folder.addSeparator()
         if(camera instanceof PerspectiveCamera) {
             this.addForPerspectiveCamera(camera, folder)

@@ -13,6 +13,22 @@ export class Object3DControls {
         })
     }
     static addRotation(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+        const rotationValues = {
+            'rotation (deg)': {
+                x: Math.round(child.rotation.x * 180 / Math.PI),
+                y: Math.round(child.rotation.y * 180 / Math.PI),
+                z: Math.round(child.rotation.z * 180 / Math.PI)
+            }
+        }
+        return pane.addInput(rotationValues, 'rotation (deg)',{
+            x: {},
+            y: {},
+            z: {}
+        }).on('change', ({ value }) => {
+            child.rotation.set(value.x * Math.PI / 180, value.y * Math.PI / 180, value.z * Math.PI / 180)
+        })
+    }
+    static addRotationDeg(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
         return pane.addInput(child, 'rotation', {
             view: 'rotation',
             rotationMode: 'euler',
@@ -20,7 +36,7 @@ export class Object3DControls {
             format: (v: number) => {
                 return v * Math.PI / 180
             }
-        });
+        })
     }
     static addPositions(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
         return pane.addInput(child, 'position', {

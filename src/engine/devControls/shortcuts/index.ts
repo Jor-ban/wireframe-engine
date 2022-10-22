@@ -1,4 +1,4 @@
-import {filter, Observable, Subject} from "rxjs";
+import {filter, merge, Observable, Subject} from "rxjs";
 
 export interface ShortcutKeyOptions {
     CtrlPressed ?: boolean | undefined
@@ -10,12 +10,20 @@ export interface ShortcutKeyOptions {
 }
 
 class ShortcutsFactory extends Subject<KeyboardEvent> {
+    private keyDown: Subject<KeyboardEvent> = new Subject<KeyboardEvent>()
+    get keyDown$() {
+        return this.keyDown.asObservable()
+    }
     constructor() {
         super();
         window.addEventListener('keyup', (e: KeyboardEvent) => {
             if(!(e.target instanceof HTMLInputElement)) {
-                console.log(e.code)
                 this.next(e)
+            }
+        })
+        window.addEventListener('keydown', (e: KeyboardEvent) => {
+            if(!(e.target instanceof HTMLInputElement)) {
+                this.keyDown.next(e)
             }
         })
     }
@@ -55,6 +63,19 @@ class ShortcutsFactory extends Subject<KeyboardEvent> {
             }
             return res
         }))
+    }
+    figureKey(key: 'Ctrl' | 'Shift' | 'Alt'): Observable<KeyboardEvent> {
+        let validKeyName: string = key
+        if(key === 'Ctrl') {
+            validKeyName = 'Control'
+        }
+        const keyUp = this.pipe( filter((e: KeyboardEvent) => {
+            return e.code.replace(/Left|Right/i, '') === validKeyName
+        }))
+        const keyDown = this.keyDown.pipe( filter((e: KeyboardEvent) => {
+            return e.code.replace(/Left|Right/i, '') === validKeyName
+        }))
+        return merge(keyUp, keyDown)
     }
 }
 

@@ -17,13 +17,13 @@ import {InstrumentsEnum} from "../../types/Instruments.enum";
 import {WireframeMesh} from "../../../lib";
 
 export class ElementTracer {
+    public activeObject: Object3D | null = null
     protected mouse = new Vector2()
     private readonly canvasProportion: CanvasProportion
     private canvas: HTMLCanvasElement
     private readonly scene: Scene
     private readonly camera: PerspectiveCamera | OrthographicCamera
     private rayCaster: Raycaster
-    private activeObject: Object3D | null = null
     private mouseMoved: boolean = false
 
     private hoveredObject: Mesh<BufferGeometry, MeshBasicMaterial> = new Mesh(
@@ -89,6 +89,8 @@ export class ElementTracer {
                 this.clickedObject.rotation.set(rotation.x, rotation.y, rotation.z)
             } else if(update.changedPropertyName === 'scale') {
                 this.clickedObject.scale.set(1.07 * scale.x, 1.07 * scale.y, 1.07 * scale.z)
+            } else {
+                this.emitCLick(update.target)
             }
         })
         ChangeDetector.activeInstrument$.subscribe((instrument) => {

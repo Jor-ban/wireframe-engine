@@ -1,6 +1,6 @@
-import { FolderApi, TabPageApi } from 'tweakpane';
+import {FolderApi, InputBindingApi, TabPageApi} from 'tweakpane';
 import {
-    AmbientLight,
+    AmbientLight, Euler,
     Light,
     MeshBasicMaterial,
     MeshDepthMaterial,
@@ -69,15 +69,25 @@ export class ActiveElementControls {
         }
     }
     private forObject(child: WireframeMesh, pane: FolderApi | TabPageApi) {
-        this.addPositions(child, pane)
-        this.addRotation(child, pane)
-        this.addScale(child, pane)
-        this.addMesh(child, pane)
+        const positionInput = this.addPositions(child, pane)
+        const rotationInput = this.addRotation(child, pane)
+        const scaleInput = this.addScale(child, pane)
+        const geometryFolder = this.addGeometry(child, pane)
         this.addMaterial(child, pane)
         pane.addInput(child, 'castShadow')
         pane.addInput(child, 'visible');
         pane.addInput(child, 'receiveShadow');
         pane.addInput(child, 'frustumCulled');
+
+        ChangeDetector.activeObjectUpdated$.subscribe(({changedPropertyName}) => {
+            if(changedPropertyName === 'position') {
+                positionInput.refresh()
+            } else if(changedPropertyName === 'rotation') {
+                rotationInput.refresh()
+            } else if(changedPropertyName === 'scale') {
+                scaleInput.refresh()
+            }
+        })
     }
     private forCamera(camera: PerspectiveCamera | OrthographicCamera, pane: FolderApi | TabPageApi) {
         Object3DControls.addPositions(camera, pane)
@@ -93,10 +103,10 @@ export class ActiveElementControls {
             });
         }
     }
-    private addMesh(child: WireframeMesh, pane: FolderApi | TabPageApi) {
-        this.geometryControls?.dispose()
+    private addGeometry(child: WireframeMesh, pane: FolderApi | TabPageApi): FolderApi {
         const folder = pane.addFolder({title: 'Geometry', expanded: true})
         this.geometryControls = new GeometryControls(child, folder)
+        return folder
     }
     private addMaterial(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
@@ -137,8 +147,8 @@ export class ActiveElementControls {
         folder.children.forEach(child => folder.remove(child))
         this.addMaterial(mesh, folder)
     }
-    private addScale(child: Object3D, pane: FolderApi | TabPageApi) {
-        Object3DControls.addScale(child, pane)
+    private addScale(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+        return Object3DControls.addScale(child, pane)
             .on('change', () => {
                 ChangeDetector.activeObjectUpdated$.next({
                     target: child,
@@ -147,8 +157,8 @@ export class ActiveElementControls {
                 })
             });
     }
-    private addRotation(child: Object3D, pane: FolderApi | TabPageApi) {
-        Object3DControls.addRotation(child, pane)
+    private addRotation(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+        return Object3DControls.addRotation(child, pane)
             .on('change', () => {
                 ChangeDetector.activeObjectUpdated$.next({
                     target: child,
@@ -157,8 +167,8 @@ export class ActiveElementControls {
                 })
             });
     }
-    private addPositions(child: Object3D, pane: FolderApi | TabPageApi) {
-        Object3DControls.addPositions(child, pane)
+    private addPositions(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+        return Object3DControls.addPositions(child, pane)
             .on('change', () => {
                 ChangeDetector.activeObjectUpdated$.next({
                     target: child,
