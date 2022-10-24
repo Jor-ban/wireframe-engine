@@ -1,4 +1,4 @@
-export enum LoadingMode {
+export enum EngineModes {
     DEV = 'dev',
     PROD = 'prod',
     TEST = 'test'

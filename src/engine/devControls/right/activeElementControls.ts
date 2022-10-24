@@ -21,6 +21,7 @@ import { MaterialControlsUtil } from "./utils/MaterialControls.util";
 import {GeometryControls} from "./utils/GeometryControls.util";
 import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
+import {LightControls} from "./utils/LightControls";
 
 export class ActiveElementControls {
     private readonly scene: Scene
@@ -55,14 +56,7 @@ export class ActiveElementControls {
     }
 
     private forLight(child: Light, pane: FolderApi| TabPageApi) : void {
-        pane.addInput(child, 'intensity', {min: 0, max: child.intensity + 10}).on('change', ({ value }) => {
-            console.log(value)
-        })
-        pane.addInput(child, 'visible')
-        pane.addInput(child, 'castShadow')
-        pane.addInput({color: '#' + child.color.getHexString()}, 'color').on('change', ({value}) => {
-            child.color.set(value)
-        })
+        LightControls.addLight(child, pane)  // TODO add shadow options
         if(!(child instanceof AmbientLight)) {
             this.addPositions(child, pane)
             this.addRotation(child, pane)

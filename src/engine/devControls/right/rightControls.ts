@@ -15,7 +15,7 @@ import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
 import { CameraControls } from './utils/CameraControls';
-import { LightControls } from '../shared/utils/LightControls';
+import { LightControls } from './utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "../shared/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";
@@ -41,7 +41,7 @@ export class RightControls {
 		const mainCameraFolder = Object3DControls.createFolder('Main Camera', this.sceneTab)
 		CameraControls.addForCamera(mainCamera, mainCameraFolder)
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
-		LightControls.addAmbientLight(ambientLight, ambientLightFolder)
+		LightControls.addLight(ambientLight, ambientLightFolder)
 		new ActiveElementControls(this.scene, this.objectTab)
 		logMemory(this.statsTab, this.renderer)
 	}

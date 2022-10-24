@@ -4,6 +4,7 @@ const PORT = process.env.EXPRESS_PORT || 42069;
 const getFiles = require("./get-files");
 const cors = require("cors");
 const path = require("path");
+const clc = require("cli-color");
 
 app.use(express.json());
 app.use(cors())
@@ -20,5 +21,8 @@ app.get('*', (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`=======> [ FILE MANAGER IS READY ] - Listening on port ${PORT}`);
+    const color = clc.bgXterm(238).black
+    console.log(color(`                                                                 `));
+    console.log(color(`   [WireframeEngine -> File Manager] - Listening on port ${PORT}   `));
+    console.log(color(`                                                                 `));
 })

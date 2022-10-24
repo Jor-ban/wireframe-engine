@@ -2,9 +2,10 @@
 import {MeshGenerator} from "./utils/generators/MeshGenerator";
 import {Light, OrthographicCamera, PerspectiveCamera, Scene} from "three";
 import {HiddenMenuOption} from "./UI/hiddenMenu";
-import {LightGenerator} from "./utils/generators/lightGenerator";
+import {DevLightGenerator} from "./utils/generators/devLightGenerator";
 import {ChangeDetector} from "./changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
+import {DevLight} from "../../lib/devLights/DevLight";
 
 export function getMeshAddingOptions(scene: Scene, mainCamera: PerspectiveCamera | OrthographicCamera): HiddenMenuOption[] {
     return [{
@@ -44,14 +45,27 @@ export function getMeshAddingOptions(scene: Scene, mainCamera: PerspectiveCamera
         subOptions: [
             {
                 name: "Point light",
-                onclick: () => addMesh(LightGenerator.addPointLight(mainCamera), scene),
+                onclick: () => addMesh(DevLightGenerator.addPointLight(mainCamera), scene),
+            }, {
+                name: "Spot light",
+                onclick: () => addMesh(DevLightGenerator.addSpotLight(mainCamera), scene),
+            }, {
+                name: "Directional light",
+                onclick: () => addMesh(DevLightGenerator.addDirectionalLight(mainCamera), scene),
+            }, {
+                name: "Hemisphere light",
+                onclick: () => addMesh(DevLightGenerator.addHemisphereLight(mainCamera), scene),
             }
         ]
     }
 ]}
-function addMesh(mesh: WireframeMesh | Light | undefined, scene: Scene) {
-    if(mesh) {
-        scene.add(mesh)
-        ChangeDetector.addedObject$.next(mesh)
+function addMesh(obj: WireframeMesh | Light | undefined, scene: Scene) {
+    if(obj) {
+        if(obj instanceof Light && DevLight.ifDevLight(obj)) {
+            obj.addToScene(scene)
+        } else {
+            scene.add(obj)
+        }
+        ChangeDetector.addedObject$.next(obj)
     }
 }

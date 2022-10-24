@@ -31,6 +31,7 @@ import {
     rightControlsWidth,
     topBarHeight
 } from "./shared/consts/controlsStyles";
+import {DevLight} from "./lib/devLights/DevLight";
 
 export class WireframeEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
@@ -57,8 +58,11 @@ export class WireframeEngine implements EngineInterface {
     }
 
     private bootstrap(projectSettings: ProjectSettings): void {
-        this.mode = projectSettings.mode || window.location.search.includes('mode=test') ? 'test' : process.env.NODE_ENV
-        if(this.mode === 'test') {
+        this.mode = String(
+            projectSettings.mode ??
+            (window.location.search.includes('mode=test') ? 'test' : process.env.NODE_ENV)
+        ).toLowerCase()
+        if(this.mode === 'test' || this.mode === 'prod') {
             this.setCanvasSizes(projectSettings.canvasSizes)
             this.setScene(projectSettings.scene)
             this.setMainCamera(projectSettings.camera)
@@ -73,7 +77,10 @@ export class WireframeEngine implements EngineInterface {
             this.setOrbitControls(projectSettings.orbitControls)
             this.renderer.render(this.scene, this.mainCamera)
             this.initTick(projectSettings.maxFPS)
-            this.enableTestControls()
+            if(this.mode !== 'prod') {
+                console.log(`%c[WireframeEngine -> bootstrap]: running in ${this.mode} mode`, 'background-color: #28292E; color: white; padding: 10px; font-weight: bold')
+                this.enableTestControls()
+            }
         } else if(this.mode === 'dev' || this.mode === 'development') {
             this.setDevCanvas()
             this.setScene(projectSettings.scene)
@@ -84,7 +91,15 @@ export class WireframeEngine implements EngineInterface {
                 this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
             }
             if(projectSettings.lights?.length) {
-                this.add(...projectSettings.lights.map((light: CustomLight | Light) => LightParser.parse(light)))
+                projectSettings.lights.forEach((light: CustomLight | Light) => {
+                    const parsedLight = LightParser.parse(light)
+                    const devLight = DevLight.from(parsedLight)
+                    if(devLight instanceof AmbientLight) {
+                        this.add(devLight)
+                    } else if(devLight) { // no undefined
+                        devLight.addToScene(this.scene)
+                    }
+                })
             }
             this.setOrbitControls(true)
             this.renderer.render(this.scene, this.mainCamera)

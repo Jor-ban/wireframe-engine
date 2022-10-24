@@ -1,25 +1,21 @@
-import { Object3D, Texture} from 'three';
+import {Light, Object3D} from 'three';
 import {WireframeMesh} from "../lib";
 
-export function dispose(obj: Object3D, deep: boolean = true) {
+export function dispose(obj: Object3D, deep: boolean = true, disposeGeometry: boolean = true, disposeMaterial: boolean = true) {
 	if(obj instanceof WireframeMesh) {
-		if(obj.geometry instanceof Array) {
+		if(obj.geometry instanceof Array && disposeGeometry) {
 			for (let geometry of obj.geometry) {
 				geometry.dispose()
 			}
-		} else {
+		} else if(disposeGeometry) {
 			obj.geometry.dispose()
 		}
-		if(deep) {
-			for(let key in obj) {
-				Object.values(obj).forEach(value => {
-					if(value instanceof Texture) {
-						value.dispose()
-					}
-				})
-			}
+
+		if(disposeMaterial) {
+			obj.material.dispose()
 		}
-		obj.material.dispose()
+	} else if(obj instanceof Light) {
+		obj.dispose()
 	}
 	obj.parent?.remove(obj)
 

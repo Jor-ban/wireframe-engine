@@ -15,6 +15,7 @@ import {ChangeDetector} from "../../shared/changeDetector/changeDetector";
 import {EngineInterface} from "../../../types/Engine.interface";
 import {InstrumentsEnum} from "../../types/Instruments.enum";
 import {WireframeMesh} from "../../../lib";
+import {DevLight} from "../../../lib/devLights/DevLight";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null
@@ -134,16 +135,16 @@ export class ElementTracer {
         this.mouse.y = yPosition * 2 + 1
         this.rayCaster.setFromCamera(this.mouse, this.camera)
         const intersects = this.rayCaster.intersectObjects(this.scene.children)
-        const mesh = intersects
+        const obj = intersects
             .filter((el) =>
-                el.object.type === "Mesh" &&
-                el.object instanceof WireframeMesh &&
+                (el.object instanceof WireframeMesh || DevLight.isLightHelper(el.object)) &&
                 el.object !== this.hoveredObject &&
                 el.object !== this.clickedObject
-            )
-            .map(el => el.object)[0] as WireframeMesh
-        if(mesh) {
-            this.emitHover(mesh)
+            )[0]?.object
+        if(obj instanceof WireframeMesh) {
+            this.emitHover(obj)
+        } else if(DevLight.isLightHelper(obj)) {
+            this.emitHover(obj.light)
         } else {
             this.hoveredObject.visible = false
         }

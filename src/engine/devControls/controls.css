@@ -352,12 +352,16 @@ button.tp-rotv_b {
     display: inline-flex;
     align-items: center;
     width: 120px;
-    margin: 0;
+    margin: 0 4px 0 0;
     padding: 10px;
-    border: none;
     background: transparent;
     color: white;
     cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+.__wireframe-instruments > button.__wireframe-instruments__button:hover {
+    border-color: rgba(255, 255, 255, 0.22);
 }
 .__wireframe-instruments > button.__wireframe-instruments__button > .__wireframe-instruments__button__tooltip {
     margin-left: 5px;

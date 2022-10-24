@@ -5,16 +5,20 @@ import {
     Scene
 } from "three";
 import {FolderApi} from "tweakpane";
-import {deleteObjectFromMap, htmlObjectsMap} from "../shared/objectMap";
 import {SceneFolder} from "./leftControls";
 import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
+import {dispose} from "../../utils/dispose";
 
 export class ElementsListControls {
+
+
+    // TODO refactor it with web components and update it when update is triggered
+
+
     private clickedElement: HTMLElement | undefined = undefined
-    private objectMap !: WeakMap<Object3D, HTMLElement>
+    private objectMap = new WeakMap<Object3D, HTMLElement>();
     constructor(scene: Scene, folder: FolderApi) {
-        this.objectMap = htmlObjectsMap
         ChangeDetector.clickedObject$.subscribe((obj: Object3D | WireframeMesh | null) => {
             if(obj) {
                 const element = this.objectMap.get(obj)
@@ -24,7 +28,10 @@ export class ElementsListControls {
             }
         })
         ChangeDetector.addedObject$.subscribe(() => this.parseScene(scene.children, folder))
-        ChangeDetector.removedObject$.subscribe(() => this.parseScene(scene.children, folder))
+        ChangeDetector.removedObject$.subscribe((obj: Object3D) => {
+            this.deleteObject(obj)
+            this.parseScene(scene.children, folder)
+        })
         this.parseScene(scene.children, folder)
     }
     parseScene(children: Object3D[], folder: FolderApi) {
@@ -67,7 +74,9 @@ export class ElementsListControls {
 
                     const deleteButton = document.createElement("button")
                     deleteButton.innerHTML = "x"
-                    deleteButton.addEventListener("click", () => { this.deleteObject(obj) })
+                    deleteButton.addEventListener("click", () => {
+                        ChangeDetector.removedObject$.next(obj)
+                    })
 
                     const div = document.createElement("div")
                     div.classList.add('__wireframe-object-select')
@@ -87,7 +96,11 @@ export class ElementsListControls {
         }
     }
     deleteObject(obj: Object3D) {
-        deleteObjectFromMap(obj)
+        const element = this.objectMap.get(obj)
+        if(element) {
+            element.parentNode?.removeChild(element)
+        }
+        dispose(obj)
         this.clickedElement = undefined
     }
 }

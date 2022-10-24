@@ -5,10 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm start",
-    "start": "cross-env NODE_ENV=dev concurrently --kill-others \"node ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
-    "dev:watch": "cross-env NODE_ENV=dev concurrently --kill-others \"nodemon ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
-    "dev:frontend-only": "cross-env NODE_ENV=dev webpack-dev-server",
-    "build": "cross-env NODE_ENV=PROD webpack",
+    "start": "cross-env NODE_ENV=development concurrently --kill-others \"node ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
+    "dev:watch": "cross-env NODE_ENV=development concurrently --kill-others \"nodemon ./src/engine/fileManager/index.js\" \"webpack-dev-server\"",
+    "dev:fileManager-only": "nodemon ./src/engine/fileManager/index.js",
+    "dev:frontend-only": "cross-env NODE_ENV=development webpack-dev-server",
+    "dev:prod": "cross-env NODE_ENV=production webpack-dev-server",
+
+    "build:dev": "cross-env NODE_ENV=development webpack",
+    "build": "cross-env NODE_ENV=production webpack",
 
     "precommit": "npm run build && firebase deploy",
     "prepare": "husky install"
@@ -50,7 +54,9 @@
     "@tweakpane/plugin-essentials": "^0.1.4",
     "babel-loader": "^8.2.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "chalk": "^5.1.2",
     "clean-webpack-plugin": "^3.0.0",
+    "cli-color": "^2.0.3",
     "copy-webpack-plugin": "^7.0.0",
     "core-js": "^3.22.1",
     "css-loader": "^5.2.7",

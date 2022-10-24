@@ -1,4 +1,5 @@
 import {WireframeEngine} from "./engine/engine";
+import {EngineModes} from "./engine/types/engineModes";
 
 const negY = require("../assets/skybox/sky_negY.jpg");
 const negX = require("../assets/skybox/sky_negX.jpg");

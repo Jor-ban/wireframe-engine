@@ -1,4 +1,3 @@
-import {deleteObjectFromMap} from "../shared/objectMap";
 import {Mesh, Object3D} from "three";
 import {ChangeDetector} from "../shared/changeDetector/changeDetector";
 import {Shortcuts} from "./index";
@@ -12,10 +11,10 @@ export class DefinedShortcuts {
         })
         Shortcuts.key('Delete').subscribe(() => {
             if(this.activeElement !== null) {
-                const deleted = deleteObjectFromMap(this.activeElement)
-                if(deleted) {
-                    this.activeElement = null
-                }
+                ChangeDetector.removedObject$.next(this.activeElement)
+                ChangeDetector.clickedObject$.next(null)
+                ChangeDetector.hoveredObject$.next(null)
+                this.activeElement = null
             }
         })
         Shortcuts.key('x', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
