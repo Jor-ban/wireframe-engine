@@ -13,19 +13,15 @@ import {
     MeshDepthMaterial,
     MeshNormalMaterial,
     MeshPhysicalMaterial,
-    Texture,
     MeshDepthMaterialParameters,
     MeshToonMaterialParameters,
     MeshBasicMaterialParameters,
     MeshMatcapMaterialParameters,
     MeshNormalMaterialParameters,
     MeshPhongMaterialParameters,
-    MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters,
+    MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters, Euler,
 } from 'three';
 import {FolderApi} from "tweakpane";
-import { WireframeTextureLoader } from '../../../shared/loaders';
-// @ts-ignore
-import white from '../../assets/white.png'
 import {
     AddOperation, BasicDepthPacking,
     MixOperation,
@@ -34,11 +30,7 @@ import {
     TangentSpaceNormalMap,
 } from 'three/src/constants';
 import {WireframeMesh} from "../../../lib";
-
-export let defaultMapTexture: Texture
-(async function() {
-   defaultMapTexture = await WireframeTextureLoader.loadAsync(white)
-})()
+import { FileInputControls } from '../../../shared/FileInputControls.util';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi) {
@@ -326,17 +318,17 @@ export class MaterialControlsUtil {
         folder.addInput(material, 'clearcoat')
         this.addForClearcoatMap(material, folder)
         folder.addSeparator() // ------------------------------
-        this.addMapable(material, folder, 'clearcoatRoughnessMap')
+        FileInputControls.addMapable(material, folder, 'clearcoatRoughnessMap')
         folder.addInput(material, 'clearcoatRoughness')
-        this.addMapable(material, folder, 'clearcoatNormalMap')
+        FileInputControls.addMapable(material, folder, 'clearcoatNormalMap')
         folder.addSeparator()   // -----------------------------
-        this.addMapable(material, folder, 'transmissionMap')
+        FileInputControls.addMapable(material, folder, 'transmissionMap')
         folder.addInput(material, 'transmission')
         folder.addSeparator()   // -----------------------------
         folder.addInput(material, 'specularIntensity')
         this.addForSpecularColor(material, folder)
-        this.addMapable(material, folder, 'specularIntensityMap')
-        this.addMapable(material, folder, 'specularColorMap')
+        FileInputControls.addMapable(material, folder, 'specularIntensityMap')
+        FileInputControls.addMapable(material, folder, 'specularColorMap')
         folder.addSeparator()   // -----------------------------
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'ior')
@@ -379,36 +371,7 @@ export class MaterialControlsUtil {
         })
     }
 
-    private static addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T) {
-        const obj: {[key: string | number | symbol]: string} = {}
-        const workingMaterial = material as any
-        obj.image = workingMaterial[keyName]?.image?.src || defaultMapTexture.image.src
-        folder.addInput(obj, 'image', {
-            view: 'input-image',
-            label: keyName as string,
-        }).on('change', async (change) => {
-            const value = change.value as unknown as {src: string}
-            if(value.src !== defaultMapTexture.image.src) {
-                const texture = await WireframeTextureLoader.loadAsync(value.src)
-                workingMaterial[keyName] = texture
-                material.needsUpdate = true
-            }
-        })
-        folder.addInput({a: 0}, 'a', {
-            view: 'radiogrid',
-            groupName: 'scale',
-            size: [1, 1],
-            cells: () => ({
-                title: '[X]',
-            }),
-            label: 'Remove',
-        })
-        .on('change', () => {
-            workingMaterial[keyName] = null
-            obj.image = defaultMapTexture.image.src
-        })
-        .element.classList.add('__tweakpane-delete-btn', '__tweakpane-material-deleter')
-    }
+
     private static addForMap(material:
             | MeshToonMaterial
             | MeshMatcapMaterial
@@ -420,10 +383,10 @@ export class MaterialControlsUtil {
             | MeshPhysicalMaterial,
          folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'map')
+        FileInputControls.addMapable(material, folder, 'map')
     }
     private static addForGradientMap(material: MeshToonMaterial, folder: FolderApi) {
-        this.addMapable(material, folder, 'gradientMap')
+        FileInputControls.addMapable(material, folder, 'gradientMap')
     }
     private static addForLightMap(material:
         | MeshToonMaterial
@@ -432,7 +395,7 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'lightMap')
+        FileInputControls.addMapable(material, folder, 'lightMap')
     }
     private static addForAoMap(material:
         | MeshStandardMaterial
@@ -441,7 +404,7 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'aoMap')
+        FileInputControls.addMapable(material, folder, 'aoMap')
     }
     private static addForBumpMap(material:
          | MeshToonMaterial
@@ -449,7 +412,7 @@ export class MaterialControlsUtil {
          | MeshMatcapMaterial,
          folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'bumpMap')
+        FileInputControls.addMapable(material, folder, 'bumpMap')
     }
     private static addForNormalMap(material:
        | MeshToonMaterial
@@ -457,7 +420,7 @@ export class MaterialControlsUtil {
        | MeshMatcapMaterial,
        folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'normalMap')
+        FileInputControls.addMapable(material, folder, 'normalMap')
     }
     private static addForDisplacementMap(material:
         | MeshToonMaterial
@@ -466,7 +429,7 @@ export class MaterialControlsUtil {
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'displacementMap')
+        FileInputControls.addMapable(material, folder, 'displacementMap')
     }
     private static addForAlphaMap(material:
         | MeshStandardMaterial
@@ -476,27 +439,27 @@ export class MaterialControlsUtil {
         | MeshDepthMaterial
         | MeshMatcapMaterial,
         folder: FolderApi) {
-        this.addMapable(material, folder, 'alphaMap')
+        FileInputControls.addMapable(material, folder, 'alphaMap')
     }
     private static addForMatcap(material: MeshMatcapMaterial, folder: FolderApi) {
-        this.addMapable(material, folder, 'matcap')
+        FileInputControls.addMapable(material, folder, 'matcap')
     }
     private static addForMetalnessMap(material: MeshStandardMaterial, folder: FolderApi) {
-        this.addMapable(material, folder, 'metalnessMap')
+        FileInputControls.addMapable(material, folder, 'metalnessMap')
     }
     private static addForSpecularMap(material:
         | MeshBasicMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'specularMap')
+        FileInputControls.addMapable(material, folder, 'specularMap')
     }
     private static addForRoughnessMap(material:
         | MeshStandardMaterial
         | MeshPhysicalMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'roughnessMap')
+        FileInputControls.addMapable(material, folder, 'roughnessMap')
     }
     private static addForEnvMap(material:
         | MeshStandardMaterial
@@ -504,10 +467,10 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'envMap')
+        FileInputControls.addMapable(material, folder, 'envMap')
     }
     private static addForClearcoatMap(material: MeshPhysicalMaterial, folder: FolderApi) {
-        this.addMapable(material, folder, 'clearcoatMap')
+        FileInputControls.addMapable(material, folder, 'clearcoatMap')
     }
 
 
@@ -535,7 +498,7 @@ export class MaterialControlsUtil {
         | MeshStandardMaterial,
         folder: FolderApi
     ) {
-        this.addMapable(material, folder, 'emissive')
+        FileInputControls.addMapable(material, folder, 'emissive')
     }
     private static addForSpecular(material: MeshPhongMaterial, folder: FolderApi) {
         this.addColorable(material, folder, 'specular')

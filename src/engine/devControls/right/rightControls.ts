@@ -20,6 +20,7 @@ import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "../shared/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";
 import {EngineInterface} from "../../types/Engine.interface";
+import {SkyboxControls} from "./utils/SkyboxControls";
 
 export class RightControls {
 	private rightPane !: Pane
@@ -99,5 +100,6 @@ export class RightControls {
 			Object3DControls.updateAllMaterials(this.scene)
 		})
 		pane.addInput({ shadowMap: this.renderer.shadowMap.enabled }, 'shadowMap')
+		new SkyboxControls(pane, this.scene, this.renderer)
 	}
 }
