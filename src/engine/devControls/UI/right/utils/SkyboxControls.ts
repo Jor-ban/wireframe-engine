@@ -4,9 +4,9 @@ import {
     CubeTextureLoaderService,
     defaultSkybox,
     defaultSkyboxSides
-} from "../../../shared/defaultSkybox";
-import {FileInputControls, whiteTexture} from "../../../shared/FileInputControls.util";
-import {WireframeTextureLoader} from "../../../shared/loaders";
+} from "../../../../shared/defaultSkybox";
+import {FileInputControls, whiteTexture} from "../../../../shared/FileInputControls.util";
+import {WireframeTextureLoader} from "../../../../shared/loaders";
 
 export class SkyboxControls {
     inputsList: InputBindingApi<unknown, string>[] = []

@@ -9,9 +9,9 @@ import {
 } from "three";
 import {FolderApi, TabPageApi, TpChangeEvent} from "tweakpane";
 import {debounceTime, Subject, Subscription} from "rxjs";
-import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
+import {WireframeMesh, WireframeTextGeometry} from "../../../../lib";
 import {GeometryRedactor} from "./GeometryRedactor";
-import {ChangeDetector} from "../../changeDetector/changeDetector";
+import {ChangeDetector} from "../../../changeDetector/changeDetector";
 
 export class GeometryControls {
     mesh: WireframeMesh

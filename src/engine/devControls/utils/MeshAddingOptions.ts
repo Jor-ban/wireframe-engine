@@ -1,11 +1,11 @@
 
 import {MeshGenerator} from "./generators/MeshGenerator";
 import {Light, OrthographicCamera, PerspectiveCamera, Scene} from "three";
-import {HiddenMenuOption} from "../../UI/hiddenMenu";
+import {HiddenMenuOption} from "../UI/utils/hiddenMenu";
 import {DevLightGenerator} from "./generators/devLightGenerator";
-import {ChangeDetector} from "../../changeDetector/changeDetector";
-import {WireframeMesh} from "../../../lib";
-import {DevLight} from "../../../lib/devLights/DevLight";
+import {ChangeDetector} from "../changeDetector/changeDetector";
+import {WireframeMesh} from "../../lib";
+import {DevLight} from "../../lib/devLights/DevLight";
 
 export function getMeshAddingOptions(scene: Scene, mainCamera: PerspectiveCamera | OrthographicCamera): HiddenMenuOption[] {
     return [{

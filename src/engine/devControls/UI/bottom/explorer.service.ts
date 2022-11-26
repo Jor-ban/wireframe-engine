@@ -1,4 +1,4 @@
-import {AssetsTree} from "../types/AssetsTree.interface";
+import {AssetsTree} from "../../types/AssetsTree.interface";
 import axios from "axios";
 const process = require('process');
 

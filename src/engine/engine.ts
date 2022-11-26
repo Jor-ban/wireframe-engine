@@ -62,6 +62,9 @@ export class WireframeEngine implements EngineInterface {
             projectSettings.mode ??
             (window.location.search.includes('mode=test') ? 'test' : process.env.NODE_ENV)
         ).toLowerCase()
+        if(this.mode !== 'prod') {
+            console.log(`%c[WireframeEngine -> bootstrap]: running in ${this.mode} mode`, 'background-color: #28292E; color: white; padding: 10px; font-weight: bold')
+        }
         if(this.mode === 'test' || this.mode === 'prod') {
             this.setCanvasSizes(projectSettings.canvasSizes)
             this.setScene(projectSettings.scene)
@@ -78,7 +81,6 @@ export class WireframeEngine implements EngineInterface {
             this.renderer.render(this.scene, this.mainCamera)
             this.initTick(projectSettings.maxFPS)
             if(this.mode !== 'prod') {
-                console.log(`%c[WireframeEngine -> bootstrap]: running in ${this.mode} mode`, 'background-color: #28292E; color: white; padding: 10px; font-weight: bold')
                 this.enableTestControls()
             }
         } else if(this.mode === 'dev' || this.mode === 'development') {

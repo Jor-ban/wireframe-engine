@@ -6,8 +6,8 @@ import {InstrumentsControls} from "./instrumentsControls";
 import {
 	leftControlsWidth,
 	topBarHeight
-} from "../../shared/consts/controlsStyles";
-import {EngineInterface} from "../../types/Engine.interface";
+} from "../../../shared/consts/controlsStyles";
+import {EngineInterface} from "../../../types/Engine.interface";
 
 export type SceneFolder = Object3D & {opened: boolean}
 

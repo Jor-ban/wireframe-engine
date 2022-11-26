@@ -1,12 +1,12 @@
 import {BladeApi} from "tweakpane";
 import {BladeController, View} from "@tweakpane/core";
-import { RightControls } from './right/rightControls';
-import { ElementTracer } from './left/utils/elementTracer';
-import { LeftControls } from './left/leftControls';
-import { BottomControls } from './bottom/bottomControls';
+import { RightControls } from './UI/right/rightControls';
+import { ElementTracer } from './UI/left/utils/elementTracer';
+import { LeftControls } from './UI/left/leftControls';
+import { BottomControls } from './UI/bottom/bottomControls';
 import { EngineInterface } from '../types/Engine.interface';
 import { DefinedShortcuts } from "./shortcuts/DefinedShortcuts";
-import {hideContextMenu} from "./shared/utils/hideContextMenu";
+import {hideContextMenu} from "./utils/hideContextMenu";
 import {TopBar} from "./topBar/topBar";
 
 export const debugParams = {

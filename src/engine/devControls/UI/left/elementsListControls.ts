@@ -6,9 +6,9 @@ import {
 } from "three";
 import {FolderApi} from "tweakpane";
 import {SceneFolder} from "./leftControls";
-import {ChangeDetector} from "../changeDetector/changeDetector";
-import {WireframeMesh} from "../../lib";
-import {dispose} from "../../utils/dispose";
+import {ChangeDetector} from "../../changeDetector/changeDetector";
+import {WireframeMesh} from "../../../lib";
+import {dispose} from "../../../utils/dispose";
 
 export class ElementsListControls {
 

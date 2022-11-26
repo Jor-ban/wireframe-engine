@@ -1,17 +1,17 @@
 import {FolderApi, TabPageApi} from "tweakpane";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
-import {InstrumentsEnum} from "../types/Instruments.enum";
-import {EngineInterface} from "../../types/Engine.interface";
+import {InstrumentsEnum} from "../../types/Instruments.enum";
+import {EngineInterface} from "../../../types/Engine.interface";
 import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
-import {ChangeDetector} from "../changeDetector/changeDetector";
-import {WireframeMesh} from "../../lib";
-import {Shortcuts} from "../shortcuts";
+import {ChangeDetector} from "../../changeDetector/changeDetector";
+import {WireframeMesh} from "../../../lib";
+import {Shortcuts} from "../../shortcuts";
 
-const pointerIconUrl: string = require("../assets/pointer_icon.svg")
-const moveIconUrl   : string = require('../assets/move_icon.svg')
-const rotateIconUrl : string = require('../assets/rotate_icon.svg')
-const scaleIconUrl  : string = require('../assets/scale_icon.svg')
+const pointerIconUrl: string = require("../../assets/pointer_icon.svg")
+const moveIconUrl   : string = require('../../assets/move_icon.svg')
+const rotateIconUrl : string = require('../../assets/rotate_icon.svg')
+const scaleIconUrl  : string = require('../../assets/scale_icon.svg')
 
 export class InstrumentsControls {
     instrumentsFolder: FolderApi

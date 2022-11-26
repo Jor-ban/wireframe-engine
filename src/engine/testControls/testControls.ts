@@ -2,7 +2,7 @@ import {BladeApi, Pane} from "tweakpane";
 import {BladeController, View} from "@tweakpane/core";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import {WebGLRenderer} from "three";
-import {logMemory} from "../devControls/shared/PerformanceMonitors";
+import {logMemory} from "../devControls/utils/PerformanceMonitors";
 
 export class TestControls {
     public fpsGraph: BladeApi<BladeController<View>>

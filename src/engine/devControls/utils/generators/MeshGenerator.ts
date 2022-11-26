@@ -6,7 +6,7 @@ import {
     SphereGeometry,
 } from "three";
 import {Font} from "three/examples/jsm/loaders/FontLoader";
-import {WireframeMesh, WireframeTextGeometry} from "../../../../lib";
+import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
 const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
 
 export class MeshGenerator {
