@@ -6,7 +6,7 @@ import {
 } from "three";
 import {FolderApi} from "tweakpane";
 import {SceneFolder} from "./leftControls";
-import {ChangeDetector} from "../shared/changeDetector/changeDetector";
+import {ChangeDetector} from "../changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
 import {dispose} from "../../utils/dispose";
 

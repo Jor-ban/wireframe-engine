@@ -4,7 +4,7 @@ import {InstrumentsEnum} from "../types/Instruments.enum";
 import {EngineInterface} from "../../types/Engine.interface";
 import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
-import {ChangeDetector} from "../shared/changeDetector/changeDetector";
+import {ChangeDetector} from "../changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
 import {Shortcuts} from "../shortcuts";
 

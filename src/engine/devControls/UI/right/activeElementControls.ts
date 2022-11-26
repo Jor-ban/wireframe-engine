@@ -19,7 +19,7 @@ import {
 import { Object3DControls } from "./utils/Object3DControls";
 import { MaterialControlsUtil } from "./utils/MaterialControls.util";
 import {GeometryControls} from "./utils/GeometryControls.util";
-import {ChangeDetector} from "../shared/changeDetector/changeDetector";
+import {ChangeDetector} from "../changeDetector/changeDetector";
 import {WireframeMesh} from "../../lib";
 import {LightControls} from "./utils/LightControls";
 

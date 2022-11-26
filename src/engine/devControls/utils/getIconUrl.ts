@@ -1,5 +1,5 @@
 import {AssetsTree} from "../../types/AssetsTree.interface";
-import { ExplorerService } from "../../bottom/explorer.service";
+import {ExplorerService} from "../../bottom/explorer.service";
 
 const folderIcon: string = require('../../assets/folder.png')
 const other: string = require('../../assets/other.png');
@@ -19,7 +19,9 @@ export async function getIconUrl(data: AssetsTree): Promise<string> {
     } else if(/\.js$/.test(data.name)) {
         return javascript
     } else if(/\.(jpeg|jpg|png|gif|svg|ico)$/.test(data.name)) {
-        return await ExplorerService.getFile(data.path)
+        const res = await ExplorerService.getFile(data.path)
+        console.log(res)
+        return image
     } else if(/\.gltf$/.test(data.name)) {
         return gltf
     } else if(/\.html$/.test(data.name)) {
