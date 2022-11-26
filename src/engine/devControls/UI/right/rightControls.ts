@@ -8,7 +8,7 @@ import {
 	PerspectiveCamera,
 	ReinhardToneMapping, Scene, WebGLRenderer,
 } from 'three';
-import { debugParams } from '../controller';
+import { debugParams } from '../../controller';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 // @ts-ignore
@@ -17,9 +17,9 @@ import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
 import { CameraControls } from './utils/CameraControls';
 import { LightControls } from './utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
-import {logMemory} from "../shared/PerformanceMonitors";
-import {rightControlsWidth, topBarHeight} from "../../shared/consts/controlsStyles";
-import {EngineInterface} from "../../types/Engine.interface";
+import {logMemory} from "../../utils/PerformanceMonitors";
+import {rightControlsWidth, topBarHeight} from "../../../shared/consts/controlsStyles";
+import {EngineInterface} from "../../../types/Engine.interface";
 import {SkyboxControls} from "./utils/SkyboxControls";
 
 export class RightControls {

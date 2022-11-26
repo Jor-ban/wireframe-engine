@@ -1,4 +1,4 @@
-import {AssetsTree} from "../types/AssetsTree.interface";
+import {AssetsTree} from "../../types/AssetsTree.interface";
 import axios from "axios";
 const process = require('process');
 
@@ -7,6 +7,7 @@ class Explorer {
         baseURL: `http://localhost:${process.env.EXPRESS_PORT || 42069}`,
         headers: {'Access-Control-Allow-Origin': 'localhost'},
     })
+    fileReader = new FileReader()
     public async getElements(path: string): Promise<AssetsTree[]> {
         path = String(path).replace(/^.\/src/,"")
         const { data } = await this.http.get<AssetsTree[]>(path)
@@ -14,8 +15,15 @@ class Explorer {
     }
     public async getFile(path: string): Promise<string> {
         path = String(path).replace(/^.\/src/,"")
-        const { data } = await this.http.get(path)
-        return data
+        return await this.http.get<Blob>(path, {
+            responseType: "text",
+            responseEncoding: "base64",
+        })
+            .then(res => {
+                // this.fileReader.readAsDataURL(res.data);
+                console.log(res)
+                return ''
+            })
     }
     // public createFolder(name: string, path: string = this.path): AssetsTree {
         // const newFolder = {

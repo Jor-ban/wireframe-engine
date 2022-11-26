@@ -29,8 +29,8 @@ import {
     ObjectSpaceNormalMap, RGBADepthPacking,
     TangentSpaceNormalMap,
 } from 'three/src/constants';
-import {WireframeMesh} from "../../../lib";
-import { FileInputControls } from '../../../shared/FileInputControls.util';
+import {WireframeMesh} from "../../../../lib";
+import { FileInputControls } from '../../../../shared/FileInputControls.util';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi) {

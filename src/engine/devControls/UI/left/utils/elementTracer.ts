@@ -9,13 +9,13 @@ import {
     Scene,
     Vector2,
 } from "three";
-import {CanvasProportion} from "../../../parsers/types/CanvasProportion.interface";
-import {leftControlsWidth, topBarHeight} from "../../../shared/consts/controlsStyles";
-import {ChangeDetector} from "../../shared/changeDetector/changeDetector";
-import {EngineInterface} from "../../../types/Engine.interface";
-import {InstrumentsEnum} from "../../types/Instruments.enum";
-import {WireframeMesh} from "../../../lib";
-import {DevLight} from "../../../lib/devLights/DevLight";
+import {CanvasProportion} from "../../../../parsers/types/CanvasProportion.interface";
+import {leftControlsWidth, topBarHeight} from "../../../../shared/consts/controlsStyles";
+import {ChangeDetector} from "../../../changeDetector/changeDetector";
+import {EngineInterface} from "../../../../types/Engine.interface";
+import {InstrumentsEnum} from "../../../types/Instruments.enum";
+import {WireframeMesh} from "../../../../lib";
+import {DevLight} from "../../../../lib/devLights/DevLight";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null

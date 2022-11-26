@@ -1,8 +1,8 @@
 import {Light, OrthographicCamera, PerspectiveCamera} from "three";
-import {DevPointLight} from "../../../../lib/devLights/DevPointLight";
-import {DevSpotLight} from "../../../../lib/devLights/DevSpotLight";
-import {DevDirectionalLight} from "../../../../lib/devLights/DevDirectionalLight";
-import {DevHemisphereLight} from "../../../../lib/devLights/DevHemisphereLight";
+import {DevPointLight} from "../../../lib/devLights/DevPointLight";
+import {DevSpotLight} from "../../../lib/devLights/DevSpotLight";
+import {DevDirectionalLight} from "../../../lib/devLights/DevDirectionalLight";
+import {DevHemisphereLight} from "../../../lib/devLights/DevHemisphereLight";
 
 export class DevLightGenerator {
     static addPointLight(camera: PerspectiveCamera | OrthographicCamera): Light {

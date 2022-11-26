@@ -8,7 +8,7 @@ import {
     SphereGeometry
 } from "three";
 import {TpChangeEvent} from "tweakpane";
-import {WireframeTextGeometry} from "../../../lib";
+import {WireframeTextGeometry} from "../../../../lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')

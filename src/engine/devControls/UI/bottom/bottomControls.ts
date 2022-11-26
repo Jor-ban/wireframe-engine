@@ -1,7 +1,7 @@
 import { Pane, TabPageApi } from 'tweakpane';
 import {errorsCount, Logger, warnsCount} from './logger';
 import { AssetsManager } from "./assetsManager";
-import {bottomControlsHeight, leftControlsWidth, rightControlsWidth} from "../../shared/consts/controlsStyles";
+import {bottomControlsHeight, leftControlsWidth, rightControlsWidth} from "../../../shared/consts/controlsStyles";
 
 export class BottomControls {
 	pane: Pane

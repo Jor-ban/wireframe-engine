@@ -10,10 +10,8 @@
     "dev:fileManager-only": "nodemon ./src/engine/fileManager/index.js",
     "dev:frontend-only": "cross-env NODE_ENV=development webpack-dev-server",
     "dev:prod": "cross-env NODE_ENV=production webpack-dev-server",
-
     "build:dev": "cross-env NODE_ENV=development webpack",
     "build": "cross-env NODE_ENV=production webpack",
-
     "precommit": "npm run build && firebase deploy",
     "prepare": "husky install"
   },
@@ -51,7 +49,7 @@
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.12.11",
     "@tweakpane/plugin-camerakit": "^0.2.2",
-    "@tweakpane/plugin-essentials": "^0.1.4",
+    "@tweakpane/plugin-essentials": "^0.1.5",
     "babel-loader": "^8.2.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "chalk": "^5.1.2",
@@ -65,6 +63,7 @@
     "gsap": "^3.9.1",
     "html-loader": "^1.3.2",
     "mini-css-extract-plugin": "^1.3.4",
+    "node-fetch": "^2.6.7",
     "path": "^0.12.7",
     "portfinder-sync": "0.0.2",
     "raw-loader": "^4.0.2",

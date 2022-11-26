@@ -1,6 +1,6 @@
 import {OrthographicCamera, PerspectiveCamera, Scene} from "three";
-import {WireframeDropdown} from "../shared/UI/dropdown";
-import {getMeshAddingOptions} from "../shared/MeshAddingOptions";
+import {WireframeDropdown} from "../UI/utils/dropdown";
+import {getMeshAddingOptions} from "../utils/MeshAddingOptions";
 
 const logoUrl = require('../assets/wireframe-logo.svg');
 
