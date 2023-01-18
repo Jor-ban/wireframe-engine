@@ -6,7 +6,8 @@ export interface EngineInterface {
 	canvasProportion: CanvasProportion
 	canvas: HTMLCanvasElement
 	renderer: WebGLRenderer
-	mainCamera: PerspectiveCamera | OrthographicCamera
+	camera: PerspectiveCamera | OrthographicCamera
+	devCamera: PerspectiveCamera | null
 	scene: Scene
 	ambientLight: AmbientLight
 	orbitControls: OrbitControls | undefined

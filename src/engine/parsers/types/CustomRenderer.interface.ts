@@ -9,4 +9,5 @@ export interface CustomRenderer {
     shadowMap ?: boolean
     shadowMapType ?: ShadowMapType
     pixelRatio ?: number
+    alpha ?: boolean
 }

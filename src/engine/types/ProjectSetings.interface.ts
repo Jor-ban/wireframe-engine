@@ -7,6 +7,7 @@ import { CustomScene } from "../parsers/types/CustomScene.interface";
 import { CustomLight } from "../parsers/types/CustomLight.interface";
 import { CustomMesh } from "../parsers/types/CustomMesh.type";
 import { EngineModes } from "./engineModes";
+import { CustomOrbitControls } from "../parsers/types/CustomOrbitControls.interface";
 
 export interface ProjectSettings {
     camera ?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera', // only 2 types of cameras are supported
@@ -16,7 +17,7 @@ export interface ProjectSettings {
     lights ?: CustomLight[], // array of lights
     objects ?: CustomMesh[], // array of objects
     canvasSizes ?: CanvasProportion // canvas sizes on prod and test modes
-    orbitControls ?: boolean // orbit controls // TODO add orbit controls settings
+    orbitControls ?: boolean | CustomOrbitControls // orbit controls
     maxFPS ?: number // max fps <= 0 is no tick ; default is 60; Infinity is for max possible
     mode?: EngineModes | 'dev' | 'test' | 'prod' // loading mode (only for specific cases)
 }
