@@ -11,7 +11,7 @@ import {TpChangeEvent} from "tweakpane";
 import {WireframeTextGeometry} from "../../../../lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
-const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
+import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 
 export class GeometryRedactor {
     static recreateGeometry<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<any>): T | undefined {
@@ -34,6 +34,7 @@ export class GeometryRedactor {
         } else if(geometry instanceof WireframeTextGeometry) {
             return this.recreateTextGeometry(geometry, change) as unknown as T
         }
+        return undefined
     }
     // @ts-ignore
     private static setParameter<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<{ presetKey: keyof T }>): T['parameters'] {

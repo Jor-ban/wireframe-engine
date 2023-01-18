@@ -1,6 +1,6 @@
 import {WireframeEngine} from "./engine/engine";
 
-const app = new WireframeEngine('#canvas', {
+new WireframeEngine('#canvas', {
     objects: [
         {
             geometry: { type: 'sphere' },

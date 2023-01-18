@@ -14,7 +14,6 @@ import {
     Object3D,
     OrthographicCamera,
     PerspectiveCamera,
-    Scene,
 } from "three";
 import { Object3DControls } from "./utils/Object3DControls";
 import { MaterialControlsUtil } from "./utils/MaterialControls.util";
@@ -24,13 +23,10 @@ import {WireframeMesh} from "../../../lib";
 import {LightControls} from "./utils/LightControls";
 
 export class ActiveElementControls {
-    private readonly scene: Scene
     private readonly pane: TabPageApi
     private selectedObj: Object3D | null = null
-    private geometryControls: GeometryControls | null = null
 
-    constructor(scene: Scene, pane: TabPageApi) {
-        this.scene = scene
+    constructor(pane: TabPageApi) {
         this.pane = pane
         ChangeDetector.clickedObject$.subscribe((obj: WireframeMesh | Object3D | null) => {
             if(obj !== this.selectedObj || obj === null) {
@@ -44,7 +40,13 @@ export class ActiveElementControls {
             this.pane.remove(child)
         }
         if(selectedObj !== null) {
-            this.pane.addInput(selectedObj, 'name')
+            this.pane.addInput(selectedObj, 'name').on('change', ({ value }) => {
+                ChangeDetector.activeObjectUpdated$.next({
+                    target: selectedObj,
+                    changedPropertyName: 'name',
+                    value,
+                })
+            })
             if (selectedObj instanceof Light) {
                 this.forLight(selectedObj, this.pane)
             } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
@@ -66,12 +68,20 @@ export class ActiveElementControls {
         const positionInput = this.addPositions(child, pane)
         const rotationInput = this.addRotation(child, pane)
         const scaleInput = this.addScale(child, pane)
-        const geometryFolder = this.addGeometry(child, pane)
-        this.addMaterial(child, pane)
-        pane.addInput(child, 'castShadow')
-        pane.addInput(child, 'visible');
-        pane.addInput(child, 'receiveShadow');
-        pane.addInput(child, 'frustumCulled');
+        pane.addSeparator()
+        const tabs = pane.addTab({
+            pages: [
+                {title: 'Geometry'},
+                {title: 'Material'},
+                {title: 'Physics'}, // TODO
+                {title: 'Advanced'},
+            ]
+        })
+
+        new GeometryControls(child, tabs.pages[0])
+        this.addMaterials(child, tabs.pages[1])
+        this.addPhysics(child, tabs.pages[2])
+        this.addAdvanced(child, tabs.pages[3])
 
         ChangeDetector.activeObjectUpdated$.subscribe(({changedPropertyName}) => {
             if(changedPropertyName === 'position') {
@@ -97,25 +107,15 @@ export class ActiveElementControls {
             });
         }
     }
-    private addGeometry(child: WireframeMesh, pane: FolderApi | TabPageApi): FolderApi {
-        const folder = pane.addFolder({title: 'Geometry', expanded: true})
-        this.geometryControls = new GeometryControls(child, folder)
-        return folder
-    }
-    private addMaterial(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
+    private addMaterials(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
         for(let i = 0; i < materials.length; i++) {
             const material = materials[i]
-            const folder = pane.addFolder({
-                title: i === 0 ? 'Material' : 'Material #' + (i + 1),
-                expanded: true
-            })
-            MaterialControlsUtil.materialConverter(material, mesh, folder, () => {
+            MaterialControlsUtil.materialConverter(material, mesh, pane, () => {
                 this.updateMaterialsControls(mesh, pane)
             })
-            MaterialControlsUtil.addForMaterial(material, folder)
-            folder.addSeparator()
-            const typeFolder = folder.addFolder({title: material.type, expanded: false})
+            MaterialControlsUtil.addForMaterial(material, pane)
+            const typeFolder = pane.addFolder({title: material.type, expanded: true})
             if(material instanceof MeshToonMaterial) {
                 MaterialControlsUtil.addForToonMaterial(material, typeFolder)
             } else if(material instanceof MeshDepthMaterial) {
@@ -135,11 +135,22 @@ export class ActiveElementControls {
             } else if(material instanceof MeshPhysicalMaterial) {
                 MaterialControlsUtil.addForPhysicalMaterial(material, typeFolder)
             }
+            const detailsFolder = pane.addFolder({title: 'Material Details', expanded: true})
+            MaterialControlsUtil.addDetails(material, detailsFolder)
         }
+    }
+    private addPhysics(child: WireframeMesh, pane: FolderApi | TabPageApi) {
+        // TODO
+    }
+    private addAdvanced(child: WireframeMesh, pane: FolderApi | TabPageApi) {
+        pane.addInput(child, 'castShadow')
+        pane.addInput(child, 'visible');
+        pane.addInput(child, 'receiveShadow');
+        pane.addInput(child, 'frustumCulled');
     }
     private updateMaterialsControls(mesh: WireframeMesh, folder: FolderApi | TabPageApi) {
         folder.children.forEach(child => folder.remove(child))
-        this.addMaterial(mesh, folder)
+        this.addMaterials(mesh, folder)
     }
     private addScale(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
         return Object3DControls.addScale(child, pane)

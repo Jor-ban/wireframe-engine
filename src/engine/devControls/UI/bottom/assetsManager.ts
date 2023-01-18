@@ -2,7 +2,7 @@ import {TabPageApi} from "tweakpane";
 import {AssetsTree} from "../../types/AssetsTree.interface";
 import {ExplorerService} from "./explorer.service";
 import {getIconUrl} from "../../utils/getIconUrl";
-const folderIconUrl = require("../../assets/folder.png")
+// import folderIconUrl from "../../assets/folder.png?url"
 
 export class AssetsManager {
     element !: HTMLElement;

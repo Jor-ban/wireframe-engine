@@ -1,6 +1,6 @@
 import {ColorRepresentation, HemisphereLight, HemisphereLightHelper, Scene} from "three";
 
-export class DevHemisphereLight extends HemisphereLight {
+export class HemisphereLightWithHelper extends HemisphereLight {
     public helper: HemisphereLightHelper;
     constructor(skyColor?: ColorRepresentation, groundColor?: ColorRepresentation, intensity?: number) {
         super(skyColor, groundColor, intensity);
@@ -10,8 +10,8 @@ export class DevHemisphereLight extends HemisphereLight {
         scene.add(this)
         scene.add(this.helper)
     }
-    static from(light: HemisphereLight): DevHemisphereLight {
-        return new DevHemisphereLight(light.color, light.groundColor, light.intensity)
+    static from(light: HemisphereLight): HemisphereLightWithHelper {
+        return new HemisphereLightWithHelper(light.color, light.groundColor, light.intensity)
     }
     dispose() {
         super.dispose();

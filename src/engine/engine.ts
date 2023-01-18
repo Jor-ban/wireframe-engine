@@ -1,3 +1,4 @@
+import { AnimationFrame } from './services/animationFrame.service';
 import './shared/memoryCleaner'
 import { ProjectSettings } from "./types/ProjectSetings.interface";
 import { CanvasProportion } from "./parsers/types/CanvasProportion.interface";
@@ -20,55 +21,48 @@ import { RendererParser } from "./parsers/rendererParser";
 import { CustomAmbientLight, CustomLight } from "./parsers/types/CustomLight.interface";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { Controller } from "./devControls/controller";
 import { MeshParser } from "./parsers/MeshParser";
-import { EngineState } from './shared/engineState';
 import { EngineInterface } from './types/Engine.interface';
-import { TestControls } from "./testControls/testControls";
 import {
     bottomControlsHeight,
     leftControlsWidth,
     rightControlsWidth,
     topBarHeight
 } from "./shared/consts/controlsStyles";
-import {DevLight} from "./lib/devLights/DevLight";
+import { LightWithHelper } from "./lib/lightsWithHelper";
+import { CustomOrbitControls } from './parsers/types/CustomOrbitControls.interface';
+import {CameraWithHelper, OrthographicCameraWithHelper } from './lib/camerasWithHelper';
 
 export class WireframeEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
     public readonly canvas: HTMLCanvasElement
     public renderer !: WebGLRenderer
-    public controller !: Controller
-    public mainCamera !: PerspectiveCamera | OrthographicCamera
+    public controller !: unknown
+    public camera !: CameraWithHelper | OrthographicCameraWithHelper | PerspectiveCamera | OrthographicCamera
     public scene !: Scene
-    public fpsGraph: any | null = null
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
+    public devCamera: PerspectiveCamera | null = null
 
-    private tickIntervalId : NodeJS.Timeout | null = null
-    private animationFrameId: number | null = null
     private userAskedFPS: number = 60
     private mode: string | undefined = 'dev'
+    private animationMachine = AnimationFrame
 
     constructor(selector: string = "#canvas", projectSettings: ProjectSettings = {}) {
-        this.canvas = document.querySelector(selector) as HTMLCanvasElement
-        if(!this.canvas) {
+        const canvas = document.querySelector<HTMLCanvasElement>(selector)
+        if(!canvas) {
             throw new Error('[Engine -> constructor]: selector is wrong, webgl will not render')
         }
+        this.canvas = canvas
+        this.setMode(projectSettings.mode)
         this.bootstrap(projectSettings)
     }
 
     private bootstrap(projectSettings: ProjectSettings): void {
-        this.mode = String(
-            projectSettings.mode ??
-            (window.location.search.includes('mode=test') ? 'test' : process.env.NODE_ENV)
-        ).toLowerCase()
-        if(this.mode !== 'prod') {
-            console.log(`%c[WireframeEngine -> bootstrap]: running in ${this.mode} mode`, 'background-color: #28292E; color: white; padding: 10px; font-weight: bold')
-        }
         if(this.mode === 'test' || this.mode === 'prod') {
             this.setCanvasSizes(projectSettings.canvasSizes)
             this.setScene(projectSettings.scene)
-            this.setMainCamera(projectSettings.camera)
+            this.setProdCamera(projectSettings.camera)
             this.setRenderer(projectSettings.renderer)
             this.setAmbientLight(projectSettings.ambientLight)
             if(projectSettings.objects?.length) {
@@ -78,7 +72,7 @@ export class WireframeEngine implements EngineInterface {
                 this.add(...projectSettings.lights.map((light: CustomLight | Light) => LightParser.parse(light)))
             }
             this.setOrbitControls(projectSettings.orbitControls)
-            this.renderer.render(this.scene, this.mainCamera)
+            this.renderer.render(this.scene, this.camera)
             this.initTick(projectSettings.maxFPS)
             if(this.mode !== 'prod') {
                 this.enableTestControls()
@@ -86,7 +80,8 @@ export class WireframeEngine implements EngineInterface {
         } else if(this.mode === 'dev' || this.mode === 'development') {
             this.setDevCanvas()
             this.setScene(projectSettings.scene)
-            this.setMainCamera()
+            this.setProdCamera()
+            this.setDevCamera()
             this.setRenderer()
             this.setAmbientLight(projectSettings.ambientLight)
             if(projectSettings.objects?.length) {
@@ -95,20 +90,21 @@ export class WireframeEngine implements EngineInterface {
             if(projectSettings.lights?.length) {
                 projectSettings.lights.forEach((light: CustomLight | Light) => {
                     const parsedLight = LightParser.parse(light)
-                    const devLight = DevLight.from(parsedLight)
-                    if(devLight instanceof AmbientLight) {
-                        this.add(devLight)
-                    } else if(devLight) { // no undefined
-                        devLight.addToScene(this.scene)
+                    const lightWithHelper = LightWithHelper.from(parsedLight)
+                    if(lightWithHelper instanceof AmbientLight) {
+                        this.add(lightWithHelper)
+                    } else if(lightWithHelper) { // no undefined
+                        lightWithHelper.addToScene(this.scene)
                     }
                 })
             }
-            this.setOrbitControls(true)
-            this.renderer.render(this.scene, this.mainCamera)
-            this.initTick()
+            if(this.devCamera) {
+                this.renderer.render(this.scene, this.devCamera)
+                this.initTick()
+                this.setOrbitControls(true)
+            }
             this.enableDevControls()
         }
-        window.addEventListener('load', this.tick.bind(this))
     }
 
     public setCanvasSizes(canvasSizes ?: CanvasProportion): WireframeEngine {
@@ -125,75 +121,85 @@ export class WireframeEngine implements EngineInterface {
                 this.canvasProportion.width = window.innerWidth
                 this.canvasProportion.height = window.innerHeight
                 // Update camera
-                if(this.mainCamera instanceof PerspectiveCamera) {
-                    this.mainCamera.aspect = window.innerWidth / window.innerHeight
+                if(this.camera instanceof PerspectiveCamera) {
+                    this.camera.aspect = window.innerWidth / window.innerHeight
                 }
-                this.mainCamera.updateProjectionMatrix()
+                if(this.devCamera) {
+                    this.devCamera.aspect = window.innerWidth / window.innerHeight
+                    this.devCamera.updateProjectionMatrix()
+                }
+                this.camera.updateProjectionMatrix()
                 // Update renderer
                 this.renderer?.setSize(window.innerWidth, window.innerHeight)
             })
         }
         return this
     }
+    private setMode(parameterMode ?: string): void {
+        const env = (import.meta as any)?.env?.NODE_ENV
+        this.mode = String(
+            parameterMode ??
+            (
+                window.location.search.includes('mode=test') ? 
+                'test' : 
+                (env?.NODE_ENV ?? 'development')
+            )
+        ).toLowerCase()
+        if(this.mode !== 'prod') {
+            console.log(`%c[WireframeEngine -> bootstrap]: running in ${this.mode} mode`, 'background-color: #28292E; color: white; padding: 10px; font-weight: bold')
+        }
+    }
     private setDevCanvas(): void {
         this.canvas.classList.add('__wireframe-dev-canvas')
-        this.canvas.style.marginLeft = `${leftControlsWidth}px`
+        this.canvas.style.position = 'absolute'
+        this.canvas.style.left = `${leftControlsWidth}px`
+        this.canvas.style.top = `${topBarHeight}px`
         this.canvasProportion = {
             width: window.innerWidth - leftControlsWidth - rightControlsWidth,
             height: window.innerHeight - topBarHeight - bottomControlsHeight
         }
+        document.body.style.overflow = 'hidden'
         window.addEventListener('resize', () => {
             const newCanvasWidth = window.innerWidth - leftControlsWidth - rightControlsWidth
             const newCanvasHeight = window.innerHeight - topBarHeight - bottomControlsHeight
             this.canvasProportion.width = newCanvasWidth
             this.canvasProportion.height = newCanvasHeight
             // Update camera
-            if(this.mainCamera instanceof PerspectiveCamera) {
-                this.mainCamera.aspect = newCanvasWidth / newCanvasHeight
+            if(this.devCamera) {
+                this.devCamera.aspect = newCanvasWidth / newCanvasHeight
+                this.devCamera.updateProjectionMatrix()
             }
-            this.mainCamera.updateProjectionMatrix()
             // Update renderer
             this.renderer?.setSize(newCanvasWidth, newCanvasHeight)
         })
     }
-    private setOrbitControls(orbitControls ?: boolean) {
+    private setOrbitControls(orbitControls ?: boolean | CustomOrbitControls): void {
         if(orbitControls) {
-            this.orbitControls = new OrbitControls(this.mainCamera, this.canvas)
-            this.orbitControls.enableDamping = true
-            this.orbitControls.enablePan = true
-            this.orbitControls.enableZoom = true
-        }
-    }
-    private initTick(maxFPS: number = 60) {
-        this.userAskedFPS = maxFPS
-        this.setFPS(maxFPS)
-    }
-    public setFPS(maxFPS: number) {
-        if(this.tickIntervalId !== null) {
-            clearInterval(this.tickIntervalId)
-        } else if(this.animationFrameId !== null) {
-            window.cancelAnimationFrame(this.animationFrameId)
-        }
-        if(maxFPS <= 0) { // if maxFPS is 0 or less, render once
-            this.tick()
-        } else if(maxFPS === Infinity) { // if maxFPS is Infinity, render as often as possible
-            this.tickIntervalId = setInterval(this.tick.bind(this))
-            EngineState.addIntervalId(this.tickIntervalId)
-        } else if(maxFPS === 60) { // if maxFPS is - 60, render in max comfort mode
-            const frame = () => {
-                this.tick()
-                this.animationFrameId = window.requestAnimationFrame(frame) // TODO make own requestAnimationFrame service for better performance and better control & animations
+            if(this.mode === 'dev' && this.devCamera) {
+                this.orbitControls = new OrbitControls(this.devCamera, this.canvas)
+            } else {
+                this.orbitControls = new OrbitControls(this.camera, this.canvas)
             }
-            frame()
-        } else {
-            this.tickIntervalId = setInterval(this.tick.bind(this), 1000 / maxFPS)
-            EngineState.addIntervalId(this.tickIntervalId)
+            if(typeof orbitControls === 'object') {
+                this.orbitControls.enableDamping = orbitControls.damping ?? true
+                this.orbitControls.enablePan = orbitControls.panning ?? true
+                this.orbitControls.enableZoom = orbitControls.zoom ?? true
+                this.orbitControls.enableRotate = orbitControls.rotate ?? true
+            } else {
+                this.orbitControls.enableDamping = true
+                this.orbitControls.enablePan = true
+                this.orbitControls.enableZoom = true
+                this.orbitControls.enableRotate = true
+            }
         }
     }
-    private tick() {
-        this.fpsGraph?.begin()
-        this.renderer.render(this.scene, this.mainCamera)
-        this.fpsGraph?.end()
+    private initTick(askedFps ?: number): void {
+        const camera = this.mode === 'dev' && this.devCamera ? this.devCamera : this.camera
+        this.userAskedFPS = askedFps ?? 60
+        this.animationMachine.run(this.userAskedFPS)
+        this.animationMachine.addListener(() => {
+            this.renderer.render(this.scene, camera)
+        })
     }
     public setAmbientLight(ambientLight ?: AmbientLight | CustomAmbientLight): WireframeEngine {
         if(this.ambientLight) {
@@ -216,21 +222,34 @@ export class WireframeEngine implements EngineInterface {
         return this
     }
     private enableDevControls() {
-        const controller = new Controller(this)
-        this.fpsGraph = controller.fpsGraph
-        this.controller = controller
+        import("./devControls/controller").then(({Controller}) => {
+            this.controller = new Controller(this)
+        })
     }
     private enableTestControls() {
-        const testController = new TestControls(this.setFPS.bind(this), this.userAskedFPS, this.renderer)
-        this.fpsGraph = testController.fpsGraph
+        import("./testControls/testControls").then(({TestControls}) => {
+            new TestControls(this.userAskedFPS, this.renderer)
+        })
     }
-    public setMainCamera(camera?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera' | undefined): WireframeEngine {
-        if(this.mainCamera) {
-            this.scene.remove(this.mainCamera)
+    private setDevCamera() {
+        this.devCamera = new PerspectiveCamera(60, this.canvasProportion.width / this.canvasProportion.height, 0.1, 1000)
+        this.devCamera.uuid = '__wireframe-dev-camera__'
+        this.devCamera.position.set(1, 0.5, 3)
+        this.scene.add(this.devCamera)
+    }
+    public setProdCamera(camera?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera' | undefined): WireframeEngine {
+        if(this.camera) {
+            this.scene.remove(this.camera)
         }
-        this.mainCamera = CameraParser.parse(this.canvasProportion, camera)
-        this.mainCamera.position.set(1, 0.5, 3)
-        this.scene.add(this.mainCamera)
+        if(this.mode === 'dev') {
+            this.camera = CameraWithHelper.from(this.camera)
+            // @ts-ignore
+            this.camera.addToScene(this.scene)
+        } else {
+            this.camera = CameraParser.parse(this.canvasProportion, camera)
+            this.scene.add(this.camera)
+        }
+        this.camera.position.set(1, 0.5, 3)
         return this
     }
 }

@@ -10,7 +10,8 @@ export class RendererParser {
         renderer = renderer || {}
         const webglRenderer = new WebGLRenderer({
             canvas,
-            antialias: renderer.antialias
+            antialias: renderer.antialias,
+            alpha: renderer.alpha
         })
         webglRenderer.setSize(sizes.width, sizes.height, sizes.updateStyle)
         webglRenderer.physicallyCorrectLights = renderer.physicallyCorrectLights ?? false

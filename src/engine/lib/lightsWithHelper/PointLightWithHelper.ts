@@ -1,6 +1,6 @@
 import {ColorRepresentation, PointLight, PointLightHelper, Scene} from "three";
 
-export class DevPointLight extends PointLight {
+export class PointLightWithHelper extends PointLight {
     public helper: PointLightHelper
     constructor(color?: ColorRepresentation, intensity?: number, distance?: number, decay?: number) {
         super(color, intensity, distance, decay)
@@ -10,8 +10,8 @@ export class DevPointLight extends PointLight {
         scene.add(this)
         scene.add(this.helper)
     }
-    static from(light: PointLight): DevPointLight {
-        return new DevPointLight(light.color, light.intensity, light.distance, light.decay)
+    static from(light: PointLight): PointLightWithHelper {
+        return new PointLightWithHelper(light.color, light.intensity, light.distance, light.decay)
     }
     dispose() {
         super.dispose();

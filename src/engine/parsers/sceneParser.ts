@@ -14,7 +14,6 @@ export class SceneParser {
         }
         const sceneInstance = new Scene()
         let { skybox, loadingManager, encoding } = scene
-        console.log('skybox', skybox);
         if(skybox) {
             if(!Array.isArray(skybox)) {
                 skybox = [skybox.posX, skybox.negX, skybox.posY, skybox.negY, skybox.posZ, skybox.negZ]

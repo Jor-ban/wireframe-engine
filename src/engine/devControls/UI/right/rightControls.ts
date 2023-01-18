@@ -1,11 +1,10 @@
 import { FolderApi, Pane, TabPageApi } from 'tweakpane';
 import { Object3DControls } from './utils/Object3DControls';
 import {
-	ACESFilmicToneMapping, AmbientLight, AxesHelper,
+	ACESFilmicToneMapping, AxesHelper,
 	CineonToneMapping,
 	LinearToneMapping,
-	NoToneMapping, OrthographicCamera,
-	PerspectiveCamera,
+	NoToneMapping, 
 	ReinhardToneMapping, Scene, WebGLRenderer,
 } from 'three';
 import { debugParams } from '../../controller';
@@ -29,21 +28,20 @@ export class RightControls {
 	protected statsTab !: TabPageApi
 	private renderer: WebGLRenderer
 	private readonly axesHelper: AxesHelper
-	private camera: PerspectiveCamera | OrthographicCamera
 	private readonly scene: Scene
-	constructor({scene, renderer, mainCamera, ambientLight}: EngineInterface) {
+	constructor({scene, renderer, devCamera, ambientLight}: EngineInterface) {
 		this.scene = scene
 		this.renderer = renderer
-		this.camera = mainCamera
 		this.setUpPane()
 		this.axesHelper = new AxesHelper( 5 );
 		this.scene.add(this.axesHelper)
 		this.addScene(this.sceneTab)
-		const mainCameraFolder = Object3DControls.createFolder('Main Camera', this.sceneTab)
-		CameraControls.addForCamera(mainCamera, mainCameraFolder)
+		const devCameraControls = Object3DControls.createFolder('Main Camera', this.sceneTab)
+		if(devCamera === null) throw new Error('devCamera is null')
+		CameraControls.addForCamera(devCamera, devCameraControls)
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
 		LightControls.addLight(ambientLight, ambientLightFolder)
-		new ActiveElementControls(this.scene, this.objectTab)
+		new ActiveElementControls(this.objectTab)
 		logMemory(this.statsTab, this.renderer)
 	}
 

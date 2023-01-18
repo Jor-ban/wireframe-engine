@@ -1,6 +1,6 @@
 import {ColorRepresentation, DirectionalLight, DirectionalLightHelper, Scene} from "three";
 
-export class DevDirectionalLight extends DirectionalLight {
+export class DirectionalLightWithHelper extends DirectionalLight {
     public helper: DirectionalLightHelper
     constructor(color?: ColorRepresentation, intensity?: number) {
         super(color, intensity);
@@ -10,8 +10,8 @@ export class DevDirectionalLight extends DirectionalLight {
         scene.add(this)
         scene.add(this.helper)
     }
-    static from(light: DirectionalLight): DevDirectionalLight {
-        return new DevDirectionalLight(light.color, light.intensity)
+    static from(light: DirectionalLight): DirectionalLightWithHelper {
+        return new DirectionalLightWithHelper(light.color, light.intensity)
     }
     dispose() {
         super.dispose();

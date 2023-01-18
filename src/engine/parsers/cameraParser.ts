@@ -23,6 +23,7 @@ export class CameraParser {
             ) {
                 return this.generateOrthographicCamera(
                     canvas,
+                    // @ts-ignore
                     camera.left, camera.right, camera.top, camera.bottom,
                     camera.near, camera.far
                 );

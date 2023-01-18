@@ -19,9 +19,9 @@ import {
     MeshMatcapMaterialParameters,
     MeshNormalMaterialParameters,
     MeshPhongMaterialParameters,
-    MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters, Euler,
+    MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters,
 } from 'three';
-import {FolderApi} from "tweakpane";
+import {FolderApi, TabPageApi} from "tweakpane";
 import {
     AddOperation, BasicDepthPacking,
     MixOperation,
@@ -33,7 +33,7 @@ import {WireframeMesh} from "../../../../lib";
 import { FileInputControls } from '../../../../shared/FileInputControls.util';
 
 export class MaterialControlsUtil {
-    static addForMaterial(material: Material, folder: FolderApi) {
+    static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
         material.needsUpdate = true
         folder.addInput(material, 'transparent')
         folder.addInput(material, 'opacity', {min: 0, max: 1})
@@ -51,22 +51,22 @@ export class MaterialControlsUtil {
             material.side = value
         })
         folder.addInput(material, 'clipIntersection')
-        // TODO add clippingPlanes : Plane
         folder.addInput(material, 'clipShadows')
         folder.addInput(material, 'colorWrite')
-        folder.addInput(material, 'fog')
-        const details = folder.addFolder({ title: 'Material details', expanded: false })
+    }
+    static addDetails(material: Material, folder: FolderApi | TabPageApi) {
+        // TODO add clippingPlanes : Plane
         // TODO add depthFunc: DepthModes
-        details.addInput(material, 'depthTest')
-        details.addInput(material, 'depthWrite')
-        details.addInput(material, 'alphaTest', {min: 0, max: 1})
-        details.addInput(material, 'alphaToCoverage')
+        folder.addInput(material, 'depthTest')
+        folder.addInput(material, 'depthWrite')
+        folder.addInput(material, 'alphaTest', {min: 0, max: 1})
+        folder.addInput(material, 'alphaToCoverage')
         // TODO add blendDst : BlendingDsrFactor & blendDstAlpha ; number & blendEquation : BlendingEquation & blendEquationAlpha : number
         // TODO add blending : Blending & blendSrc : BlendingSrcFactor | BlendingDsrFactor & blendSrcAlpha : number
-        details.addInput(material, 'polygonOffset')
-        details.addInput(material, 'polygonOffsetFactor')
-        details.addInput(material, 'polygonOffsetUnits')
-        details.addInput({precision: 0}, 'precision', {
+        folder.addInput(material, 'polygonOffset')
+        folder.addInput(material, 'polygonOffsetFactor')
+        folder.addInput(material, 'polygonOffsetUnits')
+        folder.addInput({precision: 0}, 'precision', {
             options: {
                 'null': 0,
                 'highp': 1,
@@ -76,17 +76,16 @@ export class MaterialControlsUtil {
         }).on('change', ({value}) => {
             material.precision = value === 0 ? null : value === 1 ? 'highp' : value === 2 ? 'mediump' : 'lowp'
         })
-        details.addInput(material, 'toneMapped')
-        details.addInput(material, 'vertexColors')
+        folder.addInput(material, 'toneMapped')
+        folder.addInput(material, 'vertexColors')
         // TODO add format : PixelFormat
-        details.addInput(material, 'stencilWrite')
+        folder.addInput(material, 'stencilWrite')
         // TODO add stencilFunc: StencilFunc
-        details.addInput(material, 'stencilRef')
-        details.addInput(material, 'stencilWriteMask')
-        details.addInput(material, 'stencilFuncMask')
+        folder.addInput(material, 'stencilRef')
+        folder.addInput(material, 'stencilWriteMask')
+        folder.addInput(material, 'stencilFuncMask')
         // TODO add stencilFail : StencilOp & stencilZFail : StencilOp & stencilZPass : StencilOp
     }
-
     static addForToonMaterial(material: MeshToonMaterial, folder: FolderApi) {
         // TODO add onchange event
         this.addForColor(material, folder)
@@ -279,7 +278,6 @@ export class MaterialControlsUtil {
         this.addForNormalMapTypes(material, folder)
         folder.addInput(material, 'normalScale')
         folder.addInput(material, 'envMapIntensity')
-        folder.addInput(material, 'refractionRatio')
         folder.addInput(material, 'wireframe')
         folder.addInput(material, 'wireframeLinewidth')
         folder.addInput(material, 'flatShading')
@@ -381,7 +379,7 @@ export class MaterialControlsUtil {
             | MeshDepthMaterial
             | MeshPhongMaterial
             | MeshPhysicalMaterial,
-         folder: FolderApi
+        folder: FolderApi
     ) {
         FileInputControls.addMapable(material, folder, 'map')
     }
@@ -407,18 +405,18 @@ export class MaterialControlsUtil {
         FileInputControls.addMapable(material, folder, 'aoMap')
     }
     private static addForBumpMap(material:
-         | MeshToonMaterial
-         | MeshNormalMaterial
-         | MeshMatcapMaterial,
-         folder: FolderApi
+        | MeshToonMaterial
+        | MeshNormalMaterial
+        | MeshMatcapMaterial,
+        folder: FolderApi
     ) {
         FileInputControls.addMapable(material, folder, 'bumpMap')
     }
     private static addForNormalMap(material:
-       | MeshToonMaterial
-       | MeshNormalMaterial
-       | MeshMatcapMaterial,
-       folder: FolderApi
+        | MeshToonMaterial
+        | MeshNormalMaterial
+        | MeshMatcapMaterial,
+        folder: FolderApi
     ) {
         FileInputControls.addMapable(material, folder, 'normalMap')
     }
@@ -487,7 +485,7 @@ export class MaterialControlsUtil {
     private static addForColor(material:
         | MeshToonMaterial | MeshBasicMaterial | MeshLambertMaterial
         | MeshMatcapMaterial | MeshPhongMaterial | MeshStandardMaterial,
-       folder: FolderApi
+        folder: FolderApi
     ) {
         this.addColorable(material, folder, 'color')
     }
@@ -513,7 +511,7 @@ export class MaterialControlsUtil {
         this.addColorable(material, folder, 'specularColor')
     }
 
-    static materialConverter(material: Material, mesh: WireframeMesh, folder: FolderApi, callback: () => void) {
+    static materialConverter(material: Material, mesh: WireframeMesh, folder: FolderApi | TabPageApi, callback: () => void) {
         folder.addInput({'Change Material Type': material.type}, 'Change Material Type', {
             options: {
                 'DepthMaterial': 'MeshDepthMaterial',
@@ -545,7 +543,6 @@ export class MaterialControlsUtil {
                 depthFunc: material.depthFunc,
                 depthTest: material.depthTest,
                 depthWrite: material.depthWrite,
-                fog: material.fog,
                 name: material.name,
                 opacity: material.opacity,
                 polygonOffset: material.polygonOffset,

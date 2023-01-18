@@ -1,4 +1,3 @@
-import {FolderApi, TabPageApi} from "tweakpane";
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {InstrumentsEnum} from "../../types/Instruments.enum";
 import {EngineInterface} from "../../../types/Engine.interface";
@@ -8,26 +7,24 @@ import {ChangeDetector} from "../../changeDetector/changeDetector";
 import {WireframeMesh} from "../../../lib";
 import {Shortcuts} from "../../shortcuts";
 
-const pointerIconUrl: string = require("../../assets/pointer_icon.svg")
-const moveIconUrl   : string = require('../../assets/move_icon.svg')
-const rotateIconUrl : string = require('../../assets/rotate_icon.svg')
-const scaleIconUrl  : string = require('../../assets/scale_icon.svg')
+import pointerIconUrl from "../../assets/pointer_icon.svg"
+import moveIconUrl    from '../../assets/move_icon.svg'
+import rotateIconUrl  from '../../assets/rotate_icon.svg'
+import scaleIconUrl   from '../../assets/scale_icon.svg'
 
 export class InstrumentsControls {
-    instrumentsFolder: FolderApi
     instrumentsElement: HTMLElement
     activeInstrument: InstrumentsEnum = InstrumentsEnum.pointer
     buttonsList: HTMLButtonElement[] = []
     private readonly tfControls: TransformControls
     private readonly elementTracer: ElementTracer
 
-    constructor(pane: TabPageApi, engineState: EngineInterface) {
-        const {mainCamera, canvas, scene, orbitControls} = engineState
-        this.instrumentsFolder = pane.addFolder({title: '', expanded: true})
-        this.instrumentsFolder.element.classList.add('__wireframe-invisible-folder')
-        this.instrumentsElement = this.instrumentsFolder.element.children[1] as HTMLElement;
+    constructor(engineState: EngineInterface, container: HTMLElement) {
+        const {devCamera, canvas, scene, orbitControls} = engineState
+        this.instrumentsElement = container
         this.instrumentsElement.classList.add('__wireframe-instruments')
-        this.tfControls = new TransformControls(mainCamera, canvas)
+        if(!devCamera) throw new Error('devCamera is null')
+        this.tfControls = new TransformControls(devCamera, canvas)
         this.elementTracer = new ElementTracer(engineState, this.tfControls.getRaycaster())
         if(orbitControls) {
             this.tfControls.addEventListener('dragging-changed', (event) => {
@@ -99,10 +96,10 @@ export class InstrumentsControls {
         this.instrumentsElement.appendChild(button)
         const icon = document.createElement('img')
         icon.src = iconUrl
-        button.appendChild(icon)
         const tooltip = document.createElement('span')
         tooltip.classList.add('__wireframe-instruments__button__tooltip')
         tooltip.innerText = tooltipDescription
+        button.appendChild(icon)
         button.appendChild(tooltip)
     }
     onInstrumentChange(instrument: InstrumentsEnum) {

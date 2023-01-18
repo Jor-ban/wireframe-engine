@@ -15,7 +15,7 @@ import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeomet
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import {WireframeMesh, WireframeTextGeometry} from "../lib";
-const helvetiker = require('three/examples/fonts/helvetiker_regular.typeface.json')
+import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 
 const fl = new FontLoader()
 

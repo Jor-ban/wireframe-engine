@@ -3,7 +3,6 @@ import {
     BoxGeometry, BufferGeometry, Mesh,
     MeshBasicMaterial,
     Object3D,
-    OrthographicCamera,
     PerspectiveCamera,
     Raycaster,
     Scene,
@@ -15,15 +14,14 @@ import {ChangeDetector} from "../../../changeDetector/changeDetector";
 import {EngineInterface} from "../../../../types/Engine.interface";
 import {InstrumentsEnum} from "../../../types/Instruments.enum";
 import {WireframeMesh} from "../../../../lib";
-import {DevLight} from "../../../../lib/devLights/DevLight";
+import {LightWithHelper} from "../../../../lib/lightsWithHelper";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null
     protected mouse = new Vector2()
     private readonly canvasProportion: CanvasProportion
-    private canvas: HTMLCanvasElement
     private readonly scene: Scene
-    private readonly camera: PerspectiveCamera | OrthographicCamera
+    private readonly camera !: PerspectiveCamera
     private rayCaster: Raycaster
     private mouseMoved: boolean = false
 
@@ -48,10 +46,11 @@ export class ElementTracer {
         })
     )
 
-    constructor({ canvas, canvasProportion, mainCamera, scene }: EngineInterface, rayCaster: Raycaster) {
-        this.canvas = canvas
+    constructor({ canvas, canvasProportion, devCamera, scene }: EngineInterface, rayCaster: Raycaster) {
         this.canvasProportion = canvasProportion
-        this.camera = mainCamera
+        if(devCamera) {
+            this.camera = devCamera
+        }
         this.scene = scene
         this.rayCaster = rayCaster
         scene.add(this.hoveredObject, this.clickedObject)
@@ -137,13 +136,13 @@ export class ElementTracer {
         const intersects = this.rayCaster.intersectObjects(this.scene.children)
         const obj = intersects
             .filter((el) =>
-                (el.object instanceof WireframeMesh || DevLight.isLightHelper(el.object)) &&
+                (el.object instanceof WireframeMesh || LightWithHelper.isLightHelper(el.object)) &&
                 el.object !== this.hoveredObject &&
                 el.object !== this.clickedObject
             )[0]?.object
         if(obj instanceof WireframeMesh) {
             this.emitHover(obj)
-        } else if(DevLight.isLightHelper(obj)) {
+        } else if(LightWithHelper.isLightHelper(obj)) {
             this.emitHover(obj.light)
         } else {
             this.hoveredObject.visible = false

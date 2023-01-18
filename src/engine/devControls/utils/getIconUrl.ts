@@ -1,15 +1,15 @@
 import {AssetsTree} from "../types/AssetsTree.interface";
 import {ExplorerService} from "../UI/bottom/explorer.service";
 
-const folderIcon: string = require('../assets/folder.png')
-const other: string = require('../assets/other.png');
-const typescript: string = require('../assets/typescript.png');
-const javascript: string = require('../assets/javascript.png');
-const image: string = require('../assets/image.png');
-const html: string = require('../assets/html.png');
-const css: string = require('../assets/css.png');
-const json: string = require('../assets/json.png');
-const gltf: string = require('../assets/gltf.png');
+import folderIcon from '../assets/folder.png'
+import other from '../assets/other.png'
+import typescript from '../assets/typescript.png'
+import javascript from '../assets/javascript.png'
+import image from '../assets/image.png'
+import html from '../assets/html.png'
+import css from '../assets/css.png'
+import json from '../assets/json.png'
+import gltf from '../assets/gltf.png'
 
 export async function getIconUrl(data: AssetsTree): Promise<string> {
     if(data.isFolder) {
