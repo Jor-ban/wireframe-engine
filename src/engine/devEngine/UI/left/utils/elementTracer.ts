@@ -14,7 +14,7 @@ import {leftControlsWidth, topBarHeight} from "../../../../shared/consts/control
 import {ChangeDetector} from "../../../changeDetector/changeDetector";
 import {InstrumentsEnum} from "../../../types/Instruments.enum";
 import {WireframeMesh} from "../../../../lib";
-import {LightWithHelper} from "../../../../lib/lightsWithHelper";
+import {LightWithHelper} from "../../../../lib/devClasses/lightsWithHelper";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null

@@ -187,6 +187,9 @@ export class ElementsListControls {
             console.log(this.draggingElement, container)
             console.log(this.draggingElementIndex)
         })
+        container.addEventListener('mouseover', () => {
+            ChangeDetector.hoveredObject$.next(obj)
+        })
 
         container.appendChild(text)
         const showButton = document.createElement("button")

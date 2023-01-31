@@ -20,7 +20,7 @@ import { CustomAmbientLight } from "../parsers/types/CustomLight.interface";
 import { LightParser } from "../parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
-import {CameraWithHelper, OrthographicCameraWithHelper } from './camerasWithHelper';
+import { CameraWithHelper, OrthographicCameraWithHelper } from './devClasses/camerasWithHelper';
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
@@ -30,7 +30,7 @@ export class __DefaultEngine implements EngineInterface {
     public scene !: Scene
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
-    public mode: 'dev' | 'prod' | 'test' = 'dev'
+    public mode: EngineInterface['mode'] = 'dev'
 
     protected userAskedFPS: number = 60
     protected animationMachine = AnimationFrame
