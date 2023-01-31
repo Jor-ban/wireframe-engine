@@ -1,3 +1,4 @@
+import { __DevEngine } from './../../devEngine';
 import { FolderApi, Pane, TabPageApi } from 'tweakpane';
 import { Object3DControls } from './utils/Object3DControls';
 import {
@@ -18,7 +19,6 @@ import { LightControls } from './utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "../../../utils/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "../../../shared/consts/controlsStyles";
-import {EngineInterface} from "../../../types/Engine.interface";
 import {SkyboxControls} from "./utils/SkyboxControls";
 
 export class RightControls {
@@ -29,7 +29,7 @@ export class RightControls {
 	private renderer: WebGLRenderer
 	private readonly axesHelper: AxesHelper
 	private readonly scene: Scene
-	constructor({scene, renderer, devCamera, ambientLight}: EngineInterface) {
+	constructor({scene, renderer, devCamera, ambientLight}: __DevEngine) {
 		this.scene = scene
 		this.renderer = renderer
 		this.setUpPane()

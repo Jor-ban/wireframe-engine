@@ -1,15 +1,15 @@
+import { __DevEngine } from './../../devEngine';
 import {ElementsListControls} from "./elementsListControls";
 import {InstrumentsControls} from "./instrumentsControls";
 import {
 	leftControlsWidth,
 	topBarHeight
 } from "../../../shared/consts/controlsStyles";
-import {EngineInterface} from "../../../types/Engine.interface";
 
 export class LeftControls {
 	instrumentsElement !: HTMLDivElement
 	objectsElement !: HTMLDivElement
-	constructor(engineState: EngineInterface) {
+	constructor(engineState: __DevEngine) {
 		const leftBar = document.createElement('div')
 		leftBar.classList.add('__wireframe-left-controls', '__wireframe-controls')
 		leftBar.style.height = `calc(100vh - ${topBarHeight}px)`
