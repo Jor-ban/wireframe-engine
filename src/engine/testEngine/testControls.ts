@@ -1,8 +1,8 @@
-import { AnimationFrame } from './../services/animationFrame.service';
+import { AnimationFrame } from '../services/animationFrame.service';
 import {Pane} from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import {WebGLRenderer} from "three";
-import {logMemory} from "../devControls/utils/PerformanceMonitors";
+import {logMemory} from "../utils/PerformanceMonitors";
 
 export class TestControls {
     public pane: Pane

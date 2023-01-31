@@ -1,6 +1,6 @@
+import { __DevEngine } from './../../devEngine';
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {InstrumentsEnum} from "../../types/Instruments.enum";
-import {EngineInterface} from "../../../types/Engine.interface";
 import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
 import {ChangeDetector} from "../../changeDetector/changeDetector";
@@ -19,7 +19,7 @@ export class InstrumentsControls {
     private readonly tfControls: TransformControls
     private readonly elementTracer: ElementTracer
 
-    constructor(engineState: EngineInterface, container: HTMLElement) {
+    constructor(engineState: __DevEngine, container: HTMLElement) {
         const {devCamera, canvas, scene, orbitControls} = engineState
         this.instrumentsElement = container
         this.instrumentsElement.classList.add('__wireframe-instruments')
@@ -29,7 +29,7 @@ export class InstrumentsControls {
         if(orbitControls) {
             this.tfControls.addEventListener('dragging-changed', (event) => {
                 orbitControls.enabled = !event.value;
-
+                
                 if(!event.value && this.elementTracer.activeObject) {
                     let changedPropertyName = 'position'
                     if(this.activeInstrument === InstrumentsEnum.rotation) {

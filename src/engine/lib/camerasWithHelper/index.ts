@@ -1,3 +1,4 @@
+import { ChangeDetector } from '../../devEngine/changeDetector/changeDetector';
 import { CameraHelper, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 
 export class CameraWithHelper extends PerspectiveCamera {
@@ -5,6 +6,13 @@ export class CameraWithHelper extends PerspectiveCamera {
     constructor(fov?: number, aspect?: number, near?: number, far?: number) {
         super(fov, aspect, near, far);
         this.helper = new CameraHelper(this)
+        ChangeDetector.hoveredObject$.subscribe(object => {
+            if(object === this) {
+                this.helper.visible = true
+            } else {
+                this.helper.visible = false
+            }
+        })
     }
     public addToScene(scene: Scene) {
         scene.add(this)

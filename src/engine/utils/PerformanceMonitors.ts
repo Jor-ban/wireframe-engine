@@ -1,5 +1,5 @@
 import {FolderApi, Pane, TabPageApi} from "tweakpane";
-import {EngineState} from "../../shared/engineState";
+import {EngineState} from "../shared/engineState";
 import {WebGLRenderer} from "three";
 
 export function logMemory(statsTab: TabPageApi | Pane | FolderApi, renderer: WebGLRenderer): void {

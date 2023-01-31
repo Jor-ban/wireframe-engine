@@ -1,17 +1,17 @@
 {
   "name": "wireframe_engine",
-  "version": "0.1.0",
+  "version": "0.0.5",
   "description": "Engine for three.js",
   "main": "index.js",
   "scripts": {
     "dev": "npm run start",
-    "start": "cross-env NODE_ENV=development concurrently --kill-others \"node ./src/engine/devControls/fileManager/index.js\" \"vite\"",
-    "dev:watch": "cross-env NODE_ENV=development concurrently --kill-others \"nodemon ./src/engine/fileManager/index.js\" \"vite\"",
+    "start": "cross-env NODE_ENV=dev concurrently --kill-others \"node ./src/engine/devEngine/fileManager/index.js\" \"vite\"",
+    "dev:watch": "cross-env NODE_ENV=dev concurrently --kill-others \"nodemon ./src/engine/fileManager/index.js\" \"vite\"",
     "dev:fileManager-only": "nodemon ./src/engine/fileManager/index.js",
-    "dev:frontend-only": "cross-env NODE_ENV=development vite",
-    "dev:prod": "cross-env NODE_ENV=production vite",
-    "build:dev": "cross-env NODE_ENV=development webpack",
-    "build": "cross-env NODE_ENV=production tsc && vite build",
+    "dev:frontend-only": "cross-env NODE_ENV=dev vite",
+    "dev:prod": "cross-env NODE_ENV=prod vite",
+    "build:dev": "cross-env NODE_ENV=dev vite build",
+    "build": "cross-env NODE_ENV=prod tsc && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && firebase deploy"
   },
@@ -49,6 +49,7 @@
     "gsap": "^3.9.1",
     "node-fetch": "^2.6.7",
     "rxjs": "^7.5.5",
+    "ts-mixer": "^6.0.2",
     "tweakpane": "^3.1.0",
     "tweakpane-image-plugin": "^1.1.3"
   }

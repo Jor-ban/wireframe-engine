@@ -1,4 +1,4 @@
-import { EngineInterface } from './../../../types/Engine.interface';
+import { __DevEngine } from './../../devEngine';
 import { WireframeDropdown } from './../../utils/dropdown';
 import { filter } from 'rxjs';
 import {
@@ -24,7 +24,7 @@ import {
 import { SceneFolder } from "../../types/SceneFolder.type";
 import { ChangeDetector } from "../../changeDetector/changeDetector";
 import { WireframeMesh } from "../../../lib";
-import { dispose } from "../../../utils/dispose";
+import { dispose } from "../../../shared/dispose";
 import { icons } from '../../assets/icons';
 
 import { getMeshAddingOptions } from '../../utils/MeshAddingOptions';
@@ -40,7 +40,7 @@ export class ElementsListControls {
     private draggingElement: HTMLElement | null = null
     private draggingElementIndex: number = -1
 
-    constructor(engineState: EngineInterface, container: HTMLElement) {
+    constructor(engineState: __DevEngine, container: HTMLElement) {
         this.scene = engineState.scene
         if(!engineState.devCamera) throw new Error('devCamera is null \n This Error should not happen')
         this.devCamera = engineState.devCamera

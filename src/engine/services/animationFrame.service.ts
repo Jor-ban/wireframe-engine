@@ -9,17 +9,52 @@ class AnimationFrameFactory {
     private clock !: Clock
     private maxFPS: number = 60
 
+    /**
+     * method to set max fps to run at for whole app
+     * @param maxFps - max fps to run at, if not provided, will run at 60 fps
+     * @returns AnimationFrame service
+     * @example
+     * import { AnimationFrame } from './services/animationFrame.service';
+     * AnimationFrame.runAt(60)
+     * // do something
+     * AnimationFrame.addListener((deltaTime) => {
+     *    // do something with deltaTime
+     * })
+     */
     public run(maxFps ?: number) {
         this.clock = new Clock(true)
         this.isRunning = true;
         this.setFPS(maxFps ?? this.maxFPS)
         return this
     }
+    /**
+     * method to stop running at max fps
+     * @returns AnimationFrame service
+     * @example
+     * import { AnimationFrame } from './services/animationFrame.service';
+     * AnimationFrame.runAt(60)
+     * // do something
+     * AnimationFrame.stop()
+     * // do something else
+     * AnimationFrame.runAt(60)
+    **/
     public stop() {
         this.isRunning = false;
         this.setFPS(0)
         return this
     }
+    /**
+     * method to add listener to be called on every frame
+     * @param listener - function to be called on every frame
+     * @param runInBeginning - if true, will run listener in the beginning of the frame, if false, will run in the end of the frame
+     * @returns AnimationFrame service
+     * @example
+     * import { AnimationFrame } from './services/animationFrame.service';
+     * // do something
+     * AnimationFrame.addListener((deltaTime) => {
+     *   // do something with deltaTime
+     * })
+     **/
     public addListener(listener: (deltaTime: number) => void, runInBeginning ?: boolean) {
         if(runInBeginning) {
             this._callbacks.unshift(listener)
@@ -28,10 +63,34 @@ class AnimationFrameFactory {
         }
         return this
     }
+    /**
+     * method to remove listener from being called on every frame
+     * @param listener - function to be removed from being called on every frame
+     * @returns AnimationFrame service
+     * @example
+     * import { AnimationFrame } from './services/animationFrame.service';
+     * // do something
+     * const listener = (deltaTime) => {
+     *  // do something with deltaTime
+     * }
+     * AnimationFrame.addListener(listener)
+     * // do something else
+     * AnimationFrame.removeListener(listener)
+     **/
     public removeListener(listener: () => void) {
         this._callbacks.splice(this._callbacks.findIndex(listener), 1)
         return this
     }
+    /**
+     * method to set max fps to run at for whole app
+     * @param maxFPS - max fps to run at, if not provided, will run at 60 fps
+     * @returns AnimationFrame service
+     * @example
+     * import { AnimationFrame } from './services/animationFrame.service';
+     * settingsFpsButton.onclick = () => {
+     *   AnimationFrame.setFPS(30)
+     * }
+     **/
     public setFPS(maxFPS: number = 60) {
         this.maxFPS = maxFPS
         // removing previous interval or animationFrame
@@ -64,5 +123,13 @@ class AnimationFrameFactory {
         }
     }
 }
-
+/**
+ * AnimationFrame - service for browserAnimationFrames
+ * @example
+ * import { AnimationFrame } from './services/animationFrame.service';
+ * // needs to be started once (engine does this automatically)
+ * AnimationFrame.addListener(() => {
+ *    // do something
+ * })
+ */
 export const AnimationFrame = new AnimationFrameFactory();

@@ -1,3 +1,4 @@
+import { __DevEngine } from './../../../devEngine';
 import {
     BackSide,
     BoxGeometry, BufferGeometry, Mesh,
@@ -11,7 +12,6 @@ import {
 import {CanvasProportion} from "../../../../parsers/types/CanvasProportion.interface";
 import {leftControlsWidth, topBarHeight} from "../../../../shared/consts/controlsStyles";
 import {ChangeDetector} from "../../../changeDetector/changeDetector";
-import {EngineInterface} from "../../../../types/Engine.interface";
 import {InstrumentsEnum} from "../../../types/Instruments.enum";
 import {WireframeMesh} from "../../../../lib";
 import {LightWithHelper} from "../../../../lib/lightsWithHelper";
@@ -30,7 +30,6 @@ export class ElementTracer {
         new MeshBasicMaterial({
             color: 0xff0066,
             side: BackSide,
-            // wireframe: true,
             transparent: true,
             opacity: 1,
         })
@@ -39,14 +38,13 @@ export class ElementTracer {
         new BoxGeometry(),
         new MeshBasicMaterial({
             color: 0xffffff,
-            // wireframe: true,
             opacity: 0.8,
             transparent: true,
             side: BackSide
         })
     )
 
-    constructor({ canvas, canvasProportion, devCamera, scene }: EngineInterface, rayCaster: Raycaster) {
+    constructor({ canvas, canvasProportion, devCamera, scene }: __DevEngine, rayCaster: Raycaster) {
         this.canvasProportion = canvasProportion
         if(devCamera) {
             this.camera = devCamera

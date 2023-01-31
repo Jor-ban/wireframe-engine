@@ -4,7 +4,7 @@ import {
     CubeTextureLoaderService,
     defaultSkybox,
     defaultSkyboxSides
-} from "../../../../shared/defaultSkybox";
+} from "../../../../shared/consts/defaultSkybox";
 import {FileInputControls, whiteTexture} from "../../../../shared/FileInputControls.util";
 import {WireframeTextureLoader} from "../../../../shared/loaders";
 

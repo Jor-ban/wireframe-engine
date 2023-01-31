@@ -7,8 +7,8 @@ export interface EngineInterface {
 	canvas: HTMLCanvasElement
 	renderer: WebGLRenderer
 	camera: PerspectiveCamera | OrthographicCamera
-	devCamera: PerspectiveCamera | null
 	scene: Scene
+	mode: 'dev' | 'prod' | 'test'
 	ambientLight: AmbientLight
-	orbitControls: OrbitControls | undefined
+	orbitControls: OrbitControls | undefined 
 }
