@@ -1,4 +1,4 @@
-import { ColorRepresentation, HemisphereLight, HemisphereLightHelper, Scene } from "three";
+import { ColorRepresentation, HemisphereLight, HemisphereLightHelper, Object3D, Scene } from "three";
 import { ChangeDetector } from "../../../devEngine/changeDetector/changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
@@ -29,7 +29,7 @@ export class HemisphereLightWithHelper extends HemisphereLight implements Elemen
             }
         })
     }
-    addToScene(scene: Scene) {
+    addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }

@@ -1,16 +1,22 @@
 
-import {MeshGenerator} from "./generators/MeshGenerator";
-import {Light, PerspectiveCamera, Scene} from "three";
-import {HiddenMenuOption} from "./hiddenMenu";
-import {LightWithHelperGenerator} from "./generators/LightWithHelperGenerator";
-import {ChangeDetector} from "../changeDetector/changeDetector";
-import {WireframeMesh} from "../../lib";
-import {LightWithHelper} from "../../lib/devClasses/lightsWithHelper";
+import { MeshGenerator } from "./generators/MeshGenerator";
+import { Group, Light, Object3D, PerspectiveCamera, Scene } from "three";
+import { HiddenMenuOption } from "./hiddenMenu";
+import { LightWithHelperGenerator } from "./generators/LightWithHelperGenerator";
+import { ChangeDetector } from "../changeDetector/changeDetector";
+import { WireframeMesh } from "../../lib";
+import { LightWithHelper } from "../../lib/devClasses/lightsWithHelper";
 import { icons } from '../assets/icons'
+
+let activeObject: Object3D | null = null
+
+ChangeDetector.clickedObject$.subscribe(object => {
+    activeObject = object
+})
 
 export function getMeshAddingOptions(scene: Scene, devCamera: PerspectiveCamera): HiddenMenuOption[] {
     return [{
-        name: `<img src="${icons.box}" alt="Box" class="list-icon" /> Mesh`,
+        name: `<img src="${icons.box}" alt="Box" class="list-icon" /> Mesh ▸ `,
         subOptions: [
             {
                 name: `<img src="${icons.box}" alt="Box" class="list-icon" /> Box`,
@@ -42,7 +48,7 @@ export function getMeshAddingOptions(scene: Scene, devCamera: PerspectiveCamera)
             },
         ]
     },{
-        name: `<img src="${icons.pointLight}" alt="Text" class="list-icon"/> Light`,
+        name: `<img src="${icons.pointLight}" alt="Text" class="list-icon"/> Light ▸ `,
         subOptions: [
             {
                 name: `<img src="${icons.pointLight}" alt="Text" class="list-icon"/> Point light`,
@@ -62,10 +68,16 @@ export function getMeshAddingOptions(scene: Scene, devCamera: PerspectiveCamera)
 ]}
 function addMesh(obj: WireframeMesh | Light | undefined, scene: Scene) {
     if(obj) {
-        if(obj instanceof Light && LightWithHelper.isLightWithHelper(obj)) {
-            obj.addToScene(scene)
+        let parent: Scene | Object3D = scene
+        if(activeObject instanceof Group) {
+            parent = activeObject
+        } else if(activeObject?.parent) {
+            parent = activeObject.parent
+        }
+        if(LightWithHelper.isLightWithHelper(obj)) {
+            obj.addToScene(parent)
         } else {
-            scene.add(obj)
+            parent.add(obj)
         }
         ChangeDetector.addedObject$.next(obj)
     }

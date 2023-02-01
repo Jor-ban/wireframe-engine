@@ -1,4 +1,4 @@
-import { ColorRepresentation, PointLight, PointLightHelper, Scene } from "three";
+import { ColorRepresentation, Object3D, PointLight, PointLightHelper, Scene } from "three";
 import { ChangeDetector } from "../../../devEngine/changeDetector/changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
@@ -12,7 +12,7 @@ export class PointLightWithHelper extends PointLight implements ElementWithHelpe
         this.helper.visible = false
         this.initEvents()
     }
-    addToScene(scene: Scene) {
+    addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }

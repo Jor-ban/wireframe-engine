@@ -1,4 +1,4 @@
-import { ColorRepresentation, DirectionalLight, DirectionalLightHelper, Scene } from "three";
+import { ColorRepresentation, DirectionalLight, DirectionalLightHelper, Object3D, Scene } from "three";
 import { ChangeDetector } from "../../../devEngine/changeDetector/changeDetector";
 import { ElementWithHelper } from '../types/elementWithHelper.interface';
 
@@ -12,7 +12,7 @@ export class DirectionalLightWithHelper extends DirectionalLight implements Elem
         this.helper.visible = false
         this.initEvents()
     }
-    addToScene(scene: Scene) {
+    addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }
