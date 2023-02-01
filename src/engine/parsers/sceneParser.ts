@@ -1,6 +1,6 @@
 import {CubeTextureLoader, Scene, sRGBEncoding} from "three";
 import {CustomScene} from "./types/CustomScene.interface";
-import {defaultSkybox} from "../shared/defaultSkybox";
+import {defaultSkybox} from "../shared/consts/defaultSkybox";
 
 export class SceneParser {
     public static parse(scene ?: Scene | CustomScene): Scene {

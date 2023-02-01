@@ -1,6 +1,6 @@
-import {WireframeEngine} from "./engine/engine";
+import { Engine } from "./engine";
 
-new WireframeEngine('#canvas', {
+Engine.create('#canvas', {
     objects: [
         {
             geometry: { type: 'sphere' },
