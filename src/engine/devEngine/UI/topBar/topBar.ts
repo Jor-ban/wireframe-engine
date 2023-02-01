@@ -1,13 +1,18 @@
-import {PerspectiveCamera, Scene} from "three";
-import {WireframeDropdown} from "../../utils/dropdown";
-import {getMeshAddingOptions} from "../../utils/MeshAddingOptions";
+import { InstrumentsEnum } from '../../types/Instruments.enum';
+import { icons } from '../../assets/icons';
+import { ChangeDetector } from '../../changeDetector/changeDetector';
+import { Group, Object3D, PerspectiveCamera, Scene } from "three";
+import { WireframeDropdown } from "../../utils/dropdown";
+import { getMeshAddingOptions } from "../../utils/MeshAddingOptions";
 
 import logoUrl from '../../assets/wireframe-logo.svg'
+import { HiddenMenuOption } from "../../utils/hiddenMenu";
 
 export class TopBar {
     bar: HTMLElement;
     devCamera: PerspectiveCamera;
     scene: Scene;
+    activeObject: Object3D | null = null; 
 
     constructor(devCamera: PerspectiveCamera, scene: Scene) {
         this.devCamera = devCamera;
@@ -16,16 +21,19 @@ export class TopBar {
         this.bar.classList.add("__wireframe-top-bar", '__wireframe-controls')
         document.body.appendChild(this.bar)
         this.addLogo()
-        this.addMeshAddingDropdown()
+        this.addDropdowns()
         this.addTestPlayButton()
+        ChangeDetector.clickedObject$.subscribe(object => {
+            this.activeObject = object
+        })
     }
-    addLogo(): void {
+    private addLogo(): void {
         const logo = document.createElement("img")
         logo.src = logoUrl
         logo.classList.add("__wireframe-logo")
         this.bar.appendChild(logo)
     }
-    addTestPlayButton() {
+    private addTestPlayButton() {
         const button = document.createElement("a")
         button.href = window.location.href + '?mode=test'
         button.target = '_blank'
@@ -34,9 +42,62 @@ export class TopBar {
         button.style.marginLeft = 'auto'
         this.bar.appendChild(button)
     }
-    addMeshAddingDropdown() {
-        const addBtn = document.createElement("button")
-        addBtn.innerHTML = "Add [ + ]"
-        new WireframeDropdown(this.bar, addBtn, getMeshAddingOptions(this.scene, this.devCamera))
+    private addDropdowns() {
+        this.addInstrumentsDropdown()
+        this.addElementsListDropdowns()
+    }
+    private addElementsListDropdowns() {
+        const elementsListButton = document.createElement("button")
+        elementsListButton.innerHTML = `Objects List ▾ `
+        const groupAddingOption: HiddenMenuOption = {
+            name: `<img src="${icons.addGroup}" class="list-icon" /> Add Group`,
+            onclick: () => {
+                let place: Scene | Object3D = this.scene
+                if(this.activeObject instanceof Group) {
+                    place = this.activeObject
+                } else if(this.activeObject?.parent) {
+                    place = this.activeObject.parent
+                }
+                const group = new Group()
+                place.add(group)
+                ChangeDetector.addedObject$.next(group)
+            }
+        }
+        new WireframeDropdown(this.bar, elementsListButton, [
+            {
+                name: "Add ▸",
+                subOptions: [
+                    groupAddingOption, 
+                    ...getMeshAddingOptions(this.scene, this.devCamera)
+                ]
+            },
+        ])
+    }
+    private addInstrumentsDropdown() {
+        const instrumentsButton = document.createElement("button");
+        instrumentsButton.innerHTML = "Instruments ▾ "
+        new WireframeDropdown(this.bar, instrumentsButton, [
+            {
+                name: "Pointer",
+                onclick: () => {
+                    ChangeDetector.activeInstrument$.next(InstrumentsEnum.pointer)
+                }
+            }, {
+                name: "Move",
+                onclick: () => {
+                    ChangeDetector.activeInstrument$.next(InstrumentsEnum.move)
+                }
+            }, {
+                name: "Rotate",
+                onclick: () => {
+                    ChangeDetector.activeInstrument$.next(InstrumentsEnum.rotation)
+                }
+            }, {
+                name: "Scale",
+                onclick: () => {
+                    ChangeDetector.activeInstrument$.next(InstrumentsEnum.scale)
+                }
+            }
+        ])
     }
 }

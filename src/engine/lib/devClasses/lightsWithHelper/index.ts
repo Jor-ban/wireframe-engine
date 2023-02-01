@@ -29,7 +29,7 @@ export class LightWithHelper {
         return undefined
     }
 
-    static isLightWithHelper(light: Light): light is PointLightWithHelper | DirectionalLightWithHelper | SpotLightWithHelper | HemisphereLightWithHelper {
+    static isLightWithHelper(light: any): light is PointLightWithHelper | DirectionalLightWithHelper | SpotLightWithHelper | HemisphereLightWithHelper {
         return light instanceof PointLightWithHelper ||
             light instanceof DirectionalLightWithHelper ||
             light instanceof SpotLightWithHelper ||

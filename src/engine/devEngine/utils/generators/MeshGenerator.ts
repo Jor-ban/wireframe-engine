@@ -1,5 +1,5 @@
 import {
-    BoxGeometry, BufferGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
+    BoxGeometry, BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
     MeshBasicMaterial,
     PerspectiveCamera, PlaneGeometry, RingGeometry,
     SphereGeometry,
@@ -31,7 +31,7 @@ export class MeshGenerator {
         return this.createMesh(new DodecahedronGeometry(), camera)
     }
     static addCircle(camera: PerspectiveCamera): WireframeMesh {
-        return this.createMesh(new CylinderGeometry(), camera)
+        return this.createMesh(new CircleGeometry(), camera)
     }
     static async addText(camera: PerspectiveCamera): Promise<WireframeMesh | undefined> {
         const text = prompt("Enter text to add")

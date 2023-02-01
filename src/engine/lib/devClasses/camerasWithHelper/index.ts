@@ -1,5 +1,5 @@
 import { ChangeDetector } from '../../../devEngine/changeDetector/changeDetector';
-import { CameraHelper, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
+import { CameraHelper, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 import { ElementWithHelper } from '../types/elementWithHelper.interface';
 
 export class CameraWithHelper extends PerspectiveCamera implements ElementWithHelper {
@@ -12,7 +12,7 @@ export class CameraWithHelper extends PerspectiveCamera implements ElementWithHe
         this.helper.visible = false
         this.initEvents()
     }
-    public addToScene(scene: Scene) {
+    public addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }
@@ -56,7 +56,7 @@ export class OrthographicCameraWithHelper extends OrthographicCamera implements 
         super(left, right, top, bottom, near, far);
         this.helper = new CameraHelper(this)
     }
-    public addToScene(scene: Scene) {
+    public addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }

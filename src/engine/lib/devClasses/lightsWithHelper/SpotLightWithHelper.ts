@@ -1,4 +1,4 @@
-import { ColorRepresentation, Scene, SpotLight, SpotLightHelper } from "three";
+import { ColorRepresentation, Object3D, Scene, SpotLight, SpotLightHelper } from "three";
 import { ChangeDetector } from "../../../devEngine/changeDetector/changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
@@ -12,7 +12,7 @@ export class SpotLightWithHelper extends SpotLight implements ElementWithHelper 
         this.helper.visible = false;
         this.initEvents();
     }
-    addToScene(scene: Scene) {
+    addToScene(scene: Scene | Object3D) {
         scene.add(this)
         scene.add(this.helper)
     }
