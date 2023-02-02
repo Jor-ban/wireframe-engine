@@ -125,13 +125,6 @@ button.tp-rotv_b {
     background: #25564d;
     color: lightgrey
 }
-.__tweakpane-delete-btn .tp-btnv_t, .__tweakpane-delete-btn .tp-radv_t {
-    background-color: #461818;
-    color: grey;
-}
-.__tweakpane-delete-btn .tp-btnv_t:hover {
-    color: white;
-}
 
 .__tweakpane-material-deleter {
     margin-top: -10px !important;
@@ -427,9 +420,65 @@ button.__wireframe-dropdown-button--active {
 .__wireframe-instruments > button.__wireframe-instruments__button > .__wireframe-instruments__button__tooltip {
     margin-left: 5px;
 }
-/*.__wireframe-instruments > button.__wireframe-instruments__button:hover > .__wireframe-instruments__button__tooltip {*/
-/*    visibility: visible;*/
-/*}*/
+.__wireframe-controls .__wireframe-file-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(187, 188, 196, 0.7);
+    padding-left: 4px;
+    padding: 4px 0;
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container {
+    padding-right: 4px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 160px;
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container > input {
+    display: none;
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container > label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 125px;
+    height: 125px;
+    display: inline;
+    background-color: rgba(187, 188, 196, 0.1);
+    border: 2px dashed transparent;
+    border-radius: 3px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container > label:hover::before {
+    visibility: visible;
+    display: inline;
+    content: "Set Image File";
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container .__wireframe-file-input-delete {
+    cursor: pointer;
+    height: 25px;
+    width: 25px;
+    background-color: rgba(187, 188, 196, 0.1);
+    border: none;
+    border-radius: 3px;
+    color: grey;
+    font-weight: 600;
+    font-size: 12px;
+}
+.__wireframe-controls .__wireframe-file-input-container > .__wireframe-file-input-buttons-container .__wireframe-file-input-delete:hover {
+    background-color: rgba(197, 30, 30, 0.5);
+}
 .__wireframe-instruments > button.__wireframe-instruments__button.__wireframe-instruments__button-active {
     background: rgba(128, 128, 128, 0.25)
 }

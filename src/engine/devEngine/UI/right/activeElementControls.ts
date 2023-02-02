@@ -21,6 +21,7 @@ import {GeometryControls} from "./utils/GeometryControls.util";
 import {ChangeDetector} from "../../changeDetector/changeDetector";
 import {WireframeMesh} from "../../../lib";
 import {LightControls} from "./utils/LightControls";
+import { CameraControls } from './utils/CameraControls';
 
 export class ActiveElementControls {
     private readonly pane: TabPageApi
@@ -50,7 +51,7 @@ export class ActiveElementControls {
             if (selectedObj instanceof Light) {
                 this.forLight(selectedObj, this.pane)
             } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
-                this.forCamera(selectedObj, this.pane)
+                CameraControls.addForCamera(selectedObj, this.pane)
             } else if (selectedObj instanceof WireframeMesh) {
                 this.forObject(selectedObj, this.pane)
             }
@@ -92,20 +93,6 @@ export class ActiveElementControls {
                 scaleInput.refresh()
             }
         })
-    }
-    private forCamera(camera: PerspectiveCamera | OrthographicCamera, pane: FolderApi | TabPageApi) {
-        Object3DControls.addPositions(camera, pane)
-        Object3DControls.addRotation(camera, pane)
-        if(camera instanceof PerspectiveCamera) {
-            pane.addInput(camera, 'fov', {
-                view: 'cameraring',
-                min: 1,
-                max: 179
-            }).on('change', ({value}) => {
-                camera.fov = value
-                camera.updateProjectionMatrix()
-            });
-        }
     }
     private addMaterials(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
