@@ -126,7 +126,6 @@ export class ElementsListControls {
             const group = new Group()
             group.name = 'New Group'
             this.scene.add(group)
-            console.log(this.scene)
             ChangeDetector.addedObject$.next(group)
         })
         buttonsRow.appendChild(groupBtn)

@@ -30,7 +30,7 @@ import {
     TangentSpaceNormalMap,
 } from 'three/src/constants';
 import {WireframeMesh} from "../../../../lib";
-import { FileInputControls } from '../../../../shared/FileInputControls.util';
+import { FileInputField } from '../../../../lib/devClasses/FileInputField';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
@@ -316,17 +316,17 @@ export class MaterialControlsUtil {
         folder.addInput(material, 'clearcoat')
         this.addForClearcoatMap(material, folder)
         folder.addSeparator() // ------------------------------
-        FileInputControls.addMapable(material, folder, 'clearcoatRoughnessMap')
+        FileInputField.addMapable(material, folder, 'clearcoatRoughnessMap')
         folder.addInput(material, 'clearcoatRoughness')
-        FileInputControls.addMapable(material, folder, 'clearcoatNormalMap')
+        FileInputField.addMapable(material, folder, 'clearcoatNormalMap')
         folder.addSeparator()   // -----------------------------
-        FileInputControls.addMapable(material, folder, 'transmissionMap')
+        FileInputField.addMapable(material, folder, 'transmissionMap')
         folder.addInput(material, 'transmission')
         folder.addSeparator()   // -----------------------------
         folder.addInput(material, 'specularIntensity')
         this.addForSpecularColor(material, folder)
-        FileInputControls.addMapable(material, folder, 'specularIntensityMap')
-        FileInputControls.addMapable(material, folder, 'specularColorMap')
+        FileInputField.addMapable(material, folder, 'specularIntensityMap')
+        FileInputField.addMapable(material, folder, 'specularColorMap')
         folder.addSeparator()   // -----------------------------
         folder.addInput(material, 'reflectivity')
         folder.addInput(material, 'ior')
@@ -381,10 +381,10 @@ export class MaterialControlsUtil {
             | MeshPhysicalMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'map')
+        FileInputField.addMapable(material, folder, 'map')
     }
     private static addForGradientMap(material: MeshToonMaterial, folder: FolderApi) {
-        FileInputControls.addMapable(material, folder, 'gradientMap')
+        FileInputField.addMapable(material, folder, 'gradientMap')
     }
     private static addForLightMap(material:
         | MeshToonMaterial
@@ -393,7 +393,7 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'lightMap')
+        FileInputField.addMapable(material, folder, 'lightMap')
     }
     private static addForAoMap(material:
         | MeshStandardMaterial
@@ -402,7 +402,7 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'aoMap')
+        FileInputField.addMapable(material, folder, 'aoMap')
     }
     private static addForBumpMap(material:
         | MeshToonMaterial
@@ -410,7 +410,7 @@ export class MaterialControlsUtil {
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'bumpMap')
+        FileInputField.addMapable(material, folder, 'bumpMap')
     }
     private static addForNormalMap(material:
         | MeshToonMaterial
@@ -418,7 +418,7 @@ export class MaterialControlsUtil {
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'normalMap')
+        FileInputField.addMapable(material, folder, 'normalMap')
     }
     private static addForDisplacementMap(material:
         | MeshToonMaterial
@@ -427,7 +427,7 @@ export class MaterialControlsUtil {
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'displacementMap')
+        FileInputField.addMapable(material, folder, 'displacementMap')
     }
     private static addForAlphaMap(material:
         | MeshStandardMaterial
@@ -437,27 +437,27 @@ export class MaterialControlsUtil {
         | MeshDepthMaterial
         | MeshMatcapMaterial,
         folder: FolderApi) {
-        FileInputControls.addMapable(material, folder, 'alphaMap')
+        FileInputField.addMapable(material, folder, 'alphaMap')
     }
     private static addForMatcap(material: MeshMatcapMaterial, folder: FolderApi) {
-        FileInputControls.addMapable(material, folder, 'matcap')
+        FileInputField.addMapable(material, folder, 'matcap')
     }
     private static addForMetalnessMap(material: MeshStandardMaterial, folder: FolderApi) {
-        FileInputControls.addMapable(material, folder, 'metalnessMap')
+        FileInputField.addMapable(material, folder, 'metalnessMap')
     }
     private static addForSpecularMap(material:
         | MeshBasicMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'specularMap')
+        FileInputField.addMapable(material, folder, 'specularMap')
     }
     private static addForRoughnessMap(material:
         | MeshStandardMaterial
         | MeshPhysicalMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'roughnessMap')
+        FileInputField.addMapable(material, folder, 'roughnessMap')
     }
     private static addForEnvMap(material:
         | MeshStandardMaterial
@@ -465,10 +465,10 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'envMap')
+        FileInputField.addMapable(material, folder, 'envMap')
     }
     private static addForClearcoatMap(material: MeshPhysicalMaterial, folder: FolderApi) {
-        FileInputControls.addMapable(material, folder, 'clearcoatMap')
+        FileInputField.addMapable(material, folder, 'clearcoatMap')
     }
 
 
@@ -496,7 +496,7 @@ export class MaterialControlsUtil {
         | MeshStandardMaterial,
         folder: FolderApi
     ) {
-        FileInputControls.addMapable(material, folder, 'emissive')
+        FileInputField.addMapable(material, folder, 'emissive')
     }
     private static addForSpecular(material: MeshPhongMaterial, folder: FolderApi) {
         this.addColorable(material, folder, 'specular')

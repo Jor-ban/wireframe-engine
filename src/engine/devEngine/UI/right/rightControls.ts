@@ -29,16 +29,15 @@ export class RightControls {
 	private renderer: WebGLRenderer
 	private readonly axesHelper: AxesHelper
 	private readonly scene: Scene
-	constructor({scene, renderer, devCamera, ambientLight}: __DevEngine) {
+	constructor({scene, renderer, camera, ambientLight}: __DevEngine) {
 		this.scene = scene
 		this.renderer = renderer
 		this.setUpPane()
 		this.axesHelper = new AxesHelper( 5 );
 		this.scene.add(this.axesHelper)
 		this.addScene(this.sceneTab)
-		const devCameraControls = Object3DControls.createFolder('Main Camera', this.sceneTab)
-		if(devCamera === null) throw new Error('devCamera is null')
-		CameraControls.addForCamera(devCamera, devCameraControls)
+		const cameraControls = Object3DControls.createFolder('Main Camera', this.sceneTab)
+		CameraControls.addForCamera(camera, cameraControls)
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
 		LightControls.addLight(ambientLight, ambientLightFolder)
 		new ActiveElementControls(this.objectTab)

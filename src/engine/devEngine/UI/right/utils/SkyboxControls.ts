@@ -5,11 +5,12 @@ import {
     defaultSkybox,
     defaultSkyboxSides
 } from "../../../../shared/consts/defaultSkybox";
-import {FileInputControls, whiteTexture} from "../../../../shared/FileInputControls.util";
 import {WireframeTextureLoader} from "../../../../shared/loaders";
+import { whiteTexture } from "../../../../shared/consts/defaultTexture";
+import { FileInputField } from "../../../../lib/devClasses/FileInputField";
 
 export class SkyboxControls {
-    inputsList: InputBindingApi<unknown, string>[] = []
+    inputsList: (InputBindingApi<unknown, any> | FileInputField)[] = []
     scene: Scene
     renderer: WebGLRenderer
     folder: FolderApi
@@ -67,32 +68,41 @@ export class SkyboxControls {
         const usingSkyboxArr: string[] = [...defaultSkyboxSides]
         usingSkyboxArr.forEach((value: string, index: number) => {
             const usingKey = index === 0 ? 'posX' : index === 1 ? 'negX' : index === 2 ? 'posY' : index === 3 ? 'negY' : index === 4 ? 'posZ' : 'negZ'
-            const [input, xButton] = FileInputControls.addImage(this.folder, usingKey, defaultSkybox.images[index].src)
-            input.on('change', ({value}) => {
-                usingSkyboxArr[index] = (value as unknown as HTMLImageElement).src
+            const fileField = FileInputField.addImage(this.folder, usingKey, defaultSkybox.images[index].src)
+            fileField.input.addEventListener('change', async (event) => {
+                console.log('Change')
+                const target = (event.target as HTMLInputElement | null)
+                const file = target?.files ? target.files[0] : null
+                if(file) {
+                    usingSkyboxArr[index] = (window.URL || window.webkitURL).createObjectURL(file)
+                }
                 CubeTextureLoaderService.load(usingSkyboxArr, (texture) => {
                     this.scene.background = texture
                     this.scene.environment = texture
                     texture.encoding = sRGBEncoding
                 })
             })
-            this.inputsList.push(input, xButton)
+            this.inputsList.push(fileField)
         })
     }
     private setSingleFile() {
-        const [input, xButton] = FileInputControls.addImage(this.folder, 'image', whiteTexture.image)
-        input.on('change', async ({value}) => {
-            const url = (value as unknown as HTMLImageElement).src
-            WireframeTextureLoader.load(
-                url, (texture: Texture) => {
-                    const rt = new WebGLCubeRenderTarget(texture.image.height);
-                    rt.fromEquirectangularTexture(this.renderer, texture);
-                    this.scene.background = rt.texture;
-                    this.scene.environment = rt.texture;
-                }
-            );
+        const fileField = FileInputField.addImage(this.folder, 'image', whiteTexture.image)
+        fileField.input.addEventListener('change', async (event) => {
+            const target = (event.target as HTMLInputElement | null)
+            const file = target?.files ? target.files[0] : null
+            if(file) {
+                const url = (window.URL || window.webkitURL).createObjectURL(file)
+                WireframeTextureLoader.load(
+                    url, (texture: Texture) => {
+                        const rt = new WebGLCubeRenderTarget(texture.image.height);
+                        rt.fromEquirectangularTexture(this.renderer, texture);
+                        this.scene.background = rt.texture;
+                        this.scene.environment = rt.texture;
+                    }
+                );
+            }
         })
-        this.inputsList.push(input, xButton)
+        this.inputsList.push(fileField)
     }
 
     private clearControls() {
