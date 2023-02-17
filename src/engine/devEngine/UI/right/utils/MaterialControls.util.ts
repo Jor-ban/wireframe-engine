@@ -481,6 +481,10 @@ export class MaterialControlsUtil {
             .on('change', ({value}) => {
                 color.set(new Color(value))
             })
+        folder.addButton({title: 'Remove ' + headerName}).on('click', () => {
+            // @ts-ignore
+            material[colorName] = null
+        })
     }
     private static addForColor(material:
         | MeshToonMaterial | MeshBasicMaterial | MeshLambertMaterial

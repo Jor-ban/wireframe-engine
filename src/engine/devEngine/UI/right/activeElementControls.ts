@@ -1,6 +1,7 @@
-import {FolderApi, InputBindingApi, TabPageApi} from 'tweakpane';
+import {FolderApi, InputBindingApi, Pane, TabPageApi} from 'tweakpane';
 import {
     AmbientLight, Euler,
+    Group,
     Light,
     MeshBasicMaterial,
     MeshDepthMaterial,
@@ -17,15 +18,17 @@ import {
 } from "three";
 import { Object3DControls } from "./utils/Object3DControls";
 import { MaterialControlsUtil } from "./utils/MaterialControls.util";
-import {GeometryControls} from "./utils/GeometryControls.util";
-import {ChangeDetector} from "../../changeDetector/changeDetector";
-import {WireframeMesh} from "../../../lib";
-import {LightControls} from "./utils/LightControls";
+import { GeometryControls } from "./utils/GeometryControls.util";
+import { ChangeDetector } from "../../changeDetector/changeDetector";
+import { WireframeMesh } from "../../../lib";
+import { LightControls } from "./utils/LightControls";
 import { CameraControls } from './utils/CameraControls';
+import { Subscription } from 'rxjs';
 
 export class ActiveElementControls {
     private readonly pane: TabPageApi
     private selectedObj: Object3D | null = null
+    private subList: Set<Subscription> = new Set() // !TODO
 
     constructor(pane: TabPageApi) {
         this.pane = pane
@@ -37,6 +40,7 @@ export class ActiveElementControls {
         })
     }
     public select(selectedObj: Object3D | null) : void {
+        this.subList.forEach((sub) => sub.unsubscribe())
         for(let child of this.pane.children) {
             this.pane.remove(child)
         }
@@ -48,7 +52,9 @@ export class ActiveElementControls {
                     value,
                 })
             })
-            if (selectedObj instanceof Light) {
+            if(selectedObj instanceof Group) {
+                this.addForGroup(selectedObj, this.pane)
+            } else if (selectedObj instanceof Light) {
                 this.forLight(selectedObj, this.pane)
             } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
                 CameraControls.addForCamera(selectedObj, this.pane)
@@ -61,14 +67,20 @@ export class ActiveElementControls {
     private forLight(child: Light, pane: FolderApi| TabPageApi) : void {
         LightControls.addLight(child, pane)  // TODO add shadow options
         if(!(child instanceof AmbientLight)) {
-            this.addPositions(child, pane)
-            this.addRotation(child, pane)
+            const positionInput = this.addPositions(child, pane)
+            const rotationInput = this.addRotation(child, pane)
+            const sub = ChangeDetector.activeObjectUpdated$.subscribe(({changedPropertyName}) => {
+                if(changedPropertyName === 'position') {
+                    positionInput.refresh()
+                } else if(changedPropertyName === 'rotation') {
+                    rotationInput.refresh()
+                }
+            })
+            this.subList.add(sub)
         }
     }
     private forObject(child: WireframeMesh, pane: FolderApi | TabPageApi) {
-        const positionInput = this.addPositions(child, pane)
-        const rotationInput = this.addRotation(child, pane)
-        const scaleInput = this.addScale(child, pane)
+        this.addForObject3D(child, pane)
         pane.addSeparator()
         const tabs = pane.addTab({
             pages: [
@@ -83,16 +95,9 @@ export class ActiveElementControls {
         this.addMaterials(child, tabs.pages[1])
         this.addPhysics(child, tabs.pages[2])
         this.addAdvanced(child, tabs.pages[3])
-
-        ChangeDetector.activeObjectUpdated$.subscribe(({changedPropertyName}) => {
-            if(changedPropertyName === 'position') {
-                positionInput.refresh()
-            } else if(changedPropertyName === 'rotation') {
-                rotationInput.refresh()
-            } else if(changedPropertyName === 'scale') {
-                scaleInput.refresh()
-            }
-        })
+    }
+    private addForGroup(group: Group, pane: Pane | TabPageApi | FolderApi): void {
+        this.addForObject3D(group, pane)
     }
     private addMaterials(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
@@ -168,6 +173,22 @@ export class ActiveElementControls {
                     value: child.position
                 })
             });
+    }
+    private addForObject3D(object: Object3D, pane: Pane | TabPageApi | FolderApi): void {
+        const positionInput = this.addPositions(object, pane)
+        const rotationInput = this.addRotation(object, pane)
+        const scaleInput = this.addScale(object, pane)
+
+        const sub = ChangeDetector.activeObjectUpdated$.subscribe(({changedPropertyName}) => {
+            if(changedPropertyName === 'position') {
+                positionInput.refresh()
+            } else if(changedPropertyName === 'rotation') {
+                rotationInput.refresh()
+            } else if(changedPropertyName === 'scale') {
+                scaleInput.refresh()
+            }
+        })
+        this.subList.add(sub)
     }
 
 }

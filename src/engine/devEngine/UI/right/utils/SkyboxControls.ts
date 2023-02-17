@@ -70,7 +70,6 @@ export class SkyboxControls {
             const usingKey = index === 0 ? 'posX' : index === 1 ? 'negX' : index === 2 ? 'posY' : index === 3 ? 'negY' : index === 4 ? 'posZ' : 'negZ'
             const fileField = FileInputField.addImage(this.folder, usingKey, defaultSkybox.images[index].src)
             fileField.input.addEventListener('change', async (event) => {
-                console.log('Change')
                 const target = (event.target as HTMLInputElement | null)
                 const file = target?.files ? target.files[0] : null
                 if(file) {

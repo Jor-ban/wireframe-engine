@@ -10,11 +10,6 @@ export class CameraControls {
         if(camera instanceof PerspectiveCamera) {
             this.addForPerspectiveCamera(camera, folder)
         }
-        folder.addSeparator()
-        folder.addButton({title: 'Update Camera'})
-            .on('click', () => {
-                camera.updateProjectionMatrix()
-            });
     }
     static addForPerspectiveCamera(camera: PerspectiveCamera, folder: FolderApi | TabPageApi) {
         folder.addInput({'near-far': { min: camera.near, max: camera.far }}, 'near-far', {

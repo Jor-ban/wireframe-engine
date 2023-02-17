@@ -23,7 +23,6 @@ export class InstrumentsControls {
         const {devCamera, canvas, scene, orbitControls} = engineState
         this.instrumentsElement = container
         this.instrumentsElement.classList.add('__wireframe-instruments')
-        if(!devCamera) throw new Error('devCamera is null')
         this.tfControls = new TransformControls(devCamera, canvas)
         this.elementTracer = new ElementTracer(engineState, this.tfControls.getRaycaster())
         if(orbitControls) {
@@ -31,7 +30,7 @@ export class InstrumentsControls {
                 orbitControls.enabled = !event.value;
                 
                 if(!event.value && this.elementTracer.activeObject) {
-                    let changedPropertyName = 'position'
+                    let changedPropertyName: keyof Object3D = 'position'
                     if(this.activeInstrument === InstrumentsEnum.rotation) {
                         changedPropertyName = 'rotation'
                     } else if(this.activeInstrument === InstrumentsEnum.scale) {

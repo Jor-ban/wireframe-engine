@@ -63,7 +63,32 @@ export class TopBar {
                 ChangeDetector.addedObject$.next(group)
             }
         }
+        const activeObjectDropdown: HiddenMenuOption = {
+            name: `Active Object ▸`,
+            subOptions: [
+                {
+                    name: `<span class="__wireframe-dropdown-text-delete"> Delete </span>`,
+                    onclick: () => {
+                        if (this.activeObject) {
+                            ChangeDetector.removedObject$.next(this.activeObject)
+                        }
+                    }
+                }, {
+                    name: 'Visibility',
+                    onclick: () => {
+                        if (this.activeObject) {
+                            ChangeDetector.activeObjectUpdated$.next({
+                                target: this.activeObject,
+                                changedPropertyName: 'visible',
+                                value: !this.activeObject.visible
+                            })
+                        }
+                    }
+                }
+            ],
+        }
         new WireframeDropdown(this.bar, elementsListButton, [
+            activeObjectDropdown,
             {
                 name: "Add ▸",
                 subOptions: [

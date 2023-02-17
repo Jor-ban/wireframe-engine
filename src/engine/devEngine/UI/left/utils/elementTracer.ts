@@ -46,9 +46,7 @@ export class ElementTracer {
 
     constructor({ canvas, canvasProportion, devCamera, scene }: __DevEngine, rayCaster: Raycaster) {
         this.canvasProportion = canvasProportion
-        if(devCamera) {
-            this.camera = devCamera
-        }
+        this.camera = devCamera
         this.scene = scene
         this.rayCaster = rayCaster
         scene.add(this.hoveredObject, this.clickedObject)

@@ -4,6 +4,9 @@ body {
 .__wireframe-d-none {
     display: none;
 }
+.__wireframe-dropdown-text-delete {
+    color: red;
+}
 .__wireframe-controls, .__wireframe-controls *{
     user-select: none
 }
@@ -167,16 +170,42 @@ button.tp-rotv_b {
     border: none;
     padding: 0;
 }
+.__wireframe-object-select.__wireframe-active.__wireframe-dragover > .__wireframe-object-text {
+    background: white !important;
+    color: black !important;
+}
 .__wireframe-object-select.__wireframe-dragover > .__wireframe-object-text::before {
     display: block;
-    content: 'drop here';
+    content: '⧱ Drop here';
     width: 100%;
     height: 13px;
     margin-bottom: 5px;
-    background: violet;
+    background: white;
     text-align: center;
     color: black;
     border-radius: 10px;
+}
+.__wireframe-empty-fields-container.__wireframe-object-select {
+    background: transparent !important;
+}
+.__wireframe-empty-fields-container.__wireframe-dragover {
+    background: grey !important;
+    height: 50px;
+}
+.__wireframe-empty-fields-container.__wireframe-dragover > .__wireframe-object-text {
+    height: 100%;
+}
+.__wireframe-empty-fields-container.__wireframe-dragover > .__wireframe-object-text::before {
+    margin-top: 20px;
+    background-color: grey;
+    content: "⧱ Drop to Root";
+}
+.__wireframe-elements-group-dropdown > .__wireframe-object-select.__wireframe-dragover {
+    background-color: white !important;
+    color: black;
+}
+.__wireframe-elements-group-dropdown > .__wireframe-object-select.__wireframe-dragover > .__wireframe-object-text::before {
+    content: '⤓ Drop Inside';
 }
 .__wireframe-object-select:hover {
     border-color: #ff0066;
@@ -485,6 +514,13 @@ button.__wireframe-dropdown-button--active {
 .__wireframe-instruments > button.__wireframe-instruments__button > img {
     width: 20px;
 }
+
+.__wireframe-elements-group-dropdown > .__wireframe-elements-group-dropdown-children > div {
+    margin-left: 10px !important;
+    padding-left: 0 !important;
+    border-left: 2px solid darkgrey !important;
+}
+
 .tp-tabv_c, .tp-fldv_c {
     border-left: none;
 }

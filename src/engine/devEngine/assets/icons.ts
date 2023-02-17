@@ -1,5 +1,7 @@
 
 import addGroup from './add-group.svg?url'
+import emptyGroup from './group-empty.png?url'
+import group from './group-full.png?url'
 import addIcon from './add-icon.svg?url'
 import box from './box.png?url'
 import cone from './cone.png?url'
@@ -15,10 +17,14 @@ import spotLight from './spot-light.png?url'
 import text from './text.png?url'
 import ambientLight from './ambient-light.png?url'
 import circle from './circle.png?url'
-import group from './group.png?url'
 import camera from './camera.png?url'
+import collapsedGroup from './group-collapsed.png?url'
+
 export const icons = {
     addGroup,
+    emptyGroup,
+    collapsedGroup,
+    group,
     addIcon,
     box,
     cone,
@@ -34,6 +40,5 @@ export const icons = {
     text,
     ambientLight,
     circle,
-    group,
     camera
 }

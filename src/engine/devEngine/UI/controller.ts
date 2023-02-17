@@ -17,7 +17,6 @@ export class __DevController {
         new RightControls(engineData)
         new LeftControls(engineData)
         new BottomControls()
-        if(!devCamera) throw new Error('devCamera is null')
         new TopBar(devCamera, scene)
         DefinedShortcuts.init()
         hideContextMenu()
