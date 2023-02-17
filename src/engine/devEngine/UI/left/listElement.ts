@@ -36,9 +36,11 @@ export class ListElement {
         text.classList.add('__wireframe-object-text')
         text.innerHTML = getElementText(this.object)
         this.container.draggable = true
-        this.container.addEventListener('click', () => {
-            text.innerHTML = getElementText(this.object)
-        })
+        if(this.object instanceof Group) {
+            this.container.addEventListener('click', () => {
+                text.innerHTML = getElementText(this.object)
+            })
+        }
 
         this.container.appendChild(text)
         const showButton = document.createElement("button")

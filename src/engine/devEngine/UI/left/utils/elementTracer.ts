@@ -64,7 +64,7 @@ export class ElementTracer {
             if(mesh === null) {
                 this.clickedObject.visible = false
                 this.activeObject = null
-            } else if(this.activeObject !== null && mesh instanceof WireframeMesh) {
+            } else if(this.activeObject !== null && mesh instanceof Object3D) {
                 this.emitCLick(mesh)
             }
         })
@@ -107,16 +107,16 @@ export class ElementTracer {
                 this.clickedObject.scale
             )
             this.clickedObject.scale.set(
-                1.05 * this.clickedObject.scale.x, 
+                1.05 * this.clickedObject.scale.x,
                 1.05 * this.clickedObject.scale.y, 
                 1.05 * this.clickedObject.scale.z
             )
             this.clickedObject.geometry = mesh.geometry
             this.clickedObject.visible = true
-            console.log(this.clickedObject.visible);
         } else {
             this.clickedObject.visible = false
         }
+        this.hoveredObject.visible = false
     }
     private setHoveredObjectParameters(mesh: Object3D) {
         mesh.matrixWorld.decompose(

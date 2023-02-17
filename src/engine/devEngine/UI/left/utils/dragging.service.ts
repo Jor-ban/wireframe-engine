@@ -11,10 +11,12 @@ class DraggingServiceFactory {
     private draggingElement: ListElement | null = null
     private draggingElementIndex = -1
     private clickedElement: HTMLElement | null = null
+    private clickedObject: Object3D | null = null
 
     constructor() {
         ChangeDetector.clickedObject$.subscribe((obj: Object3D | WireframeMesh | null) => {
             if(obj) {
+                this.clickedObject = obj
                 const element = this.objectMap.get(obj)
                 if(element) {
                     this.clickedElement?.classList.remove('__wireframe-active')
@@ -39,11 +41,10 @@ class DraggingServiceFactory {
     }
     addEvents(el: ListElement) {
         this.objectMap.set(el.object, el)
-
-        el.container.addEventListener('click', () => {
-            this.clickedElement?.classList.remove('__wireframe-active')
+        if(el.object === this.clickedObject) {
             el.container.classList.add('__wireframe-active')
-            this.clickedElement = el.container
+        }
+        el.container.addEventListener('click', () => {
             ChangeDetector.clickedObject$.next(el.object)
         })
         el.container.addEventListener('dragstart', () => {
