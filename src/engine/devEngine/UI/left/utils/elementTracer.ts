@@ -102,17 +102,18 @@ export class ElementTracer {
     private emitCLick = (mesh?: WireframeMesh | Object3D) => {
         if(mesh instanceof WireframeMesh) {
             (mesh || this.hoveredObject).matrixWorld.decompose(
-                this.hoveredObject.position, 
-                this.hoveredObject.quaternion, 
-                this.hoveredObject.scale
+                this.clickedObject.position, 
+                this.clickedObject.quaternion, 
+                this.clickedObject.scale
             )
-            this.hoveredObject.scale.set(
-                1.03 * this.hoveredObject.scale.x, 
-                1.03 * this.hoveredObject.scale.y, 
-                1.03 * this.hoveredObject.scale.z
+            this.clickedObject.scale.set(
+                1.05 * this.clickedObject.scale.x, 
+                1.05 * this.clickedObject.scale.y, 
+                1.05 * this.clickedObject.scale.z
             )
             this.clickedObject.geometry = mesh.geometry
             this.clickedObject.visible = true
+            console.log(this.clickedObject.visible);
         } else {
             this.clickedObject.visible = false
         }
