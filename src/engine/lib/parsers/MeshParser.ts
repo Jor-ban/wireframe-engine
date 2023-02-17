@@ -14,21 +14,25 @@ import {GeometryJson} from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import {WireframeMesh, WireframeTextGeometry} from "../lib";
+import {WMesh} from "../classes/WMesh";
+import {WTextGeometry} from "../classes/WTextGeometry";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 
 const fl = new FontLoader()
 
 export class MeshParser {
-    static parse(object: MeshJson): WireframeMesh {
-        if(object instanceof WireframeMesh) {
+    static parse(object: MeshJson): WMesh {
+        if(object instanceof WMesh) {
             return object
         } else {
-            const mesh = new WireframeMesh(
+            const mesh = new WMesh(
                 this.parseGeometry(object.geometry),
                 this.parseMaterial(object.material)
             )
             this.setParameters(mesh, object.parameters)
+            if(object.uuid) {
+                mesh.uuid = object.uuid
+            }
             return mesh
         }
     }
@@ -125,7 +129,7 @@ export class MeshParser {
                     }
                     geometry.font = font
                     delete geometry.text
-                    return new WireframeTextGeometry(text, geometry as TextGeometryParameters)
+                    return new WTextGeometry(text, geometry as TextGeometryParameters)
             }
         }
     }

@@ -1,14 +1,15 @@
-import {NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer} from "three";
+import { WRenderer } from '../classes/WRenderer';
+import {NoToneMapping, PCFSoftShadowMap, sRGBEncoding} from "three";
 import {RendererJson} from "./types/RendererJson.type";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class RendererParser {
-    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WebGLRenderer | RendererJson): WebGLRenderer {
-        if(renderer instanceof WebGLRenderer) {
+    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WRenderer | RendererJson): WRenderer {
+        if(renderer instanceof WRenderer) {
             return renderer
         }
         renderer = renderer || {}
-        const webglRenderer = new WebGLRenderer({
+        const webglRenderer = new WRenderer({
             canvas,
             antialias: renderer.antialias,
             alpha: renderer.alpha

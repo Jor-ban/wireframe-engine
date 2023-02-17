@@ -1,18 +1,27 @@
+import { WScene } from '../classes/WScene';
 import {CubeTextureLoader, Scene, sRGBEncoding} from "three";
 import {SceneJson} from "./types/SceneJson.type";
 import {defaultSkybox} from "⚙️/shared/consts/defaultSkybox";
 
 export class SceneParser {
-    public static parse(scene ?: Scene | SceneJson): Scene {
+    public static parse(scene ?: Scene | SceneJson): WScene {
         if(scene instanceof Scene) {
-            return scene
+            const w = new WScene()
+            w.background = scene.background
+            w.environment = scene.environment
+            w.fog = scene.fog
+            w.overrideMaterial = scene.overrideMaterial
+            w.autoUpdate = scene.autoUpdate
+            w.onBeforeRender = scene.onBeforeRender
+            w.onAfterRender = scene.onAfterRender
+            return w
         } else if(!scene) {
-            const scene = new Scene()
+            const scene = new WScene()
             scene.environment = defaultSkybox
             scene.background = defaultSkybox
             return scene
         }
-        const sceneInstance = new Scene()
+        const sceneInstance = new WScene()
         let { skybox, loadingManager, encoding } = scene
         if(skybox) {
             if(!Array.isArray(skybox)) {

@@ -1,10 +1,10 @@
 import { ProjectSettings } from "./types/ProjectSettings.interface";
 import { Light } from "three";
-import { CustomLight } from "./parsers/types/LightJson.type";
-import { LightParser } from "./parsers/lightParser";
+import { LightJson } from "./lib/parsers/types/LightJson.type";
+import { LightParser } from "./lib/parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { MeshParser } from "./parsers/MeshParser";;
-import { OrbitControlsJson } from './parsers/types/OrbitControlsJson.interface';
+import { MeshParser } from "./lib/parsers/MeshParser";;
+import { OrbitControlsJson } from './lib/parsers/types/OrbitControlsJson.type';
 import { __DefaultEngine } from './lib/defaultEngine';
 
 export class __ProdEngine extends __DefaultEngine {
@@ -20,7 +20,7 @@ export class __ProdEngine extends __DefaultEngine {
             this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
         }
         if(projectSettings.lights?.length) {
-            this.add(...projectSettings.lights.map((light: CustomLight | Light) => LightParser.parse(light)))
+            this.add(...projectSettings.lights.map((light: LightJson | Light) => LightParser.parse(light)))
         }
         this.setOrbitControls(projectSettings.orbitControls)
         this.renderer.render(this.scene, this.camera)

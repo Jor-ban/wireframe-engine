@@ -1,14 +1,14 @@
-import { ColorRepresentation, Object3D, PointLight, PointLightHelper, Scene } from "three";
-import { ChangeDetector } from "../../../devEngine/changeDetector";
-import { ElementWithHelper } from "../types/elementWithHelper.interface";
+import { ColorRepresentation, DirectionalLight, DirectionalLightHelper, Object3D, Scene } from "three";
+import { ChangeDetector } from "../../changeDetector";
+import { ElementWithHelper } from '../types/elementWithHelper.interface';
 
-export class PointLightWithHelper extends PointLight implements ElementWithHelper {
-    public helper: PointLightHelper
+export class DirectionalLightWithHelper extends DirectionalLight implements ElementWithHelper {
+    public helper: DirectionalLightHelper
     public active: boolean = false
 
-    constructor(color?: ColorRepresentation, intensity?: number, distance?: number, decay?: number) {
-        super(color, intensity, distance, decay)
-        this.helper = new PointLightHelper(this, 1, 'white')
+    constructor(color?: ColorRepresentation, intensity?: number) {
+        super(color, intensity);
+        this.helper = new DirectionalLightHelper(this, 1, 'white')
         this.helper.visible = false
         this.initEvents()
     }
@@ -16,8 +16,8 @@ export class PointLightWithHelper extends PointLight implements ElementWithHelpe
         scene.add(this)
         scene.add(this.helper)
     }
-    static from(light: PointLight): PointLightWithHelper {
-        return new PointLightWithHelper(light.color, light.intensity, light.distance, light.decay)
+    static from(light: DirectionalLight): DirectionalLightWithHelper {
+        return new DirectionalLightWithHelper(light.color, light.intensity)
     }
     initEvents() {
         ChangeDetector.hoveredObject$.subscribe((hoveredObject) => {

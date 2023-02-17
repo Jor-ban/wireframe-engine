@@ -8,22 +8,22 @@ import {
     RingGeometry, SphereGeometry
 } from "three";
 import {FolderApi, TabPageApi, TpChangeEvent} from "tweakpane";
-import {WireframeMesh, WireframeTextGeometry} from "⚙️/lib";
+import {WMesh, WTextGeometry} from "⚙️/lib";
 import {GeometryRedactor} from "./GeometryRedactor";
 import {ChangeDetector} from "⚙️/devEngine/changeDetector";
 
 export class GeometryControls {
-    mesh: WireframeMesh
+    mesh: WMesh
     folder: TabPageApi | FolderApi
 
-    constructor(mesh: WireframeMesh, folder: TabPageApi | FolderApi) {
+    constructor(mesh: WMesh, folder: TabPageApi | FolderApi) {
         this.mesh = mesh
         this.folder = folder
         this.addGeometryControls()
     }
     addGeometryControls() {
         const geometry = this.mesh.geometry
-        if(geometry instanceof WireframeTextGeometry) {
+        if(geometry instanceof WTextGeometry) {
             // @ts-ignore
             const parameters = geometry.parameters.options
             delete parameters.font
@@ -50,8 +50,8 @@ export class GeometryControls {
                 })
         }
     }
-    isThreeGeometry(geometry: any) : geometry is WireframeTextGeometry | BoxGeometry | PlaneGeometry | CircleGeometry | ConeGeometry | CylinderGeometry | DodecahedronGeometry | SphereGeometry | RingGeometry {
-        return geometry instanceof WireframeTextGeometry ||
+    isThreeGeometry(geometry: any) : geometry is WTextGeometry | BoxGeometry | PlaneGeometry | CircleGeometry | ConeGeometry | CylinderGeometry | DodecahedronGeometry | SphereGeometry | RingGeometry {
+        return geometry instanceof WTextGeometry ||
             geometry instanceof BoxGeometry ||
             geometry instanceof PlaneGeometry ||
             geometry instanceof CircleGeometry ||

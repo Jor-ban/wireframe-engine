@@ -1,6 +1,7 @@
+import { WRenderer } from './classes/WRenderer';
 import { AnimationFrame } from '../services/animationFrame.service';
 import '../shared/memoryCleaner'
-import { CanvasProportion } from "../parsers/types/CanvasProportion.interface";
+import { CanvasProportion } from "./parsers/types/CanvasProportion.interface";
 import {
     AmbientLight,
     Camera,
@@ -8,24 +9,23 @@ import {
     OrthographicCamera,
     PerspectiveCamera,
     Scene,
-    WebGLRenderer
 } from "three";
-import { CameraParser } from "../parsers/cameraParser";
-import { CameraJson } from "../parsers/types/CameraJson.type";
-import { SceneJson } from "../parsers/types/SceneJson.type";
-import { SceneParser } from "../parsers/sceneParser";
-import { RendererJson } from "../parsers/types/RendererJson.type";
-import { RendererParser } from "../parsers/rendererParser";
-import { AmbientLightJson } from "../parsers/types/LightJson.type";
-import { LightParser } from "../parsers/lightParser";
+import { CameraParser } from "./parsers/cameraParser";
+import { CameraJson } from "./parsers/types/CameraJson.type";
+import { SceneJson } from "./parsers/types/SceneJson.type";
+import { SceneParser } from "./parsers/sceneParser";
+import { RendererJson } from "./parsers/types/RendererJson.type";
+import { RendererParser } from "./parsers/rendererParser";
+import { AmbientLightJson } from "./parsers/types/LightJson.type";
+import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
-import { CameraWithHelper, OrthographicCameraWithHelper } from './devClasses/camerasWithHelper';
+import { CameraWithHelper, OrthographicCameraWithHelper } from '../devEngine/devClasses/camerasWithHelper';
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
     public readonly canvas: HTMLCanvasElement
-    public renderer !: WebGLRenderer
+    public renderer !: WRenderer
     public camera !: CameraWithHelper | OrthographicCameraWithHelper | PerspectiveCamera | OrthographicCamera
     public scene !: Scene
     public orbitControls !: OrbitControls
@@ -67,6 +67,10 @@ export class __DefaultEngine implements EngineInterface {
                 }
             })
         }
+        if(canvasSizes?.updateStyle !== false) {
+            this.canvas.style.width = `${this.canvasProportion.width}px`
+            this.canvas.style.height = `${this.canvasProportion.height}px`
+        }
         return this
     }
     
@@ -93,7 +97,7 @@ export class __DefaultEngine implements EngineInterface {
         this.scene.add(...objects)
         return this
     }
-    public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
+    public setRenderer(renderer?: WRenderer | RendererJson): EngineInterface {
         this.renderer = RendererParser.parse(this.canvas, this.canvasProportion, renderer)
         return this
     }

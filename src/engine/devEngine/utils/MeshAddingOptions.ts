@@ -4,8 +4,8 @@ import { Group, Light, Object3D, PerspectiveCamera, Scene } from "three";
 import { HiddenMenuOption } from "./hiddenMenu";
 import { LightWithHelperGenerator } from "./generators/LightWithHelperGenerator";
 import { ChangeDetector } from "../changeDetector";
-import { WireframeMesh } from "../../lib";
-import { LightWithHelper } from "../../lib/devClasses/lightsWithHelper";
+import { WMesh } from "../../lib";
+import { LightWithHelper } from "../devClasses/lightsWithHelper";
 import { icons } from '../assets/icons'
 
 let activeObject: Object3D | null = null
@@ -66,7 +66,7 @@ export function getMeshAddingOptions(scene: Scene, devCamera: PerspectiveCamera)
         ]
     }
 ]}
-function addMesh(obj: WireframeMesh | Light | undefined, scene: Scene) {
+function addMesh(obj: WMesh | Light | undefined, scene: Scene) {
     if(obj) {
         let parent: Scene | Object3D = scene
         if(activeObject instanceof Group) {

@@ -1,5 +1,5 @@
 import {Camera, OrthographicCamera, PerspectiveCamera} from "three";
-import {CameraJson} from "./types/CameraJson.interface";
+import {CameraJson} from "./types/CameraJson.type";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class CameraParser {
@@ -7,12 +7,13 @@ export class CameraParser {
         canvas: CanvasProportion,
         camera ?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera',
     ): PerspectiveCamera | OrthographicCamera {
+        let c: PerspectiveCamera | OrthographicCamera
         if(camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-            return camera
+            c = camera
         } else if(camera === 'perspectiveCamera' || camera === undefined) {
-            return this.generatePerspectiveCamera(canvas)
+            c = this.generatePerspectiveCamera(canvas)
         } else if(camera === 'orthographicCamera') {
-            return this.generateOrthographicCamera(canvas)
+            c = this.generateOrthographicCamera(canvas)
         } else if(typeof camera === 'object' && !(camera instanceof Camera)) {
             // in case if user parametrizes with object
             if(camera.type === 'orthographicCamera' ||
@@ -21,19 +22,26 @@ export class CameraParser {
                 'top' in camera ||
                 'bottom' in camera
             ) {
-                return this.generateOrthographicCamera(
+                c = this.generateOrthographicCamera(
                     canvas,
                     // @ts-ignore
                     camera.left, camera.right, camera.top, camera.bottom,
                     camera.near, camera.far
                 );
             } else { // whether it is perspective camera
-                return this.generatePerspectiveCamera(canvas, camera.fov, camera.aspect, camera.near, camera.far)
+                c = this.generatePerspectiveCamera(canvas, camera.fov, camera.aspect, camera.near, camera.far)
+            }
+            if(camera.name) {
+                c.name = camera.name
+            }
+            if(camera.uuid) {
+                c.uuid = camera.uuid
             }
         } else {
             console.error("[Engine -> Camera] : Only Perspective Camera or Orthographic camera types are supported")
-            return this.generatePerspectiveCamera(canvas)
+            c = this.generatePerspectiveCamera(canvas)
         }
+        return c;
     }
     private static generatePerspectiveCamera(
         canvas  : CanvasProportion,

@@ -29,8 +29,8 @@ import {
     ObjectSpaceNormalMap, RGBADepthPacking,
     TangentSpaceNormalMap,
 } from 'three/src/constants';
-import { WireframeMesh } from "⚙️/lib";
-import { FileInputField } from '⚙️/lib/devClasses/FileInputField';
+import { WMesh } from "⚙️/lib";
+import { FileInputField } from '⚙️/devEngine/devClasses/FileInputField';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
@@ -515,7 +515,7 @@ export class MaterialControlsUtil {
         this.addColorable(material, folder, 'specularColor')
     }
 
-    static materialConverter(material: Material, mesh: WireframeMesh, folder: FolderApi | TabPageApi, callback: () => void) {
+    static materialConverter(material: Material, mesh: WMesh, folder: FolderApi | TabPageApi, callback: () => void) {
         folder.addInput({'Change Material Type': material.type}, 'Change Material Type', {
             options: {
                 'DepthMaterial': 'MeshDepthMaterial',

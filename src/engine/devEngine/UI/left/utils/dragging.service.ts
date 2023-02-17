@@ -1,7 +1,7 @@
 import { ListElement } from './../listElement';
 import { filter } from "rxjs"
 import { Group, Object3D } from "three"
-import { WireframeMesh } from "⚙️/lib"
+import { WMesh } from "⚙️/lib"
 import { ChangeDetector } from "⚙️/devEngine/changeDetector"
 import { getElementText } from "./getObjectIcon"
 import { dispose } from '⚙️/shared/dispose';
@@ -14,7 +14,7 @@ class DraggingServiceFactory {
     private clickedObject: Object3D | null = null
 
     constructor() {
-        ChangeDetector.clickedObject$.subscribe((obj: Object3D | WireframeMesh | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: Object3D | WMesh | null) => {
             if(obj) {
                 this.clickedObject = obj
                 const element = this.objectMap.get(obj)

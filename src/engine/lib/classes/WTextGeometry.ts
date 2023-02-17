@@ -1,6 +1,6 @@
 import {TextGeometry, TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 
-export class WireframeTextGeometry extends TextGeometry {
+export class WTextGeometry extends TextGeometry {
     text: string;
     constructor(text: string, parameters: TextGeometryParameters) {
         super(text, parameters);

@@ -1,6 +1,6 @@
 import { ObjectsContainer } from './objectsContainer';
 import { Camera, Group, Light, Object3D } from 'three';
-import { WireframeMesh } from '⚙️/lib';
+import { WMesh } from '⚙️/lib';
 import { ChangeDetector } from '../../changeDetector';
 import { WireframeDropdown } from '../../utils/dropdown';
 import { DraggingService } from './utils/dragging.service';
@@ -17,7 +17,7 @@ export class ListElement {
     ) {
         this.container = document.createElement("div")
         if(
-            this.object instanceof WireframeMesh ||
+            this.object instanceof WMesh ||
             this.object instanceof Group ||
             this.object instanceof Light ||
             this.object instanceof Camera && this.object.uuid !== '__wireframe-dev-camera__'

@@ -1,5 +1,5 @@
 import { ColorRepresentation, Object3D, Scene, SpotLight, SpotLightHelper } from "three";
-import { ChangeDetector } from "../../../devEngine/changeDetector";
+import { ChangeDetector } from "../../changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
 export class SpotLightWithHelper extends SpotLight implements ElementWithHelper {

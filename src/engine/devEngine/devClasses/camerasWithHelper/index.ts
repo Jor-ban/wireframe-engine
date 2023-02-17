@@ -1,4 +1,4 @@
-import { ChangeDetector } from '../../../devEngine/changeDetector';
+import { ChangeDetector } from '../../changeDetector';
 import { CameraHelper, Object3D, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 import { ElementWithHelper } from '../types/elementWithHelper.interface';
 

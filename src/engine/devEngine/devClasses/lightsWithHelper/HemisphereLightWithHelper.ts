@@ -1,5 +1,5 @@
 import { ColorRepresentation, HemisphereLight, HemisphereLightHelper, Object3D, Scene } from "three";
-import { ChangeDetector } from "../../../devEngine/changeDetector";
+import { ChangeDetector } from "../../changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
 export class HemisphereLightWithHelper extends HemisphereLight implements ElementWithHelper {

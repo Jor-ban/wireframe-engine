@@ -5,38 +5,38 @@ import {
     SphereGeometry,
 } from "three";
 import {Font} from "three/examples/jsm/loaders/FontLoader";
-import {WireframeMesh, WireframeTextGeometry} from "../../../lib";
+import {WMesh, WTextGeometry} from "../../../lib";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 
 export class MeshGenerator {
-    static addCube(camera: PerspectiveCamera): WireframeMesh {
+    static addCube(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new BoxGeometry(), camera)
     }
-    static addSphere(camera: PerspectiveCamera): WireframeMesh {
+    static addSphere(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new SphereGeometry(1), camera)
     }
-    static addRing(camera: PerspectiveCamera): WireframeMesh {
+    static addRing(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new RingGeometry(), camera)
     }
-    static addCone(camera: PerspectiveCamera): WireframeMesh {
+    static addCone(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new ConeGeometry(), camera)
     }
-    static addCylinder(camera: PerspectiveCamera): WireframeMesh {
+    static addCylinder(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new CylinderGeometry(), camera)
     }
-    static addPlane(camera: PerspectiveCamera): WireframeMesh {
+    static addPlane(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new PlaneGeometry(), camera)
     }
-    static addDodecahedron(camera: PerspectiveCamera): WireframeMesh {
+    static addDodecahedron(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new DodecahedronGeometry(), camera)
     }
-    static addCircle(camera: PerspectiveCamera): WireframeMesh {
+    static addCircle(camera: PerspectiveCamera): WMesh {
         return this.createMesh(new CircleGeometry(), camera)
     }
-    static async addText(camera: PerspectiveCamera): Promise<WireframeMesh | undefined> {
+    static async addText(camera: PerspectiveCamera): Promise<WMesh | undefined> {
         const text = prompt("Enter text to add")
         if (text) {
-            const textGeometry = new WireframeTextGeometry(text, {
+            const textGeometry = new WTextGeometry(text, {
                 font: new Font(helvetiker),
                 size: 0.5,
                 height: 0.2,
@@ -53,7 +53,7 @@ export class MeshGenerator {
         }
     }
     private static createMesh(geometry: BufferGeometry, camera: PerspectiveCamera) {
-        const mesh = new WireframeMesh(
+        const mesh = new WMesh(
             geometry,
             new MeshBasicMaterial({color: 'grey'})
         )

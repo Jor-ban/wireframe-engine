@@ -9,12 +9,12 @@ import {
     Scene,
     Vector2,
 } from "three";
-import {CanvasProportion} from "⚙️/parsers/types/CanvasProportion.interface";
+import {CanvasProportion} from "⚙️/lib/parsers/types/CanvasProportion.interface";
 import {leftControlsWidth, topBarHeight} from "⚙️/shared/consts/controlsStyles";
 import {ChangeDetector} from "⚙️/devEngine/changeDetector";
 import {InstrumentsEnum} from "⚙️/devEngine/types/Instruments.enum";
-import {WireframeMesh} from "⚙️/lib";
-import {LightWithHelper} from "⚙️/lib/devClasses/lightsWithHelper";
+import {WMesh} from "⚙️/lib";
+import {LightWithHelper} from "⚙️/devEngine/devClasses/lightsWithHelper";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null
@@ -71,7 +71,7 @@ export class ElementTracer {
         ChangeDetector.hoveredObject$.subscribe((mesh) => {
             if(mesh === null) {
                 this.hoveredObject.visible = false
-            } else if(mesh instanceof WireframeMesh) {
+            } else if(mesh instanceof WMesh) {
                 this.emitHover(mesh)
             }
         })
@@ -99,8 +99,8 @@ export class ElementTracer {
             }
         })
     }
-    private emitCLick = (mesh?: WireframeMesh | Object3D) => {
-        if(mesh instanceof WireframeMesh) {
+    private emitCLick = (mesh?: WMesh | Object3D) => {
+        if(mesh instanceof WMesh) {
             (mesh || this.hoveredObject).matrixWorld.decompose(
                 this.clickedObject.position, 
                 this.clickedObject.quaternion, 
@@ -131,10 +131,10 @@ export class ElementTracer {
         )
         this.hoveredObject.visible = true
     }
-    private emitHover(mesh: Object3D | WireframeMesh) {
+    private emitHover(mesh: Object3D | WMesh) {
         this.activeObject = mesh
         this.setHoveredObjectParameters(mesh)
-        if(mesh instanceof WireframeMesh) {
+        if(mesh instanceof WMesh) {
             this.hoveredObject.geometry = mesh.geometry
         }
         this.hoveredObject.visible = true
@@ -149,11 +149,11 @@ export class ElementTracer {
         const intersects = this.rayCaster.intersectObjects(this.scene.children)
         const obj = intersects
             .filter((el) =>
-                (el.object instanceof WireframeMesh || LightWithHelper.isLightHelper(el.object)) &&
+                (el.object instanceof WMesh || LightWithHelper.isLightHelper(el.object)) &&
                 el.object !== this.hoveredObject &&
                 el.object !== this.clickedObject
             )[0]?.object
-        if(obj instanceof WireframeMesh) {
+        if(obj instanceof WMesh) {
             this.emitHover(obj)
         } else if(LightWithHelper.isLightHelper(obj)) {
             this.emitHover(obj.light)

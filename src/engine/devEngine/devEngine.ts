@@ -3,12 +3,12 @@ import { AmbientLight, Light, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { __DefaultEngine } from "⚙️/lib/defaultEngine";
 import { bottomControlsHeight, leftControlsWidth, rightControlsWidth, topBarHeight } from "⚙️/shared/consts/controlsStyles";
-import { ProjectSettings } from "@/engine/types/ProjectSettings.interface";
-import { CameraWithHelper } from '⚙️/lib/devClasses/camerasWithHelper';
-import { MeshParser } from '⚙️/parsers/MeshParser';
-import { LightParser } from '⚙️/parsers/lightParser';
-import { LightWithHelper } from '⚙️/lib/devClasses/lightsWithHelper';
-import { AmbientLightJson } from '@/engine/parsers/types/LightJson.type';
+import { ProjectSettings } from "⚙️/types/ProjectSettings.interface";
+import { CameraWithHelper } from '⚙️/devEngine/devClasses/camerasWithHelper';
+import { MeshParser } from '⚙️/lib/parsers/MeshParser';
+import { LightParser } from '⚙️/lib/parsers/lightParser';
+import { LightWithHelper } from '⚙️/devEngine/devClasses/lightsWithHelper';
+import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
@@ -32,7 +32,7 @@ export class __DevEngine extends __DefaultEngine {
             this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
         }
         if(projectSettings.lights?.length) {
-            projectSettings.lights.forEach((light: AmbientLightJson | Light) => {
+            projectSettings.lights.forEach((light: Light | LightJson) => {
                 const parsedLight = LightParser.parse(light)
                 const lightWithHelper = LightWithHelper.from(parsedLight)
                 if(lightWithHelper instanceof AmbientLight) {

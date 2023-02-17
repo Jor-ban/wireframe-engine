@@ -1,6 +1,6 @@
 import { AmbientLight, Camera, CircleGeometry, ConeGeometry, CylinderGeometry, DirectionalLight, DodecahedronGeometry, Group, Light, Object3D, PlaneGeometry, PointLight, RingGeometry, SphereGeometry, SpotLight } from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { WireframeMesh } from '⚙️/lib';
+import { WMesh } from '⚙️/lib';
 import { icons } from '⚙️/devEngine/assets/icons';
 import { GroupService } from './group.service';
 
@@ -29,7 +29,7 @@ export function getObjectIcon(obj: Object3D): string {
         } else {
             return icons.hemisphereLight
         }
-    } else if(obj instanceof WireframeMesh) {
+    } else if(obj instanceof WMesh) {
         const geometry = obj.geometry
         if(geometry instanceof CircleGeometry) {
             return icons.circle
@@ -60,7 +60,7 @@ export function getElementText(obj: Object3D): string {
     if(obj.name) {
         iconText += obj.name
     } else {
-        if(obj instanceof WireframeMesh && obj.geometry) {
+        if(obj instanceof WMesh && obj.geometry) {
             iconText += obj.geometry.type.replace("Geometry", "")
         } else if(obj instanceof Light) {
             iconText += obj.type

@@ -1,8 +1,8 @@
 import {Light, PerspectiveCamera} from "three";
-import {PointLightWithHelper} from "../../../lib/devClasses/lightsWithHelper/PointLightWithHelper";
-import {SpotLightWithHelper} from "../../../lib/devClasses/lightsWithHelper/SpotLightWithHelper";
-import {DirectionalLightWithHelper} from "../../../lib/devClasses/lightsWithHelper/DirectionalLightWithHelper";
-import {HemisphereLightWithHelper} from "../../../lib/devClasses/lightsWithHelper/HemisphereLightWithHelper";
+import {PointLightWithHelper} from "../../devClasses/lightsWithHelper/PointLightWithHelper";
+import {SpotLightWithHelper} from "../../devClasses/lightsWithHelper/SpotLightWithHelper";
+import {DirectionalLightWithHelper} from "../../devClasses/lightsWithHelper/DirectionalLightWithHelper";
+import {HemisphereLightWithHelper} from "../../devClasses/lightsWithHelper/HemisphereLightWithHelper";
 
 export class LightWithHelperGenerator {
     static addPointLight(camera: PerspectiveCamera): Light {

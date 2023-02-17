@@ -20,7 +20,7 @@ import { Object3DControls } from "./utils/Object3DControls";
 import { MaterialControlsUtil } from "./utils/MaterialControls.util";
 import { GeometryControls } from "./utils/GeometryControls.util";
 import { ChangeDetector } from "../../changeDetector";
-import { WireframeMesh } from "⚙️/lib";
+import { WMesh } from "⚙️/lib";
 import { LightControls } from "./utils/LightControls";
 import { CameraControls } from './utils/CameraControls';
 import { Subscription } from 'rxjs';
@@ -32,7 +32,7 @@ export class ActiveElementControls {
 
     constructor(pane: TabPageApi) {
         this.pane = pane
-        ChangeDetector.clickedObject$.subscribe((obj: WireframeMesh | Object3D | null) => {
+        ChangeDetector.clickedObject$.subscribe((obj: WMesh | Object3D | null) => {
             if(obj !== this.selectedObj || obj === null) {
                 this.selectedObj = obj
                 this.select(obj)
@@ -58,7 +58,7 @@ export class ActiveElementControls {
                 this.forLight(selectedObj, this.pane)
             } else if (selectedObj instanceof PerspectiveCamera || selectedObj instanceof OrthographicCamera) {
                 CameraControls.addForCamera(selectedObj, this.pane)
-            } else if (selectedObj instanceof WireframeMesh) {
+            } else if (selectedObj instanceof WMesh) {
                 this.forObject(selectedObj, this.pane)
             }
         }
@@ -79,7 +79,7 @@ export class ActiveElementControls {
             this.subList.add(sub)
         }
     }
-    private forObject(child: WireframeMesh, pane: FolderApi | TabPageApi) {
+    private forObject(child: WMesh, pane: FolderApi | TabPageApi) {
         this.addForObject3D(child, pane)
         pane.addSeparator()
         const tabs = pane.addTab({
@@ -99,7 +99,7 @@ export class ActiveElementControls {
     private addForGroup(group: Group, pane: Pane | TabPageApi | FolderApi): void {
         this.addForObject3D(group, pane)
     }
-    private addMaterials(mesh: WireframeMesh, pane: FolderApi | TabPageApi) {
+    private addMaterials(mesh: WMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
         for(let i = 0; i < materials.length; i++) {
             const material = materials[i]
@@ -131,16 +131,16 @@ export class ActiveElementControls {
             MaterialControlsUtil.addDetails(material, detailsFolder)
         }
     }
-    private addPhysics(child: WireframeMesh, pane: FolderApi | TabPageApi) {
+    private addPhysics(child: WMesh, pane: FolderApi | TabPageApi) {
         // TODO
     }
-    private addAdvanced(child: WireframeMesh, pane: FolderApi | TabPageApi) {
+    private addAdvanced(child: WMesh, pane: FolderApi | TabPageApi) {
         pane.addInput(child, 'castShadow')
         pane.addInput(child, 'visible');
         pane.addInput(child, 'receiveShadow');
         pane.addInput(child, 'frustumCulled');
     }
-    private updateMaterialsControls(mesh: WireframeMesh, folder: FolderApi | TabPageApi) {
+    private updateMaterialsControls(mesh: WMesh, folder: FolderApi | TabPageApi) {
         folder.children.forEach(child => folder.remove(child))
         this.addMaterials(mesh, folder)
     }

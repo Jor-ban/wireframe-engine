@@ -1,4 +1,4 @@
-import { __DevEngine } from './../devEngine';
+import { __DevEngine } from '../devEngine';
 import { RightControls } from './right/rightControls';
 import { LeftControls } from './left/leftControls';
 import { BottomControls } from './bottom/bottomControls';

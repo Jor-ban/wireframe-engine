@@ -1,8 +1,8 @@
 import {Light, Object3D} from 'three';
-import {WireframeMesh} from "../lib";
+import {WMesh} from "../lib";
 
 export function dispose(obj: Object3D, deep: boolean = true, disposeGeometry: boolean = true, disposeMaterial: boolean = false) {
-	if(obj instanceof WireframeMesh) {
+	if(obj instanceof WMesh) {
 		if(obj.geometry instanceof Array && disposeGeometry) {
 			for (let geometry of obj.geometry) {
 				geometry.dispose()

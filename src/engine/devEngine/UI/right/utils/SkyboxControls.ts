@@ -7,7 +7,7 @@ import {
 } from "⚙️/shared/consts/defaultSkybox";
 import {WireframeTextureLoader} from "⚙️/shared/loaders";
 import { whiteTexture } from "⚙️/shared/consts/defaultTexture";
-import { FileInputField } from "⚙️/lib/devClasses/FileInputField";
+import { FileInputField } from "⚙️/devEngine/devClasses/FileInputField";
 
 export class SkyboxControls {
     inputsList: (InputBindingApi<unknown, any> | FileInputField)[] = []

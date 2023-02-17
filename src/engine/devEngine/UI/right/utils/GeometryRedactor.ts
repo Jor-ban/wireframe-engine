@@ -8,7 +8,7 @@ import {
     SphereGeometry
 } from "three";
 import {TpChangeEvent} from "tweakpane";
-import {WireframeTextGeometry} from "⚙️/lib";
+import {WTextGeometry} from "⚙️/lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
@@ -31,7 +31,7 @@ export class GeometryRedactor {
             return this.recreateSphereGeometry(geometry, change) as unknown as T
         } else if(geometry instanceof RingGeometry) {
             return this.recreateRingGeometry(geometry, change) as unknown as T
-        } else if(geometry instanceof WireframeTextGeometry) {
+        } else if(geometry instanceof WTextGeometry) {
             return this.recreateTextGeometry(geometry, change) as unknown as T
         }
         return undefined
@@ -39,7 +39,7 @@ export class GeometryRedactor {
     // @ts-ignore
     private static setParameter<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<{ presetKey: keyof T }>): T['parameters'] {
         // @ts-ignore
-        const parameters = geometry instanceof WireframeTextGeometry ? geometry.parameters.options : geometry.parameters
+        const parameters = geometry instanceof WTextGeometry ? geometry.parameters.options : geometry.parameters
         if(change.presetKey) {
             const key = change.presetKey
             parameters[key] = change.value
@@ -99,9 +99,9 @@ export class GeometryRedactor {
             parameters.phiSegments, parameters.thetaStart, parameters.thetaLength
         )
     }
-    static recreateTextGeometry(geometry: WireframeTextGeometry, change: TpChangeEvent<any>): WireframeTextGeometry {
+    static recreateTextGeometry(geometry: WTextGeometry, change: TpChangeEvent<any>): WTextGeometry {
         const parameters: TextGeometryParameters = this.setParameter(geometry, change)
         parameters.font = new Font(helvetiker)
-        return new WireframeTextGeometry(geometry.text, parameters)
+        return new WTextGeometry(geometry.text, parameters)
     }
 }

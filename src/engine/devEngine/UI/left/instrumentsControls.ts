@@ -4,7 +4,7 @@ import {InstrumentsEnum} from "../../types/Instruments.enum";
 import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
 import {ChangeDetector} from "../../changeDetector";
-import {WireframeMesh} from "⚙️/lib";
+import {WMesh} from "⚙️/lib";
 import {Shortcuts} from "../../shortcuts";
 
 import pointerIconUrl from "../../assets/pointer_icon.svg"
@@ -49,7 +49,7 @@ export class InstrumentsControls {
         this.addButtons()
     }
     initListeners() {
-        ChangeDetector.clickedObject$.subscribe((object: WireframeMesh | Object3D | null) => {
+        ChangeDetector.clickedObject$.subscribe((object: WMesh | Object3D | null) => {
             if(object) {
                 this.tfControls.attach(object)
             } else {

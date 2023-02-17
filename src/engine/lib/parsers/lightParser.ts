@@ -7,11 +7,11 @@ import {
     Light,
     PointLight,
 } from "three";
-import { CustomAmbientLight, CustomLight } from './types/LightJson.type';
+import { AmbientLightJson, LightJson } from './types/LightJson.type';
 import {MeshParser} from "./MeshParser";
 
 export class LightParser {
-    static parse(light: Light | CustomLight): Light {
+    static parse(light: Light | LightJson): Light {
         if(light instanceof Light) {
             return light
         } else {
@@ -44,7 +44,7 @@ export class LightParser {
             return lightInstance
         }
     }
-    public static parseAmbientLight(light: AmbientLight | CustomAmbientLight) : AmbientLight {
+    public static parseAmbientLight(light: AmbientLight | AmbientLightJson) : AmbientLight {
         if(light instanceof AmbientLight) {
             return light
         }
