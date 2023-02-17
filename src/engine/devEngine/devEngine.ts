@@ -1,14 +1,14 @@
 import { __DevController } from './UI/controller';
 import { AmbientLight, Light, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { __DefaultEngine } from "../lib/defaultEngine";
-import { bottomControlsHeight, leftControlsWidth, rightControlsWidth, topBarHeight } from "../shared/consts/controlsStyles";
-import { ProjectSettings } from "../types/ProjectSetings.interface";
-import { CameraWithHelper } from '../lib/devClasses/camerasWithHelper';
-import { MeshParser } from '../parsers/MeshParser';
-import { LightParser } from '../parsers/lightParser';
-import { LightWithHelper } from '../lib/devClasses/lightsWithHelper';
-import { CustomLight } from '../parsers/types/CustomLight.interface';
+import { __DefaultEngine } from "⚙️/lib/defaultEngine";
+import { bottomControlsHeight, leftControlsWidth, rightControlsWidth, topBarHeight } from "⚙️/shared/consts/controlsStyles";
+import { ProjectSettings } from "@/engine/types/ProjectSettings.interface";
+import { CameraWithHelper } from '⚙️/lib/devClasses/camerasWithHelper';
+import { MeshParser } from '⚙️/parsers/MeshParser';
+import { LightParser } from '⚙️/parsers/lightParser';
+import { LightWithHelper } from '⚙️/lib/devClasses/lightsWithHelper';
+import { CustomLight } from '⚙️/parsers/types/CustomLight.interface';
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera

@@ -1,6 +1,6 @@
 import {Subject} from "rxjs";
 import {Mesh, Object3D} from "three";
-import {ChangeDetector} from "./changeDetector";
+import {ChangeDetector} from ".";
 
 export class DeleteSubject<T extends Object3D> extends Subject<T> {
     constructor() {

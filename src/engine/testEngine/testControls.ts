@@ -2,7 +2,7 @@ import { AnimationFrame } from '../services/animationFrame.service';
 import {Pane} from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import {WebGLRenderer} from "three";
-import {logMemory} from "../shared/PerformanceMonitors";
+import {logMemory} from "⚙️/shared/PerformanceMonitors";
 
 export class TestControls {
     public pane: Pane

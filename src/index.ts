@@ -1,4 +1,4 @@
-import { Engine } from "./engine";
+import { Engine } from "⚙️/engine";
 
 Engine.create('#canvas', {
     objects: [

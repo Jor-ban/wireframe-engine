@@ -1,10 +1,10 @@
 import { ListElement } from './../listElement';
 import { filter } from "rxjs"
 import { Group, Object3D } from "three"
-import { WireframeMesh } from "../../../../lib"
-import { ChangeDetector } from "../../../changeDetector/changeDetector"
+import { WireframeMesh } from "⚙️/lib"
+import { ChangeDetector } from "⚙️/devEngine/changeDetector"
 import { getElementText } from "./getObjectIcon"
-import { dispose } from '../../../../shared/dispose';
+import { dispose } from '⚙️/shared/dispose';
 
 class DraggingServiceFactory {
     private objectMap: WeakMap<Object3D, ListElement> = new WeakMap()

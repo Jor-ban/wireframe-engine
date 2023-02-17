@@ -8,9 +8,9 @@ import {
     RingGeometry, SphereGeometry
 } from "three";
 import {FolderApi, TabPageApi, TpChangeEvent} from "tweakpane";
-import {WireframeMesh, WireframeTextGeometry} from "../../../../lib";
+import {WireframeMesh, WireframeTextGeometry} from "⚙️/lib";
 import {GeometryRedactor} from "./GeometryRedactor";
-import {ChangeDetector} from "../../../changeDetector/changeDetector";
+import {ChangeDetector} from "⚙️/devEngine/changeDetector";
 
 export class GeometryControls {
     mesh: WireframeMesh

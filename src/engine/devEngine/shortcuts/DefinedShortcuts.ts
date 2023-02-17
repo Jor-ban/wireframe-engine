@@ -1,5 +1,5 @@
 import {Mesh, Object3D} from "three";
-import {ChangeDetector} from "../changeDetector/changeDetector";
+import {ChangeDetector} from "../changeDetector";
 import {Shortcuts} from "./index";
 import {InstrumentsEnum} from "../types/Instruments.enum";
 

@@ -1,11 +1,11 @@
 import { InstrumentsEnum } from '../../types/Instruments.enum';
 import { icons } from '../../assets/icons';
-import { ChangeDetector } from '../../changeDetector/changeDetector';
+import { ChangeDetector } from '../../changeDetector';
 import { Group, Object3D, PerspectiveCamera, Scene } from "three";
 import { WireframeDropdown } from "../../utils/dropdown";
 import { getMeshAddingOptions } from "../../utils/MeshAddingOptions";
 
-import logoUrl from '../../assets/wireframe-logo.svg'
+import logoUrl from '⚙️/shared/assets/wireframe-logo.svg?url'
 import { HiddenMenuOption } from "../../utils/hiddenMenu";
 
 export class TopBar {

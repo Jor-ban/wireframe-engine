@@ -1,10 +1,10 @@
-import { __DevEngine } from './../../devEngine';
+import { __DevEngine } from '⚙️/devEngine/devEngine';
 import {TransformControls} from "three/examples/jsm/controls/TransformControls";
 import {InstrumentsEnum} from "../../types/Instruments.enum";
 import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
-import {ChangeDetector} from "../../changeDetector/changeDetector";
-import {WireframeMesh} from "../../../lib";
+import {ChangeDetector} from "../../changeDetector";
+import {WireframeMesh} from "⚙️/lib";
 import {Shortcuts} from "../../shortcuts";
 
 import pointerIconUrl from "../../assets/pointer_icon.svg"

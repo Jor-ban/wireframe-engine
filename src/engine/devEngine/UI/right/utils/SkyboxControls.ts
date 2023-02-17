@@ -4,10 +4,10 @@ import {
     CubeTextureLoaderService,
     defaultSkybox,
     defaultSkyboxSides
-} from "../../../../shared/consts/defaultSkybox";
-import {WireframeTextureLoader} from "../../../../shared/loaders";
-import { whiteTexture } from "../../../../shared/consts/defaultTexture";
-import { FileInputField } from "../../../../lib/devClasses/FileInputField";
+} from "⚙️/shared/consts/defaultSkybox";
+import {WireframeTextureLoader} from "⚙️/shared/loaders";
+import { whiteTexture } from "⚙️/shared/consts/defaultTexture";
+import { FileInputField } from "⚙️/lib/devClasses/FileInputField";
 
 export class SkyboxControls {
     inputsList: (InputBindingApi<unknown, any> | FileInputField)[] = []

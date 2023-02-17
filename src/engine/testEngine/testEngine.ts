@@ -1,5 +1,5 @@
 import { __ProdEngine } from '../prodEngine';
-import { ProjectSettings } from '../types/ProjectSetings.interface';
+import { ProjectSettings } from '../types/ProjectSettings.interface';
 import { TestControls } from './testControls';
 
 export class __TestEngine extends __ProdEngine {

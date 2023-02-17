@@ -1,4 +1,4 @@
-import { ProjectSettings } from "./types/ProjectSetings.interface";
+import { ProjectSettings } from "./types/ProjectSettings.interface";
 import { Light } from "three";
 import { CustomLight } from "./parsers/types/CustomLight.interface";
 import { LightParser } from "./parsers/lightParser";

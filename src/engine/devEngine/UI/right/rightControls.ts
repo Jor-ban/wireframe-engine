@@ -17,8 +17,8 @@ import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
 import { CameraControls } from './utils/CameraControls';
 import { LightControls } from './utils/LightControls';
 import { ActiveElementControls } from './activeElementControls';
-import {logMemory} from "../../../shared/PerformanceMonitors";
-import {rightControlsWidth, topBarHeight} from "../../../shared/consts/controlsStyles";
+import {logMemory} from "⚙️/shared/PerformanceMonitors";
+import {rightControlsWidth, topBarHeight} from "⚙️/shared/consts/controlsStyles";
 import {SkyboxControls} from "./utils/SkyboxControls";
 
 export class RightControls {

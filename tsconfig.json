@@ -13,7 +13,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "⚙️/*": ["src/engine/*"]
+    }
   },
   "include": ["src"]
 }

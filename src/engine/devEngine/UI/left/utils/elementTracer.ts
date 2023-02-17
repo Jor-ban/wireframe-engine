@@ -1,4 +1,4 @@
-import { __DevEngine } from './../../../devEngine';
+import { __DevEngine } from '⚙️/devEngine/devEngine';
 import {
     BackSide,
     BoxGeometry, BufferGeometry, Mesh,
@@ -9,12 +9,12 @@ import {
     Scene,
     Vector2,
 } from "three";
-import {CanvasProportion} from "../../../../parsers/types/CanvasProportion.interface";
-import {leftControlsWidth, topBarHeight} from "../../../../shared/consts/controlsStyles";
-import {ChangeDetector} from "../../../changeDetector/changeDetector";
-import {InstrumentsEnum} from "../../../types/Instruments.enum";
-import {WireframeMesh} from "../../../../lib";
-import {LightWithHelper} from "../../../../lib/devClasses/lightsWithHelper";
+import {CanvasProportion} from "⚙️/parsers/types/CanvasProportion.interface";
+import {leftControlsWidth, topBarHeight} from "⚙️/shared/consts/controlsStyles";
+import {ChangeDetector} from "⚙️/devEngine/changeDetector";
+import {InstrumentsEnum} from "⚙️/devEngine/types/Instruments.enum";
+import {WireframeMesh} from "⚙️/lib";
+import {LightWithHelper} from "⚙️/lib/devClasses/lightsWithHelper";
 
 export class ElementTracer {
     public activeObject: Object3D | null = null
@@ -69,7 +69,6 @@ export class ElementTracer {
             }
         })
         ChangeDetector.hoveredObject$.subscribe((mesh) => {
-            // @ts-ignore
             if(mesh === null) {
                 this.hoveredObject.visible = false
             } else if(mesh instanceof WireframeMesh) {
@@ -101,18 +100,35 @@ export class ElementTracer {
         })
     }
     private emitCLick = (mesh?: WireframeMesh | Object3D) => {
-        const {position, scale, rotation} = mesh || this.hoveredObject
-        this.clickedObject.position.set(position.x, position.y, position.z)
-        this.clickedObject.rotation.set(rotation.x, rotation.y, rotation.z)
-        this.clickedObject.scale.set(1.07 * scale.x, 1.07 * scale.y, 1.07 * scale.z)
-        this.clickedObject.geometry = mesh instanceof WireframeMesh ? mesh.geometry : this.hoveredObject.geometry
-        this.clickedObject.visible = true
+        if(mesh instanceof WireframeMesh) {
+            (mesh || this.hoveredObject).matrixWorld.decompose(
+                this.hoveredObject.position, 
+                this.hoveredObject.quaternion, 
+                this.hoveredObject.scale
+            )
+            this.hoveredObject.scale.set(
+                1.03 * this.hoveredObject.scale.x, 
+                1.03 * this.hoveredObject.scale.y, 
+                1.03 * this.hoveredObject.scale.z
+            )
+            this.clickedObject.geometry = mesh.geometry
+            this.clickedObject.visible = true
+        } else {
+            this.clickedObject.visible = false
+        }
     }
     private setHoveredObjectParameters(mesh: Object3D) {
-        const {position, scale, rotation} = mesh
-        this.hoveredObject.rotation.set(rotation.x, rotation.y, rotation.z)
-        this.hoveredObject.position.set(position.x, position.y, position.z)
-        this.hoveredObject.scale.set(1.03 * scale.x, 1.03 * scale.y, 1.03 * scale.z)
+        mesh.matrixWorld.decompose(
+            this.hoveredObject.position, 
+            this.hoveredObject.quaternion, 
+            this.hoveredObject.scale
+        )
+        this.hoveredObject.scale.set(
+            1.03 * this.hoveredObject.scale.x, 
+            1.03 * this.hoveredObject.scale.y, 
+            1.03 * this.hoveredObject.scale.z
+        )
+        this.hoveredObject.visible = true
     }
     private emitHover(mesh: Object3D | WireframeMesh) {
         this.activeObject = mesh

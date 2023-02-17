@@ -67,6 +67,7 @@ export class __DefaultEngine implements EngineInterface {
     }
     
     protected initTick(askedFps: number = 60, renderCamera: PerspectiveCamera | OrthographicCamera): void {
+        this.userAskedFPS = askedFps
         this.animationMachine.run(this.userAskedFPS)
         this.animationMachine.addListener(() => {
             this.renderer.render(this.scene, renderCamera)

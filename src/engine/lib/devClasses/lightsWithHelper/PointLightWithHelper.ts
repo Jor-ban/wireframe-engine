@@ -1,5 +1,5 @@
 import { ColorRepresentation, Object3D, PointLight, PointLightHelper, Scene } from "three";
-import { ChangeDetector } from "../../../devEngine/changeDetector/changeDetector";
+import { ChangeDetector } from "../../../devEngine/changeDetector";
 import { ElementWithHelper } from "../types/elementWithHelper.interface";
 
 export class PointLightWithHelper extends PointLight implements ElementWithHelper {

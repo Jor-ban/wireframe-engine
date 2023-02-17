@@ -1,8 +1,8 @@
 import { Material } from "three";
 import { FolderApi } from "tweakpane";
-import { defaultMapTexture } from "../../shared/consts/defaultTexture";
-import { WireframeTextureLoader } from "../../shared/loaders";
-import { IFileInput } from "../../shared/types/FileInput.interface";
+import { defaultMapTexture } from "⚙️/shared/consts/defaultTexture";
+import { WireframeTextureLoader } from "⚙️/shared/loaders";
+import { IFileInput } from "⚙️/shared/types/FileInput.interface";
 
 export class FileInputField implements IFileInput {
     public container: HTMLElement;

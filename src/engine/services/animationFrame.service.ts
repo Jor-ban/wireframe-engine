@@ -1,5 +1,5 @@
 import { Clock } from "three";
-import { EngineState } from "../shared/engineState";
+import { EngineState } from "⚙️/shared/engineState";
 
 class AnimationFrameFactory {
     public isRunning: boolean = false;
@@ -107,7 +107,7 @@ class AnimationFrameFactory {
         } else if(maxFPS === 60) { // if maxFPS is - 60, render in max comfort mode
             const frame = () => {
                 this.runListeners()
-                this._animationFrameId = window.requestAnimationFrame(frame) // TODO make own requestAnimationFrame service for better performance and better control & animations
+                this._animationFrameId = window.requestAnimationFrame(frame)
             }
             frame()
         } else {

@@ -3,7 +3,7 @@ import { MeshGenerator } from "./generators/MeshGenerator";
 import { Group, Light, Object3D, PerspectiveCamera, Scene } from "three";
 import { HiddenMenuOption } from "./hiddenMenu";
 import { LightWithHelperGenerator } from "./generators/LightWithHelperGenerator";
-import { ChangeDetector } from "../changeDetector/changeDetector";
+import { ChangeDetector } from "../changeDetector";
 import { WireframeMesh } from "../../lib";
 import { LightWithHelper } from "../../lib/devClasses/lightsWithHelper";
 import { icons } from '../assets/icons'

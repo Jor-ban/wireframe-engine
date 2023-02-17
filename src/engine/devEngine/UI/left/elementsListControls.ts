@@ -1,9 +1,9 @@
 import { DraggingService } from './utils/dragging.service';
 import { ObjectsContainer } from './objectsContainer';
-import { __DevEngine } from './../../devEngine';
-import { WireframeDropdown } from './../../utils/dropdown';
+import { __DevEngine } from '⚙️/devEngine/devEngine';
+import { WireframeDropdown } from '⚙️/devEngine/utils/dropdown';
 import { Group, PerspectiveCamera, Scene } from "three";
-import { ChangeDetector } from "../../changeDetector/changeDetector";
+import { ChangeDetector } from "../../changeDetector";
 import { icons } from '../../assets/icons';
 
 import { getMeshAddingOptions } from '../../utils/MeshAddingOptions';

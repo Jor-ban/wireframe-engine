@@ -1,7 +1,7 @@
 import { ObjectsContainer } from './objectsContainer';
 import { Camera, Group, Light, Object3D } from 'three';
-import { WireframeMesh } from '../../../lib';
-import { ChangeDetector } from '../../changeDetector/changeDetector';
+import { WireframeMesh } from '⚙️/lib';
+import { ChangeDetector } from '../../changeDetector';
 import { WireframeDropdown } from '../../utils/dropdown';
 import { DraggingService } from './utils/dragging.service';
 import { getElementText } from './utils/getObjectIcon';

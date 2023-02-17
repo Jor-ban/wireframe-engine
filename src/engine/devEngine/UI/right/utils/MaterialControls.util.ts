@@ -21,7 +21,7 @@ import {
     MeshPhongMaterialParameters,
     MeshStandardMaterialParameters, MeshLambertMaterialParameters, MeshPhysicalMaterialParameters,
 } from 'three';
-import {FolderApi, TabPageApi} from "tweakpane";
+import { FolderApi, TabPageApi } from "tweakpane";
 import {
     AddOperation, BasicDepthPacking,
     MixOperation,
@@ -29,8 +29,8 @@ import {
     ObjectSpaceNormalMap, RGBADepthPacking,
     TangentSpaceNormalMap,
 } from 'three/src/constants';
-import {WireframeMesh} from "../../../../lib";
-import { FileInputField } from '../../../../lib/devClasses/FileInputField';
+import { WireframeMesh } from "⚙️/lib";
+import { FileInputField } from '⚙️/lib/devClasses/FileInputField';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {

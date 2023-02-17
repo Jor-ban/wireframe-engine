@@ -1,6 +1,6 @@
 import { ListElement } from './listElement';
 import { Object3D } from "three";
-import { ChangeDetector } from "../../changeDetector/changeDetector";
+import { ChangeDetector } from "../../changeDetector";
 import { SceneFolder } from "../../types/SceneFolder.type";
 
 export class ObjectsContainer {

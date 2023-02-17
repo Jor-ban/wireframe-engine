@@ -1,10 +1,10 @@
-import { __DevEngine } from './../../devEngine';
+import { __DevEngine } from "⚙️/devEngine/devEngine"
 import {ElementsListControls} from "./elementsListControls";
 import {InstrumentsControls} from "./instrumentsControls";
 import {
 	leftControlsWidth,
 	topBarHeight
-} from "../../../shared/consts/controlsStyles";
+} from "⚙️/shared/consts/controlsStyles";
 
 export class LeftControls {
 	instrumentsElement !: HTMLDivElement

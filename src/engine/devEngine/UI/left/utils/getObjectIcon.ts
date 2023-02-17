@@ -1,7 +1,7 @@
 import { AmbientLight, Camera, CircleGeometry, ConeGeometry, CylinderGeometry, DirectionalLight, DodecahedronGeometry, Group, Light, Object3D, PlaneGeometry, PointLight, RingGeometry, SphereGeometry, SpotLight } from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { WireframeMesh } from '../../../../lib';
-import { icons } from '../../../assets/icons';
+import { WireframeMesh } from '⚙️/lib';
+import { icons } from '⚙️/devEngine/assets/icons';
 import { GroupService } from './group.service';
 
 export function getObjectIcon(obj: Object3D): string {
