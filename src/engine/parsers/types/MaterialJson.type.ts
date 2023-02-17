@@ -8,7 +8,7 @@ import {
     MeshToonMaterialParameters,
 } from "three";
 
-export type CustomMaterial = (
+export type MaterialJson = (
     MeshToonMaterialParameters &
     MeshDepthMaterialParameters &
     MeshBasicMaterialParameters &

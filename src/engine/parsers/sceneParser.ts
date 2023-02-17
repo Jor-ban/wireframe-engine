@@ -1,9 +1,9 @@
 import {CubeTextureLoader, Scene, sRGBEncoding} from "three";
-import {CustomScene} from "./types/CustomScene.interface";
+import {SceneJson} from "./types/SceneJson.type";
 import {defaultSkybox} from "⚙️/shared/consts/defaultSkybox";
 
 export class SceneParser {
-    public static parse(scene ?: Scene | CustomScene): Scene {
+    public static parse(scene ?: Scene | SceneJson): Scene {
         if(scene instanceof Scene) {
             return scene
         } else if(!scene) {

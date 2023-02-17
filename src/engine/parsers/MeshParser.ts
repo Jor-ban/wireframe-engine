@@ -7,10 +7,10 @@ import {
     MeshToonMaterial,
     Object3D, PlaneGeometry, RingGeometry, SphereGeometry
 } from "three";
-import {Custom3dObjectParameters, Positionable, Rotatable, Scalable} from "./types/Custom3dObject.type";
-import {CustomMesh} from "./types/CustomMesh.type";
-import {CustomMaterial} from "./types/CustomMaterial.type";
-import {CustomGeometry} from "./types/CustomGeometry.type";
+import {Object3dJSON, Positionable, Rotatable, Scalable} from "./types/Object3DJson.type";
+import {MeshJson} from "./types/MeshJson.type";
+import {MaterialJson} from "./types/MaterialJson.type";
+import {GeometryJson} from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import {LightParser} from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
@@ -20,7 +20,7 @@ import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 const fl = new FontLoader()
 
 export class MeshParser {
-    static parse(object: CustomMesh): WireframeMesh {
+    static parse(object: MeshJson): WireframeMesh {
         if(object instanceof WireframeMesh) {
             return object
         } else {
@@ -32,7 +32,7 @@ export class MeshParser {
             return mesh
         }
     }
-    static parseGeometry(geometry: BufferGeometry | CustomGeometry | undefined): BufferGeometry {
+    static parseGeometry(geometry: BufferGeometry | GeometryJson | undefined): BufferGeometry {
         if(!geometry) {
             return new BoxGeometry(1, 1, 1)
         } else if(geometry instanceof BufferGeometry) {
@@ -129,7 +129,7 @@ export class MeshParser {
             }
         }
     }
-    static parseMaterial(material?: Material | CustomMaterial): Material {
+    static parseMaterial(material?: Material | MaterialJson): Material {
         if(!material) {
             return new MeshBasicMaterial({color: 0xffffff})
         } if(material instanceof Material) {
@@ -161,7 +161,7 @@ export class MeshParser {
             }
         }
     }
-    static setParameters(mesh: Object3D, parameters: Custom3dObjectParameters | undefined): Object3D {
+    static setParameters(mesh: Object3D, parameters: Object3dJSON | undefined): Object3D {
         this.position(mesh, parameters)
         this.scale(mesh, parameters)
         this.rotate(mesh, parameters)

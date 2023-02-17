@@ -1,11 +1,11 @@
 import {Camera, OrthographicCamera, PerspectiveCamera} from "three";
-import {CustomCamera} from "./types/CustomCamera.interface";
+import {CameraJson} from "./types/CameraJson.interface";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class CameraParser {
     public static parse(
         canvas: CanvasProportion,
-        camera ?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera',
+        camera ?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera',
     ): PerspectiveCamera | OrthographicCamera {
         if(camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
             return camera

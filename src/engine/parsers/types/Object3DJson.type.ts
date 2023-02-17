@@ -3,6 +3,9 @@ import {Vector3} from "three";
 export type Nameable = {
     name ?: string
 }
+export type UuidSettable = {
+    uuid ?: string
+}
 export type Positionable = Vector3 | {
     x?: number
     y?: number
@@ -19,7 +22,7 @@ export type Scalable = {
     scaleZ?: number
 }
 
-export type Custom3dObjectParameters = Positionable & Rotatable & Scalable & {
+export type Object3dJSON = Positionable & Rotatable & Scalable & UuidSettable & {
     castShadow?: boolean
     visible?: boolean
     receiveShadow?: boolean

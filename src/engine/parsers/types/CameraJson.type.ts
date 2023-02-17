@@ -1,6 +1,6 @@
-import {Nameable, Positionable, Rotatable} from "./Custom3dObject.type";
+import {Nameable, Positionable, Rotatable, UuidSettable} from "./Object3DJson.type";
 
-export type PerspectiveCameraSettings = Nameable & {
+export type PerspectiveCameraSettings = Nameable & UuidSettable & {
     fov ?: number
     aspect ?: number
     near ?: number
@@ -8,7 +8,7 @@ export type PerspectiveCameraSettings = Nameable & {
     type ?: 'perspectiveCamera'
 }
 
-export type OrthographicCameraSettings = Nameable & {
+export type OrthographicCameraSettings = Nameable  & UuidSettable & {
     left ?: number,
     right ?: number,
     top ?: number,
@@ -18,6 +18,6 @@ export type OrthographicCameraSettings = Nameable & {
     type: 'orthographicCamera'
 }
 
-export type CustomCamera = (PerspectiveCameraSettings | OrthographicCameraSettings) & {
+export type CameraJson = (PerspectiveCameraSettings | OrthographicCameraSettings) & {
     parameters?: Positionable & Rotatable
 }

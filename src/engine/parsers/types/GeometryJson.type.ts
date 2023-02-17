@@ -1,28 +1,28 @@
 import {Font} from "three/examples/jsm/loaders/FontLoader";
 
-export type CustomPlaneGeometry = {
+export type PlaneGeometryJson = {
     width?: number
     height?: number
     widthSegments?: number
     heightSegments?: number
 }
 
-export type CustomBoxGeometry = CustomPlaneGeometry & {
+export type BoxGeometryJson = PlaneGeometryJson & {
     depth?: number
     depthSegments?: number
 }
-export type CustomCircleGeometry = {
+export type CircleGeometryJson = {
     radius?: number
     segments?: number
     thetaStart?: number
     thetaLength?: number
 }
-export type CustomRingGeometry = CustomCircleGeometry & {
+export type RingGeometryJson = CircleGeometryJson & {
     thetaSegments?: number,
     phiSegments?: number
     outerRadius?: number
 }
-export type CustomConeGeometry = {
+export type ConeGeometryJson = {
     radius?: number
     height?: number
     radialSegments?: number
@@ -31,14 +31,14 @@ export type CustomConeGeometry = {
     thetaStart?: number
     thetaLength?: number
 }
-export type CustomCylinderGeometry = CustomConeGeometry & {
+export type CylinderGeometryJson = ConeGeometryJson & {
     radiusBottom?: number
 }
-export type CustomDodecahedronGeometry = {
+export type DodecahedronGeometryJson = {
     radius?: number
     detail?: number
 }
-export type CustomSphereGeometry = {
+export type SphereGeometryJson = {
     radius?: number
     widthSegments?: number
     heightSegments?: number
@@ -47,7 +47,7 @@ export type CustomSphereGeometry = {
     thetaStart?: number
     thetaLength?: number
 }
-export type CustomTextGeometry = {
+export type TextGeometryJson = {
     text?: string
     size?: number | undefined;
     height?: number | undefined;
@@ -60,15 +60,15 @@ export type CustomTextGeometry = {
     font?: Font | string
 }
 
-export type CustomGeometry = (
-    CustomPlaneGeometry &
-    CustomBoxGeometry &
-    CustomCircleGeometry &
-    CustomRingGeometry &
-    CustomConeGeometry &
-    CustomCylinderGeometry &
-    CustomDodecahedronGeometry &
-    CustomTextGeometry &
-    CustomSphereGeometry ) & {
+export type GeometryJson = (
+    PlaneGeometryJson &
+    BoxGeometryJson &
+    CircleGeometryJson &
+    RingGeometryJson &
+    ConeGeometryJson &
+    CylinderGeometryJson &
+    DodecahedronGeometryJson &
+    TextGeometryJson &
+    SphereGeometryJson ) & {
         type: 'plane' | 'box' | 'cube' | 'circle' | 'ring' | 'cone' | 'cylinder' | 'dodecahedron' | 'sphere' | 'ball' | 'text'
     }

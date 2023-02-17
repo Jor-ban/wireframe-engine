@@ -1,10 +1,10 @@
 import { ProjectSettings } from "./types/ProjectSettings.interface";
 import { Light } from "three";
-import { CustomLight } from "./parsers/types/CustomLight.interface";
+import { CustomLight } from "./parsers/types/LightJson.type";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { MeshParser } from "./parsers/MeshParser";;
-import { CustomOrbitControls } from './parsers/types/CustomOrbitControls.interface';
+import { OrbitControlsJson } from './parsers/types/OrbitControlsJson.interface';
 import { __DefaultEngine } from './lib/defaultEngine';
 
 export class __ProdEngine extends __DefaultEngine {
@@ -27,7 +27,7 @@ export class __ProdEngine extends __DefaultEngine {
         this.initTick(projectSettings.maxFPS, this.camera)
     }
 
-    private setOrbitControls(orbitControls ?: boolean | CustomOrbitControls): void {
+    private setOrbitControls(orbitControls ?: boolean | OrbitControlsJson): void {
         if(orbitControls) {
             super.orbitControls = new OrbitControls(this.camera, this.canvas)
             if(typeof orbitControls === 'object') {

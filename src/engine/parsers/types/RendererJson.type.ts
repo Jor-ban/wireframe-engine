@@ -1,6 +1,6 @@
 import {ShadowMapType, TextureEncoding, ToneMapping} from "three";
 
-export interface CustomRenderer {
+export type RendererJson = {
     antialias ?: boolean
     physicallyCorrectLights ?: boolean
     encoding ?: TextureEncoding

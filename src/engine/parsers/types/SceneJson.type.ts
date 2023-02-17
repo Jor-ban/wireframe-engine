@@ -1,6 +1,6 @@
 import {LoadingManager, TextureEncoding} from "three";
 
-export interface CustomScene {
+export type SceneJson = {
     skybox?: {
         posX: string,
         negX: string,
@@ -8,7 +8,7 @@ export interface CustomScene {
         negY: string,
         posZ: string,
         negZ: string,
-    } | string[], // Array loads multiple images in the same order as in object
+    } | [string, string, string, string, string, string], // Array loads multiple images in the same order as in object
     encoding ?: TextureEncoding,
     loadingManager?: LoadingManager
 }

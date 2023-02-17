@@ -1,9 +1,9 @@
 import {NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer} from "three";
-import {CustomRenderer} from "./types/CustomRenderer.interface";
+import {RendererJson} from "./types/RendererJson.type";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class RendererParser {
-    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WebGLRenderer | CustomRenderer): WebGLRenderer {
+    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WebGLRenderer | RendererJson): WebGLRenderer {
         if(renderer instanceof WebGLRenderer) {
             return renderer
         }

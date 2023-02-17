@@ -8,7 +8,7 @@ import { CameraWithHelper } from '⚙️/lib/devClasses/camerasWithHelper';
 import { MeshParser } from '⚙️/parsers/MeshParser';
 import { LightParser } from '⚙️/parsers/lightParser';
 import { LightWithHelper } from '⚙️/lib/devClasses/lightsWithHelper';
-import { CustomLight } from '⚙️/parsers/types/CustomLight.interface';
+import { AmbientLightJson } from '@/engine/parsers/types/LightJson.type';
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
@@ -32,7 +32,7 @@ export class __DevEngine extends __DefaultEngine {
             this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
         }
         if(projectSettings.lights?.length) {
-            projectSettings.lights.forEach((light: CustomLight | Light) => {
+            projectSettings.lights.forEach((light: AmbientLightJson | Light) => {
                 const parsedLight = LightParser.parse(light)
                 const lightWithHelper = LightWithHelper.from(parsedLight)
                 if(lightWithHelper instanceof AmbientLight) {

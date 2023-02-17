@@ -11,12 +11,12 @@ import {
     WebGLRenderer
 } from "three";
 import { CameraParser } from "../parsers/cameraParser";
-import { CustomCamera } from "../parsers/types/CustomCamera.interface";
-import { CustomScene } from "../parsers/types/CustomScene.interface";
+import { CameraJson } from "../parsers/types/CameraJson.type";
+import { SceneJson } from "../parsers/types/SceneJson.type";
 import { SceneParser } from "../parsers/sceneParser";
-import { CustomRenderer } from "../parsers/types/CustomRenderer.interface";
+import { RendererJson } from "../parsers/types/RendererJson.type";
 import { RendererParser } from "../parsers/rendererParser";
-import { CustomAmbientLight } from "../parsers/types/CustomLight.interface";
+import { AmbientLightJson } from "../parsers/types/LightJson.type";
 import { LightParser } from "../parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
@@ -61,6 +61,10 @@ export class __DefaultEngine implements EngineInterface {
                 this.camera.updateProjectionMatrix()
                 // Update renderer
                 this.renderer?.setSize(window.innerWidth, window.innerHeight)
+                if(canvasSizes?.updateStyle !== false) {
+                    this.canvas.style.width = `${window.innerWidth}px`
+                    this.canvas.style.height = `${window.innerHeight}px`
+                }
             })
         }
         return this
@@ -73,7 +77,7 @@ export class __DefaultEngine implements EngineInterface {
             this.renderer.render(this.scene, renderCamera)
         })
     }
-    public setAmbientLight(ambientLight ?: AmbientLight | CustomAmbientLight): EngineInterface {
+    public setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface {
         if(this.ambientLight) {
             this.scene.remove(this.ambientLight)
         }
@@ -81,7 +85,7 @@ export class __DefaultEngine implements EngineInterface {
         this.scene.add(this.ambientLight)
         return this
     }
-    public setScene(scene ?: Scene | CustomScene): EngineInterface {
+    public setScene(scene ?: Scene | SceneJson): EngineInterface {
         this.scene = SceneParser.parse(scene)
         return this
     }
@@ -89,11 +93,11 @@ export class __DefaultEngine implements EngineInterface {
         this.scene.add(...objects)
         return this
     }
-    public setRenderer(renderer?: WebGLRenderer | CustomRenderer): EngineInterface {
+    public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
         this.renderer = RendererParser.parse(this.canvas, this.canvasProportion, renderer)
         return this
     }
-    public setCamera(camera?: Camera | CustomCamera | 'perspectiveCamera' | 'orthographicCamera' | undefined): EngineInterface {
+    public setCamera(camera?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera' | undefined): EngineInterface {
         if(this.camera) {
             this.scene.remove(this.camera)
         }

@@ -7,7 +7,7 @@ import {
     Light,
     PointLight,
 } from "three";
-import { CustomAmbientLight, CustomLight } from './types/CustomLight.interface';
+import { CustomAmbientLight, CustomLight } from './types/LightJson.type';
 import {MeshParser} from "./MeshParser";
 
 export class LightParser {
