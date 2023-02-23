@@ -40,7 +40,9 @@ export class ElementsListControls {
         emptyFieldContainer.appendChild(emptyFieldText)
         emptyFieldContainer.addEventListener('dragenter', (e) => {
             e.preventDefault()
-            emptyFieldContainer.classList.add('__wireframe-dragover')
+            if(DraggingService.draggingElement) {
+                emptyFieldContainer.classList.add('__wireframe-dragover')
+            }
         })
         emptyFieldContainer.addEventListener('dragover', (e) => {
             e.preventDefault()

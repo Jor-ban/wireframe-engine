@@ -1,14 +1,14 @@
+import { ChangeDetector } from './../../changeDetector/index';
 import {TabPageApi} from "tweakpane";
 import {AssetsTree} from "../../types/AssetsTree.interface";
 import {ExplorerService} from "./explorer.service";
-import {getIconUrl} from "../../utils/getIconUrl";
-// import folderIconUrl from "../../assets/folder.png?url"
+import {getIconUrl} from "../../utils/getFileIcon";
 
 export class AssetsManager {
     element !: HTMLElement;
     viewElement !: HTMLElement;
     routerElement: HTMLElement;
-    currentDirectory: AssetsTree = { name: 'src', isFolder: true, path: './src' }
+    currentDirectory: AssetsTree = { name: 'src', isFolder: true, path: '' }
     contextMenu: HTMLElement | null = null;
 
     constructor(pane: TabPageApi) {
@@ -42,38 +42,41 @@ export class AssetsManager {
     }
     async updateExplorerView() {
         this.viewElement.innerHTML = ''
-        const path = this.currentDirectory.path.replace(/root\/?/,"")
+        const path = this.currentDirectory.path.replace(/static\/?/, "")
         let elements: AssetsTree[]
         try {
             elements = await ExplorerService.getElements(path) as AssetsTree[]
         } catch(e) {
             elements = []
-            this.viewElement.innerHTML = '<h3 style="color: #d7d7d7">Explorer is not available in production mode</h3>'
+            this.viewElement.innerHTML = '<h3 style="color: #d7d7d7">Cannot get this directory</h3>'
         }
         for(let el of elements) {
             const grid = document.createElement('div')
             grid.classList.add('__wireframe-assets-grid')
             grid.oncontextmenu = this.contextMenuOnElement.bind(this)
+            const assetUrl = getIconUrl(el)
             grid.innerHTML = `
-                <img src="${await getIconUrl(el)}" alt="">
+                <img draggable="false" src="${ '../../../' + assetUrl }" alt="">
                 <p>${el.name}</p>
             `
             this.viewElement.appendChild(grid)
-            grid.addEventListener('dblclick', () => this.goto(el))
+            if(el.isFolder) {
+                grid.addEventListener('dblclick', () => this.goto(el))
+            } else {
+                grid.draggable = true
+                grid.addEventListener('dragstart', () => {
+                    ChangeDetector.draggingObject$.next(assetUrl)
+                })
+            }
         }
     }
     goto(el: AssetsTree) {
-        if(el.isFolder) {
-            if(el.path === 'root') {
-                el.path = './src'
-            }
-            this.currentDirectory = el
-            this.setRouter(el.path)
-            this.updateExplorerView()
-        }
+        this.currentDirectory = el
+        this.setRouter(el.path)
+        this.updateExplorerView()
     }
     setRouter(path: string) {
-        path = String(path).replace(/^.\/src/,"root")
+        path = String(path).replace(/^(.\/src)?(\/)?(static)?/, "static")
         this.routerElement.innerHTML = ''
         const pathArr = path.split('/')
         for(let pathPart of pathArr) {

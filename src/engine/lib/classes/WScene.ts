@@ -3,8 +3,9 @@ import { MeshJson } from '../parsers/types/MeshJson.type';
 import { SceneParser } from '../parsers/sceneParser';
 import { SceneJson } from '../parsers/types/SceneJson.type';
 import { Object3D, Scene } from "three";
+import { Stringifyable } from './types/stringifyable.interface';
 
-export class WScene extends Scene {
+export class WScene extends Scene implements Stringifyable {
 
     constructor() {
         super()
@@ -22,5 +23,9 @@ export class WScene extends Scene {
             }
         }))
         return this
+    }
+
+    toJson(): string {
+        return ''
     }
 }

@@ -114,14 +114,14 @@ body {
 button.tp-rotv_b {
     display: none
 }
-.tp-brkv::-webkit-scrollbar, .__wireframe-logs::-webkit-scrollbar {
+.__wireframe-controls ::-webkit-scrollbar, .__wireframe-controls ::-webkit-scrollbar {
     width: 7px;
 }
-.tp-brkv::-webkit-scrollbar-thumb, .__wireframe-logs::-webkit-scrollbar-thumb {
+.__wireframe-controls ::-webkit-scrollbar-thumb, .__wireframe-controls ::-webkit-scrollbar-thumb {
     background: #3E3F44;
     border-radius: 3px;
 }
-.tp-brkv::-webkit-scrollbar-thumb:hover, .__wireframe-logs::-webkit-scrollbar-thumb:hover {
+.__wireframe-controls ::-webkit-scrollbar-thumb:hover, .__wireframe-controls ::-webkit-scrollbar-thumb:hover {
     background: #BBBCC4;
 }
 .tp-btnv_t {
@@ -349,8 +349,10 @@ button.tp-rotv_b {
 .__wireframe-assets .__wireframe-explorer {
     display: flex;
     flex-wrap: wrap;
+    margin-right: 5px;
 }
 .__wireframe-assets .__wireframe-assets-grid {
+    padding: 3px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -367,9 +369,11 @@ button.tp-rotv_b {
 }
 .__wireframe-assets-grid > img {
     width: 100%;
+    border-radius: 3px;
 }
 .__wireframe-assets-grid > p {
-    margin-top: 0;
+    margin-top: 5px;
+    margin-bottom: 3px;
     padding: 0;
     width: 100%;
     max-width: 300px;

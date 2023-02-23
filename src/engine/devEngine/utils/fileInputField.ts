@@ -1,8 +1,17 @@
+import { ChangeDetector } from './../changeDetector/index';
 import { Material } from "three";
 import { FolderApi } from "tweakpane";
 import { defaultMapTexture } from "⚙️/shared/consts/defaultTexture";
 import { WireframeTextureLoader } from "⚙️/shared/loaders";
-import { IFileInput } from "⚙️/shared/types/FileInput.interface";
+import { IFileInput } from "./types/FileInput.interface";
+import { filter } from 'rxjs';
+
+let draggingObject: any = null
+ChangeDetector.draggingObject$.pipe(
+    filter((el) => typeof el === 'string' || el === null)
+).subscribe((data) => {
+    draggingObject = data
+})
 
 export class FileInputField implements IFileInput {
     public container: HTMLElement;
@@ -19,7 +28,12 @@ export class FileInputField implements IFileInput {
         this.container.remove();
     }
 
-    static addImage(folder: FolderApi, keyName: string, defaultImage: HTMLImageElement | null = null): FileInputField {
+    static addImage(
+        folder: FolderApi, 
+        keyName: string, 
+        defaultImage: HTMLImageElement | null = null, 
+        onChange: (url: string) => Promise<void>
+    ): FileInputField {
         const container = folder.addFolder({title: '__'}).element
         container.innerHTML = ''
         container.classList.add('__wireframe-file-input-container')
@@ -39,6 +53,7 @@ export class FileInputField implements IFileInput {
         
         const inputLabel = document.createElement('label')
         inputLabel.htmlFor = keyName
+        this.addLabelEvents(inputLabel, onChange)
         if(defaultImage && defaultImage.src !== defaultMapTexture.image.src) {
             inputLabel.style.backgroundImage = `url("${defaultImage.src}")`
         }
@@ -47,6 +62,7 @@ export class FileInputField implements IFileInput {
             const file = target?.files ? target.files[0] : null
             if(file) {
                 const url = (window.URL || window.webkitURL).createObjectURL(file)
+                onChange(url)
                 inputLabel.style.backgroundImage = `url("${url}")`
             }
         })
@@ -62,22 +78,32 @@ export class FileInputField implements IFileInput {
         buttonsContainer.appendChild(deleteButton)
 
         container.appendChild(buttonsContainer)
-        return new this(container, inputElement, deleteButton )
+        return new this(container, inputElement, deleteButton)
+    }
+    private static addLabelEvents(el: HTMLElement, onChange: (url: string) => Promise<void>): void {
+        console.log(el)
+        el.addEventListener('dragenter', (e) => {
+            e.preventDefault()
+        })
+        el.addEventListener('dragleave', (e) => {
+            e.preventDefault()
+        })
+        el.addEventListener('drop', (e) => {
+            e.preventDefault()
+            draggingObject
+            // console.log(e.dataTransfer?.files)
+        })
+        el.addEventListener('dragover', (e) => {
+            e.preventDefault()
+        })
     }
     static addMapable<T extends Material>(material: T, folder: FolderApi, keyName: keyof T & string): FileInputField {
         const workingMaterial = material as any
         const image = workingMaterial[keyName]?.image || defaultMapTexture.image
-        const fileField = this.addImage(folder, keyName, image)
-
-        fileField.input.addEventListener('change', async (event) => {
-            const target = (event.target as HTMLInputElement | null)
-            const file = target?.files ? target.files[0] : null
-            if(file) {
-                const url = (window.URL || window.webkitURL).createObjectURL(file)
-                const texture = await WireframeTextureLoader.loadAsync(url)
-                workingMaterial[keyName] = texture
-                material.needsUpdate = true
-            }
+        const fileField = this.addImage(folder, keyName, image, async (url: string) => {
+            const texture = await WireframeTextureLoader.loadAsync(url)
+            workingMaterial[keyName] = texture
+            material.needsUpdate = true
         })
         fileField.delete.addEventListener('click', () => {
             workingMaterial[keyName] = null

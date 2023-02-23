@@ -87,14 +87,14 @@ export class ActiveElementControls {
                 {title: 'Geometry'},
                 {title: 'Material'},
                 {title: 'Physics'}, // TODO
-                {title: 'Advanced'},
+                {title: 'Mesh'},
             ]
         })
 
         new GeometryControls(child, tabs.pages[0])
         this.addMaterials(child, tabs.pages[1])
         this.addPhysics(child, tabs.pages[2])
-        this.addAdvanced(child, tabs.pages[3])
+        this.addMeshOptions(child, tabs.pages[3])
     }
     private addForGroup(group: Group, pane: Pane | TabPageApi | FolderApi): void {
         this.addForObject3D(group, pane)
@@ -134,7 +134,7 @@ export class ActiveElementControls {
     private addPhysics(child: WMesh, pane: FolderApi | TabPageApi) {
         // TODO
     }
-    private addAdvanced(child: WMesh, pane: FolderApi | TabPageApi) {
+    private addMeshOptions(child: WMesh, pane: FolderApi | TabPageApi) {
         pane.addInput(child, 'castShadow')
         pane.addInput(child, 'visible');
         pane.addInput(child, 'receiveShadow');

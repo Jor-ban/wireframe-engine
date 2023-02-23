@@ -1,5 +1,5 @@
 import { MovedObjectInterface } from './types/movedObject.interface';
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { Object3D } from "three";
 import { InstrumentsEnum } from "../types/Instruments.enum";
 import { WMesh } from "⚙️/lib";
@@ -14,6 +14,7 @@ export class ChangeDetector {
     static removedObject$: DeleteSubject<Object3D> = new DeleteSubject()
     static activeInstrument$: Subject<InstrumentsEnum> = new Subject()
     static activeObjectUpdated$: Subject<ObjectUpdateInterface> = new Subject()
+    static draggingObject$: BehaviorSubject<any | null> = new BehaviorSubject(null) // !TODO finish subscription to this subject 
 }
 
 ChangeDetector.activeObjectUpdated$.subscribe((update) => {

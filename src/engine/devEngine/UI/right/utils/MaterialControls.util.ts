@@ -30,7 +30,7 @@ import {
     TangentSpaceNormalMap,
 } from 'three/src/constants';
 import { WMesh } from "⚙️/lib";
-import { FileInputField } from '⚙️/devEngine/devClasses/FileInputField';
+import { FileInputField } from '@/engine/devEngine/utils/fileInputField';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
@@ -481,10 +481,6 @@ export class MaterialControlsUtil {
             .on('change', ({value}) => {
                 color.set(new Color(value))
             })
-        folder.addButton({title: 'Remove ' + headerName}).on('click', () => {
-            // @ts-ignore
-            material[colorName] = null
-        })
     }
     private static addForColor(material:
         | MeshToonMaterial | MeshBasicMaterial | MeshLambertMaterial

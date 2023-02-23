@@ -7,7 +7,7 @@ import {
 } from "⚙️/shared/consts/defaultSkybox";
 import {WireframeTextureLoader} from "⚙️/shared/loaders";
 import { whiteTexture } from "⚙️/shared/consts/defaultTexture";
-import { FileInputField } from "⚙️/devEngine/devClasses/FileInputField";
+import { FileInputField } from "@/engine/devEngine/utils/fileInputField";
 
 export class SkyboxControls {
     inputsList: (InputBindingApi<unknown, any> | FileInputField)[] = []
@@ -68,38 +68,32 @@ export class SkyboxControls {
         const usingSkyboxArr: string[] = [...defaultSkyboxSides]
         usingSkyboxArr.forEach((value: string, index: number) => {
             const usingKey = index === 0 ? 'posX' : index === 1 ? 'negX' : index === 2 ? 'posY' : index === 3 ? 'negY' : index === 4 ? 'posZ' : 'negZ'
-            const fileField = FileInputField.addImage(this.folder, usingKey, defaultSkybox.images[index].src)
-            fileField.input.addEventListener('change', async (event) => {
-                const target = (event.target as HTMLInputElement | null)
-                const file = target?.files ? target.files[0] : null
-                if(file) {
-                    usingSkyboxArr[index] = (window.URL || window.webkitURL).createObjectURL(file)
+            const fileField = FileInputField.addImage(
+                this.folder, 
+                usingKey, 
+                defaultSkybox.images[index].src,
+                async (url: string) => {
+                    usingSkyboxArr[index] = url
+                    CubeTextureLoaderService.load(usingSkyboxArr, (texture) => {
+                        this.scene.background = texture
+                        this.scene.environment = texture
+                        texture.encoding = sRGBEncoding
+                    })
                 }
-                CubeTextureLoaderService.load(usingSkyboxArr, (texture) => {
-                    this.scene.background = texture
-                    this.scene.environment = texture
-                    texture.encoding = sRGBEncoding
-                })
-            })
+            )
             this.inputsList.push(fileField)
         })
     }
     private setSingleFile() {
-        const fileField = FileInputField.addImage(this.folder, 'image', whiteTexture.image)
-        fileField.input.addEventListener('change', async (event) => {
-            const target = (event.target as HTMLInputElement | null)
-            const file = target?.files ? target.files[0] : null
-            if(file) {
-                const url = (window.URL || window.webkitURL).createObjectURL(file)
-                WireframeTextureLoader.load(
-                    url, (texture: Texture) => {
-                        const rt = new WebGLCubeRenderTarget(texture.image.height);
-                        rt.fromEquirectangularTexture(this.renderer, texture);
-                        this.scene.background = rt.texture;
-                        this.scene.environment = rt.texture;
-                    }
-                );
-            }
+        const fileField = FileInputField.addImage(this.folder, 'image', whiteTexture.image, async (url: string) => {
+            WireframeTextureLoader.load(
+                url, (texture: Texture) => {
+                    const rt = new WebGLCubeRenderTarget(texture.image.height);
+                    rt.fromEquirectangularTexture(this.renderer, texture);
+                    this.scene.background = rt.texture;
+                    this.scene.environment = rt.texture;
+                }
+            );
         })
         this.inputsList.push(fileField)
     }

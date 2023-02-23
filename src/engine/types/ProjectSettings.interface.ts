@@ -1,5 +1,4 @@
-import { WRenderer } from './../lib/classes/WRenderer';
-import { AmbientLight, Camera, Light, Object3D, Scene } from "three";
+import { AmbientLight, Camera, Light, Object3D, Scene, WebGLRenderer } from "three";
 import { CameraJson } from "../lib/parsers/types/CameraJson.type";
 import { CanvasProportion } from "../lib/parsers/types/CanvasProportion.interface";
 import { AmbientLightJson } from "../lib/parsers/types/LightJson.type";
@@ -13,7 +12,7 @@ import { OrbitControlsJson } from "../lib/parsers/types/OrbitControlsJson.type";
 export interface ProjectSettings {
     camera ?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera', // only 2 types of cameras are supported
     scene ?: Scene | SceneJson, // skyBoxes, encoding and loaders are supported
-    renderer ?: WRenderer | RendererJson, // antialias, physicallyCorrectLights, encoding, toneMapping, toneMappingExposure, shadowMap, shadowMapType, pixelRatio
+    renderer ?: WebGLRenderer | RendererJson, // antialias, physicallyCorrectLights, encoding, toneMapping, toneMappingExposure, shadowMap, shadowMapType, pixelRatio
     ambientLight ?: AmbientLight | AmbientLightJson, // only 1 main ambient light
     lights ?: (Light | LightJson)[], // array of lights
     objects ?: (Object3D | MeshJson)[], // array of objects

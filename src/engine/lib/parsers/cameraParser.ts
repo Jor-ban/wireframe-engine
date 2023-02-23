@@ -1,15 +1,23 @@
-import {Camera, OrthographicCamera, PerspectiveCamera} from "three";
-import {CameraJson} from "./types/CameraJson.type";
-import {CanvasProportion} from "./types/CanvasProportion.interface";
+import { Camera, OrthographicCamera, PerspectiveCamera } from "three";
+import { WOrthographicCamera } from "../classes/WOrthographicCamera";
+import { WPerspectiveCamera } from "../classes/WPerspectiveCamera";
+import { CameraJson } from "./types/CameraJson.type";
+import { CanvasProportion } from "./types/CanvasProportion.interface";
 
 export class CameraParser {
     public static parse(
         canvas: CanvasProportion,
         camera ?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera',
-    ): PerspectiveCamera | OrthographicCamera {
-        let c: PerspectiveCamera | OrthographicCamera
-        if(camera instanceof PerspectiveCamera || camera instanceof OrthographicCamera) {
-            c = camera
+    ): WOrthographicCamera | WPerspectiveCamera {
+        let c: WOrthographicCamera | WPerspectiveCamera
+        if(camera instanceof PerspectiveCamera) {
+            c = this.generatePerspectiveCamera(canvas, camera.fov, camera.aspect, camera.near, camera.far)
+            c.name = camera.name
+            c.uuid = camera.uuid
+        } else if(camera instanceof OrthographicCamera) {
+            c = this.generateOrthographicCamera(canvas, camera.left, camera.right, camera.top, camera.bottom, camera.near, camera.far)
+            c.name = camera.name
+            c.uuid = camera.uuid
         } else if(camera === 'perspectiveCamera' || camera === undefined) {
             c = this.generatePerspectiveCamera(canvas)
         } else if(camera === 'orthographicCamera') {
@@ -49,8 +57,8 @@ export class CameraParser {
         aspect ?: number,
         near    : number = 0.1,
         far     : number = 512,
-    ): PerspectiveCamera {
-        return new PerspectiveCamera(fov, aspect || canvas.width / canvas.height, near, far)
+    ): WPerspectiveCamera {
+        return new WPerspectiveCamera(fov, aspect || canvas.width / canvas.height, near, far)
     }
     private static generateOrthographicCamera(
         canvas  : CanvasProportion,
@@ -60,8 +68,8 @@ export class CameraParser {
         bottom  ?: number,
         near    : number = 0.1,
         far     : number = 1000,
-    ): OrthographicCamera {
-        return new OrthographicCamera(
+    ): WOrthographicCamera {
+        return new WOrthographicCamera(
             left || canvas.width / - 2,
             right || canvas.width / 2,
             top || canvas.height / 2,

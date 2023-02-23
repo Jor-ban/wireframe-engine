@@ -3,7 +3,6 @@ import { ProjectSettings } from './types/ProjectSettings.interface';
 import logoUrl from './shared/assets/wireframe-logo.svg?url'
 
 export class Engine {
-    // @ts-ignore
     public static async create(selector: string = "#canvas", projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
         const mode = this.getMode(projectSettings)
         const canvas = document.querySelector<HTMLCanvasElement>(selector)

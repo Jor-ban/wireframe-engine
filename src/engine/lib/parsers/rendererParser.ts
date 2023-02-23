@@ -9,19 +9,19 @@ export class RendererParser {
             return renderer
         }
         renderer = renderer || {}
-        const webglRenderer = new WRenderer({
+        const wRenderer = new WRenderer({
             canvas,
             antialias: renderer.antialias,
             alpha: renderer.alpha
         })
-        webglRenderer.setSize(sizes.width, sizes.height, sizes.updateStyle)
-        webglRenderer.physicallyCorrectLights = renderer.physicallyCorrectLights ?? false
-        webglRenderer.outputEncoding = renderer.encoding || sRGBEncoding
-        webglRenderer.toneMapping = renderer.toneMapping || NoToneMapping
-        webglRenderer.toneMappingExposure = renderer.toneMappingExposure ?? 1
-        webglRenderer.shadowMap.enabled = renderer.shadowMap ?? false
-        webglRenderer.shadowMap.type = renderer.shadowMapType || PCFSoftShadowMap
-        webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, renderer.pixelRatio ?? 1))
-        return webglRenderer
+        wRenderer.setSize(sizes.width, sizes.height, sizes.updateStyle)
+        wRenderer.physicallyCorrectLights = renderer.physicallyCorrectLights ?? false
+        wRenderer.outputEncoding = renderer.encoding || sRGBEncoding
+        wRenderer.toneMapping = renderer.toneMapping || NoToneMapping
+        wRenderer.toneMappingExposure = renderer.toneMappingExposure ?? 1
+        wRenderer.shadowMap.enabled = renderer.shadowMap ?? false
+        wRenderer.shadowMap.type = renderer.shadowMapType || PCFSoftShadowMap
+        wRenderer.setPixelRatio(Math.min(window.devicePixelRatio, renderer.pixelRatio ?? 1))
+        return wRenderer
     }
 }

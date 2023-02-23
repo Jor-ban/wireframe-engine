@@ -7,11 +7,11 @@ import { getElementText } from "./getObjectIcon"
 import { dispose } from '⚙️/shared/dispose';
 
 class DraggingServiceFactory {
-    private objectMap: WeakMap<Object3D, ListElement> = new WeakMap()
-    private draggingElement: ListElement | null = null
-    private draggingElementIndex = -1
-    private clickedElement: HTMLElement | null = null
-    private clickedObject: Object3D | null = null
+    public readonly objectMap: WeakMap<Object3D, ListElement> = new WeakMap()
+    public draggingElement: ListElement | null = null
+    public draggingElementIndex = -1
+    public clickedElement: HTMLElement | null = null
+    public clickedObject: Object3D | null = null
 
     constructor() {
         ChangeDetector.clickedObject$.subscribe((obj: Object3D | WMesh | null) => {
@@ -38,6 +38,11 @@ class DraggingServiceFactory {
             this.deleteObject(obj)
             this.objectMap.get(obj)?.updateParent()
         })
+        ChangeDetector.draggingObject$
+            .pipe(filter((obj: any | null) => (obj instanceof ListElement || obj === null)))
+            .subscribe((obj: ListElement) => {
+                this.draggingElement = obj
+            })
     }
     addEvents(el: ListElement) {
         this.objectMap.set(el.object, el)
@@ -48,15 +53,17 @@ class DraggingServiceFactory {
             ChangeDetector.clickedObject$.next(el.object)
         })
         el.container.addEventListener('dragstart', () => {
-            this.draggingElement = el
+            ChangeDetector.draggingObject$.next(el)
             this.draggingElementIndex = el.object?.parent?.children.indexOf(el.object) ?? -1
         })
-        el.container.addEventListener('dragend', (e) => {
-            this.draggingElement = null
+        el.container.addEventListener('dragend', () => {
+            ChangeDetector.draggingObject$.next(null)
         })
         el.container.addEventListener('dragenter', (e) => {
             e.preventDefault()
-            el.container.classList.add('__wireframe-dragover')
+            if(this.draggingElement) {
+                el.container.classList.add('__wireframe-dragover')
+            }
         })
         el.container.addEventListener('dragleave', (e) => {
             e.preventDefault()
@@ -83,6 +90,7 @@ class DraggingServiceFactory {
                 }
                 el.updateParent()
             }
+            ChangeDetector.draggingObject$.next(null)
         })
         el.container.addEventListener('dragover', (e) => {
             e.preventDefault()

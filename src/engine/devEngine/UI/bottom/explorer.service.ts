@@ -9,21 +9,9 @@ class Explorer {
     })
     fileReader = new FileReader()
     public async getElements(path: string): Promise<AssetsTree[]> {
-        path = String(path).replace(/^.\/src/,"")
+        path = String(path).replace(/^.\/src\/(static)?/, "")
         const { data } = await this.http.get<AssetsTree[]>(path)
         return data.sort((a: AssetsTree, b: AssetsTree) => Number(b.isFolder) - Number(a.isFolder))
-    }
-    public async getFile(path: string): Promise<string> {
-        path = String(path).replace(/^.\/src/,"")
-        return await this.http.get<Blob>(path, {
-            responseType: "text",
-            responseEncoding: "base64",
-        })
-            .then(res => {
-                // this.fileReader.readAsDataURL(res.data);
-                console.log(res)
-                return ''
-            })
     }
     // public createFolder(name: string, path: string = this.path): AssetsTree {
         // const newFolder = {
