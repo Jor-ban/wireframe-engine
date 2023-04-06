@@ -4,10 +4,7 @@ import {RendererJson} from "./types/RendererJson.type";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
 export class RendererParser {
-    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: WRenderer | RendererJson): WRenderer {
-        if(renderer instanceof WRenderer) {
-            return renderer
-        }
+    static parse(canvas: HTMLCanvasElement, sizes: CanvasProportion, renderer ?: RendererJson): WRenderer {
         renderer = renderer || {}
         const wRenderer = new WRenderer({
             canvas,

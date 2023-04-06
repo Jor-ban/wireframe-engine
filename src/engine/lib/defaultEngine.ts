@@ -9,6 +9,7 @@ import {
     OrthographicCamera,
     PerspectiveCamera,
     Scene,
+    WebGLRenderer,
 } from "three";
 import { CameraParser } from "./parsers/cameraParser";
 import { CameraJson } from "./parsers/types/CameraJson.type";
@@ -97,8 +98,12 @@ export class __DefaultEngine implements EngineInterface {
         this.scene.add(...objects)
         return this
     }
-    public setRenderer(renderer?: WRenderer | RendererJson): EngineInterface {
-        this.renderer = RendererParser.parse(this.canvas, this.canvasProportion, renderer)
+    public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
+        if(renderer instanceof WebGLRenderer) {
+            this.renderer = WRenderer.from(renderer)
+        } else {
+            this.renderer = RendererParser.parse(this.canvas, this.canvasProportion, renderer)
+        }
         return this
     }
     public setCamera(camera?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera' | undefined): EngineInterface {

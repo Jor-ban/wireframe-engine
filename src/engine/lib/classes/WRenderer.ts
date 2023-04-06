@@ -6,6 +6,7 @@ import { Stringifyable } from "./types/stringifyable.interface";
 
 export class WRenderer extends WebGLRenderer implements Stringifyable {
 
+    // @ts-ignore
     constructor(private readonly options: WebGLRendererParameters) {
         super(options);
     }
