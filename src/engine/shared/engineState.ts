@@ -1,7 +1,7 @@
 import { nativeClearInterval } from './memoryCleaner';
 
 class EngineStateFactory {
-	intervalIds: NodeJS.Timer[] = []
+	intervalIds: (NodeJS.Timer | number)[] = []
 	monitors: any[] = []
 
 	constructor() {
@@ -15,8 +15,7 @@ class EngineStateFactory {
 			}
 		}
 	}
-
-	addIntervalId(...id: NodeJS.Timer[]) {
+	addIntervalId(...id: (NodeJS.Timer | number)[]) {
 		this.intervalIds.push(...id)
 	}
 	addMonitor(...monitor: any[]) {

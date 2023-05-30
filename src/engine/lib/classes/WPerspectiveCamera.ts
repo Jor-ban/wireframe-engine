@@ -1,16 +1,14 @@
-import { CanvasProportion } from './../parsers/types/CanvasProportion.interface';
-import { CameraJson } from './../parsers/types/CameraJson.type';
+import { CanvasProportion } from '../parsers/types/CanvasProportion.interface';
+import { CameraJson } from '../parsers/types/CameraJson.type';
 import { PerspectiveCamera } from "three";
 import { CameraParser } from '../parsers/cameraParser';
 import { WOrthographicCamera } from './WOrthographicCamera';
-import { Stringifyable } from './types/stringifyable.interface';
-
-export class WPerspectiveCamera extends PerspectiveCamera implements Stringifyable {
+export class WPerspectiveCamera extends PerspectiveCamera {
     constructor(
-        public fov: number,
-        public aspect: number,
-        public near: number,
-        public far: number
+        public override fov: number,
+        public override aspect: number,
+        public override near: number,
+        public override far: number
     ) {
         super(fov, aspect, near, far);
     }
@@ -20,9 +18,5 @@ export class WPerspectiveCamera extends PerspectiveCamera implements Stringifyab
         camera: PerspectiveCamera | CameraJson | 'perspectiveCamera' | 'orthographicCamera'
     ): WOrthographicCamera | WPerspectiveCamera {
         return CameraParser.parse(canvasProportion, camera);
-    }
-
-    public toJson(): string {
-        return ''
     }
 }

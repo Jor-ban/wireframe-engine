@@ -4,10 +4,10 @@ import { EngineState } from "⚙️/shared/engineState";
 class AnimationFrameFactory {
     public isRunning: boolean = false;
     private _callbacks: Array<(deltaTime: number) => void> = [];
-    private _tickIntervalId : NodeJS.Timeout | null = null
+    private _tickIntervalId : NodeJS.Timer | number | null = null
     private _animationFrameId: number | null = null
-    private clock !: Clock
-    private maxFPS: number = 60
+    private _clock !: Clock
+    private _maxFPS: number = 60
 
     /**
      * method to set max fps to run at for whole app
@@ -22,9 +22,9 @@ class AnimationFrameFactory {
      * })
      */
     public run(maxFps ?: number) {
-        this.clock = new Clock(true)
+        this._clock = new Clock(true)
         this.isRunning = true;
-        this.setFPS(maxFps ?? this.maxFPS)
+        this.setFPS(maxFps ?? this._maxFPS)
         return this
     }
     /**
@@ -77,7 +77,7 @@ class AnimationFrameFactory {
      * // do something else
      * AnimationFrame.removeListener(listener)
      **/
-    public removeListener(listener: () => void) {
+    public removeListener(listener: (...args: any) => void) {
         this._callbacks.splice(this._callbacks.findIndex(listener), 1)
         return this
     }
@@ -92,7 +92,7 @@ class AnimationFrameFactory {
      * }
      **/
     public setFPS(maxFPS: number = 60) {
-        this.maxFPS = maxFPS
+        this._maxFPS = maxFPS
         // removing previous interval or animationFrame
         if(this._tickIntervalId !== null) {
             clearInterval(this._tickIntervalId)
@@ -117,7 +117,7 @@ class AnimationFrameFactory {
         return this
     }
     private runListeners() {
-        const deltaTime = this.clock.getDelta()
+        const deltaTime = this._clock.getDelta()
         for(let i = 0; i < this._callbacks.length; i++) {
             this._callbacks[i](deltaTime)
         }

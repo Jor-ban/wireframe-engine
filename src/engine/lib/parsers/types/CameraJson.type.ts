@@ -5,7 +5,6 @@ export type PerspectiveCameraJson = Nameable & UuidSettable & {
     aspect ?: number
     near ?: number
     far ?: number
-    type ?: 'perspectiveCamera'
 }
 
 export type OrthographicCameraJson = Nameable  & UuidSettable & {
@@ -15,9 +14,9 @@ export type OrthographicCameraJson = Nameable  & UuidSettable & {
     bottom ?: number,
     near ?: number,
     far ?: number,
-    type: 'orthographicCamera'
 }
 
-export type CameraJson = (PerspectiveCameraJson | OrthographicCameraJson) & {
+export type CameraJson = PerspectiveCameraJson & OrthographicCameraJson & {
     parameters?: Positionable & Rotatable
+    type ?: 'perspectiveCamera' | 'orthographicCamera'
 }

@@ -54,7 +54,7 @@ export class CameraParser {
     private static generatePerspectiveCamera(
         canvas  : CanvasProportion,
         fov     : number = 60,
-        aspect ?: number,
+        aspect  : number | undefined = undefined,
         near    : number = 0.1,
         far     : number = 512,
     ): WPerspectiveCamera {

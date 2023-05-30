@@ -21,13 +21,12 @@ import { AmbientLightJson } from "./parsers/types/LightJson.type";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
-import { CameraWithHelper, OrthographicCameraWithHelper } from '../devEngine/devClasses/camerasWithHelper';
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
     public readonly canvas: HTMLCanvasElement
     public renderer !: WRenderer
-    public camera !: CameraWithHelper | OrthographicCameraWithHelper | PerspectiveCamera | OrthographicCamera
+    public camera !: PerspectiveCamera | OrthographicCamera
     public scene !: Scene
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
@@ -36,6 +35,8 @@ export class __DefaultEngine implements EngineInterface {
     protected userAskedFPS: number = 60
     protected animationMachine = AnimationFrame
     protected renderCamera = this.camera
+
+    private renderFunction: (deltaTime: number) => void = () => {}
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
@@ -78,9 +79,10 @@ export class __DefaultEngine implements EngineInterface {
     protected initTick(askedFps: number = 60, renderCamera: PerspectiveCamera | OrthographicCamera): void {
         this.userAskedFPS = askedFps
         this.animationMachine.run(this.userAskedFPS)
-        this.animationMachine.addListener(() => {
+        this.renderFunction = () => {
             this.renderer.render(this.scene, renderCamera)
-        })
+        }
+        this.animationMachine.addListener(this.renderFunction)
     }
     public setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface {
         if(this.ambientLight) {
@@ -117,5 +119,14 @@ export class __DefaultEngine implements EngineInterface {
     }
     protected setRenderCamera(camera: PerspectiveCamera | OrthographicCamera): void {
         this.renderCamera = camera
+    }
+    public dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true): void {
+        this.animationMachine.removeListener(this.renderFunction)
+        if(removeHTMLElement)
+            this.renderer.domElement.parentNode?.removeChild(this.renderer.domElement)
+        this.renderer.dispose()
+        if(contextLoss)
+            this.renderer.forceContextLoss()
+        this.orbitControls?.dispose()
     }
 }

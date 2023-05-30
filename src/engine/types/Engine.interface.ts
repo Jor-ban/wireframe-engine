@@ -1,4 +1,4 @@
-import { WRenderer } from './../lib/classes/WRenderer';
+import { WRenderer } from '../lib/classes/WRenderer';
 import { AmbientLight, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
 import { CanvasProportion } from '../lib/parsers/types/CanvasProportion.interface';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -11,5 +11,7 @@ export interface EngineInterface {
 	scene: Scene
 	mode: 'dev' | 'prod' | 'test'
 	ambientLight: AmbientLight
-	orbitControls: OrbitControls | undefined 
+	orbitControls: OrbitControls | undefined
+
+	dispose(): void
 }

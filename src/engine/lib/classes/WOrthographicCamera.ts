@@ -4,16 +4,15 @@ import { OrthographicCamera } from 'three';
 import { CameraParser } from '../parsers/cameraParser';
 import { CameraJson } from '../parsers/types/CameraJson.type';
 import { CanvasProportion } from '../parsers/types/CanvasProportion.interface';
-import { Stringifyable } from './types/stringifyable.interface';
 
-export class WOrthographicCamera extends OrthographicCamera implements Stringifyable {
+export class WOrthographicCamera extends OrthographicCamera {
     constructor(
-        public left: number,
-        public right: number,
-        public top: number,
-        public bottom: number,
-        public near: number,
-        public far: number
+        public override left: number,
+        public override right: number,
+        public override top: number,
+        public override bottom: number,
+        public override near: number,
+        public override far: number
     ) {
         super(left, right, top, bottom, near, far);
     }
@@ -23,9 +22,5 @@ export class WOrthographicCamera extends OrthographicCamera implements Stringify
         camera: OrthographicCamera | PerspectiveCamera | CameraJson | 'perspectiveCamera' | 'orthographicCamera'
     ): WOrthographicCamera | WPerspectiveCamera {
         return CameraParser.parse(canvasProportion, camera);
-    }
-
-    public toJson(): string {
-        return ''
     }
 }

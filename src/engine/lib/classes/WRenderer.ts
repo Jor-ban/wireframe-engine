@@ -2,9 +2,7 @@ import { RendererParser } from "⚙️/lib/parsers/rendererParser";
 import { CanvasProportion } from "⚙️/lib/parsers/types/CanvasProportion.interface";
 import { RendererJson } from "⚙️/lib/parsers/types/RendererJson.type";
 import { NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer, WebGLRendererParameters } from "three";
-import { Stringifyable } from "./types/stringifyable.interface";
-
-export class WRenderer extends WebGLRenderer implements Stringifyable {
+export class WRenderer extends WebGLRenderer {
 
     // @ts-ignore
     constructor(private readonly options: WebGLRendererParameters) {
@@ -34,8 +32,5 @@ export class WRenderer extends WebGLRenderer implements Stringifyable {
             }
         }
         return RendererParser.parse(c, sizes, renderer)
-    }
-    toJson(): string {
-        return ''
     }
 }
