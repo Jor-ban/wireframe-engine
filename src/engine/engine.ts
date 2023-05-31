@@ -3,9 +3,20 @@ import { ProjectSettings } from './types/ProjectSettings.interface';
 import logoUrl from './shared/assets/wireframe-logo.svg?url'
 
 export class Engine {
-    public static async create(selector: string = "#canvas", projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
+    public static async create(htmlElement: HTMLCanvasElement, projectSettings: ProjectSettings): Promise<EngineInterface>
+    public static async create(selector: string, projectSettings: ProjectSettings): Promise<EngineInterface>
+    public static async create(selectorOrElement: string | HTMLCanvasElement = "#canvas", projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
         const mode = this.getMode(projectSettings)
-        const canvas = document.querySelector<HTMLCanvasElement>(selector)
+        let canvas: HTMLCanvasElement
+        if(typeof selectorOrElement === 'string') {
+            const el = document.querySelector<HTMLCanvasElement>(selectorOrElement)
+            if(!el)
+                throw new Error(`[Engine -> create]: no element found with selector "${selectorOrElement}"`)
+            else
+                canvas = el
+        } else {
+            canvas = selectorOrElement
+        }
         if(mode == 'dev') {
             const splitScreen = document.createElement('div')
             splitScreen.style.display = 'flex'
@@ -30,16 +41,10 @@ export class Engine {
                 return engine
             })
         } else if(mode == 'test') {
-            if(!canvas) {
-                throw new Error(`[Engine -> create]: no element found with selector "${selector}"`)
-            }
             return await import('./testEngine/testEngine').then(({__TestEngine}) => {
                 return new __TestEngine(canvas, projectSettings)
             })
         } else {
-            if(!canvas) {
-                throw new Error(`[Engine -> create]: no element found with selector "${selector}"`)
-            }
             return await import('./prodEngine').then(({__ProdEngine}) => {
                 return new __ProdEngine(canvas, projectSettings)
             })
@@ -47,13 +52,13 @@ export class Engine {
     }
 
     private static getMode(projectSettings: ProjectSettings): 'dev' | 'prod' | 'test' {
-        const env = (import.meta as any)?.env?.NODE_ENV
+        const env = import.meta.env
         const mode = String(
             projectSettings.mode ??
             (
                 window.location.search.includes('mode=test') ? 
                 'test' : 
-                (env?.NODE_ENV ?? 'dev')
+                (env?.MODE ?? 'dev')
             )
         ).toLowerCase() as 'dev' | 'prod' | 'test'
         if(mode !== 'prod') {

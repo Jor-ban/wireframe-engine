@@ -5,7 +5,7 @@ import {
     defaultSkybox,
     defaultSkyboxSides
 } from "⚙️/shared/consts/defaultSkybox";
-import {WireframeTextureLoader} from "⚙️/shared/loaders";
+import { WireframeLoaders } from "⚙️/shared/loaders";
 import { whiteTexture } from "⚙️/shared/consts/defaultTexture";
 import { FileInputField } from "@/engine/devEngine/utils/fileInputField";
 
@@ -86,7 +86,7 @@ export class SkyboxControls {
     }
     private setSingleFile() {
         const fileField = FileInputField.addImage(this.folder, 'image', whiteTexture.image, async (url: string) => {
-            WireframeTextureLoader.load(
+            WireframeLoaders.textureLoader.load(
                 url, (texture: Texture) => {
                     const rt = new WebGLCubeRenderTarget(texture.image.height);
                     rt.fromEquirectangularTexture(this.renderer, texture);

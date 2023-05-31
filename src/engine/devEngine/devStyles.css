@@ -268,10 +268,12 @@ button.tp-rotv_b {
     align-items: flex-start;
 }
 .__wireframe-logs button {
+    cursor: pointer;
     height: 14px;
     background: transparent;
     border: none;
     color: white;
+    padding: 0;
 }
 .__wireframe-logs div:not(.__wireframe-flex) {
     margin-bottom: 2px;
@@ -293,6 +295,38 @@ button.tp-rotv_b {
 .__wireframe-logs .__wireframe-warn {
     background-color: #a7761e;
     max-width: max-content;
+}
+.__wireframe-logs .__wireframe-logs_data-area {
+    display: block;
+    padding-left: 14px;
+}
+.__wireframe-logs .__wireframe-logs_first-object {
+    padding-top: 14px;
+    padding-left: 0;
+}
+.__wireframe-logs .__wireframe-logs_close-brace {
+    padding-left: 10px;
+}
+.__wireframe-logs .__wireframe-logs_field-key {
+    color: rgba(211, 164, 183, 0.99);
+}
+.__wireframe-logs .__wireframe-logs_collapsed-key {
+    color: rgba(193, 193, 193, 0.99);
+    font-style: italic;
+}
+.__wireframe-logs .__wireframe-logs_field-value-string {
+    color: rgba(237, 143, 109, 0.99);
+}
+.__wireframe-logs .__wireframe-logs_field-value-string:before,
+.__wireframe-logs .__wireframe-logs_field-value-string:after {
+    content: '"';
+}
+.__wireframe-logs .__wireframe-logs_field-value-number, .__wireframe-logs .__wireframe-logs_field-value-boolean {
+    color: rgba(156, 215, 255, 0.99);
+}
+.__wireframe-logs .__wireframe-logs-field-value-function {
+    color: rgba(156, 215, 255, 0.99);
+    font-style: italic;
 }
 .__wireframe_warn-icon {
     color: #ffa000;

@@ -1,7 +1,7 @@
 import { TabPageApi } from 'tweakpane';
-import {BehaviorSubject} from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
-const defaultConsole = {
+export const defaultConsole = {
 	error : console.error,
 	log   : console.log,
 	warn  : console.warn,
@@ -36,10 +36,10 @@ export class Logger {
 				this.logTimeAndObject(msg, err)
 			} else {
 				err.innerHTML += `
-				<p>
+				<div class="__wireframe-flex">
 					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
 					${ msg }
-				</p>`
+				</div>`
 			}
 		}
 		defaultConsole.error(...message)
@@ -50,10 +50,10 @@ export class Logger {
 				this.logTimeAndObject(msg, this.element)
 			} else {
 				this.element.innerHTML += `
-				<p>
+				<div class="__wireframe-flex">
 					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
-					<span>${ msg }</span>
-				</p>`
+					${ msg }
+				</div>`
 			}
 		}
 		defaultConsole.log(...message)
@@ -68,10 +68,10 @@ export class Logger {
 				this.logObject(msg, false, warn)
 			} else {
 				warn.innerHTML += `
-				<p>
+				<div class="__wireframe-flex">
 					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
 					${ msg }
-				</p>`
+				</div>`
 			}
 		}
 		defaultConsole.warn(...message)
@@ -89,20 +89,16 @@ export class Logger {
 				this.logTimeAndObject(msg, info)
 			} else {
 				info.innerHTML += `
-				<p>
+				<div class="__wireframe-flex">
 					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
 					${ msg }
-				</p>`
+				</div>`
 			}
 		}
 		defaultConsole.info(...message)
 	}
-	private logObject(obj: Array<any> | Object, expanded: boolean = false, element: HTMLElement | null = null) {
-		if (Array.isArray(obj)) {
-			this.toggleArray(obj, expanded, element || this.element, true)
-		} else {
-			this.toggleObject(obj, expanded, element || this.element, true)
-		}
+	private logObject(obj: Array<any> | Object, expanded: boolean = false, element: HTMLElement | null = null, firstInChain: boolean = true) {
+		this.toggleObject(obj, expanded, element || this.element, true, firstInChain)
 	}
 	private logTimeAndObject(obj: Object | Array<any>, root: HTMLElement) {
 		const parent = document.createElement('div')
@@ -113,131 +109,96 @@ export class Logger {
 		parent.appendChild(time)
 		this.logObject(obj, false, parent)
 	}
-	private toggleArray(arr: Array<any>, expanded: boolean = false, element: HTMLElement, create: boolean = false) {
-		if(create) {
-			const parent = document.createElement('div')
-			parent.classList.add('__wireframe-flex')
-			element.appendChild(parent)
-			const button = document.createElement('button')
-			button.innerText = '▼'
-			parent.appendChild(button)
-			button.addEventListener('click', () => {
-				if(button.classList.contains('__wireframe-button-opened')) {
-					button.classList.remove('__wireframe-button-opened')
-					button.innerText = '▼'
-					this.toggleArray(arr, false, element)
-				} else {
-					if(arr.length) {
-						button.classList.add('__wireframe-button-opened')
-						this.toggleArray(arr, true, element)
-					}
-					button.innerText = '►'
-				}
-			})
-			const dataArea = document.createElement('div')
-			parent.appendChild(dataArea)
-			element = dataArea
-		}
-		element.innerHTML = ''
-		if(!expanded) {
-			element.innerHTML += '['
-			for (let i = 0; i < arr.length; i++) {
-				if (i > 5) {
-					element.innerHTML += '...'
-					break;
-				}
-				element.innerHTML += (arr[i] instanceof Array ? `Array(${arr[i].length})` : arr[i])
-					+ (i !== arr.length - 1 ? ', ' : '')
-			}
-			element.innerHTML += ']'
-		} else {
-			element.innerHTML += '[ <br>'
-			for (let i = 0; i < arr.length; i++) {
-				if(arr[i] instanceof Object) {
-					const parent = document.createElement('div')
-					parent.classList.add('__wireframe-flex')
-					element.appendChild(parent)
-					const innerText = document.createElement('span')
-					innerText.innerHTML = `&nbsp;&nbsp; ${ i } : `
-					const innerObject = document.createElement('div')
-					parent.appendChild(innerText)
-					parent.appendChild(innerObject)
-					this.logObject(arr[i], false, innerObject)
-				} else {
-					element.innerHTML += `&nbsp;&nbsp; ${ i } : ${ arr[i] }, <br>`
-				}
-			}
-			const close = document.createElement('span')
-			close.innerText = ']'
-			element.appendChild(close)
-		}
-	}
-	private toggleObject(obj: Object, expanded: boolean = false, element: HTMLElement, create: boolean = false) {
+	private toggleObject(
+		obj: Object,
+		expanded: boolean = false,
+		element: HTMLElement,
+		create: boolean = false,
+		firstInChain: boolean = true
+	) {
 		const keys = Object.keys(obj)
 		const values = Object.values(obj)
 		if(create) {
-			const parent = document.createElement('div')
-			parent.classList.add('__wireframe-flex')
-			element.appendChild(parent)
 			const button = document.createElement('button')
 			button.innerText = '▼'
-			parent.appendChild(button)
+			const parent = document.createElement('span')
+			let expanded: boolean = false
+
 			button.addEventListener('click', () => {
-				if(button.classList.contains('__wireframe-button-opened')) {
+				if(expanded) {
 					button.classList.remove('__wireframe-button-opened')
 					button.innerText = '▼'
-					this.toggleObject(obj, false, element)
+					this.toggleObject(obj, false, element, false, firstInChain)
+					element.classList.remove('__wireframe-logs_first-object')
+					expanded = false
 				} else {
-					if(keys.length) {
-						button.classList.add('__wireframe-button-opened')
-						this.toggleObject(obj, true, element)
-					}
-					button.innerText = '►'
+					button.classList.add('__wireframe-button-opened')
+					this.toggleObject(obj, true, element, false, firstInChain)
+					button.innerHTML = this.styleCollabsedKey(Object.getPrototypeOf(obj).constructor.name + ' ►')
+					expanded = true
 				}
 			})
-			const dataArea = document.createElement('div')
-			parent.appendChild(dataArea)
-			element = dataArea
+
+			if(keys.length) {
+				element.appendChild(button)
+				parent.addEventListener('click', (event: MouseEvent) => {
+					defaultConsole.log('parentClick')
+					event.stopImmediatePropagation()
+					if(!expanded) {
+						button.classList.add('__wireframe-button-opened')
+						this.toggleObject(obj, true, element, false, firstInChain)
+						button.innerHTML = this.styleCollabsedKey(Object.getPrototypeOf(obj).constructor.name + ' ►')
+						expanded = true
+					}
+				})
+			}
+			element.appendChild(parent)
+			element = parent
 		}
 		element.innerHTML = ''
-		if(!expanded) {
-			element.innerHTML += '{ '
+		if(!expanded) { // for shortened version
+			element.classList.remove('__wireframe-logs_data-area')
+			element.innerHTML += Array.isArray(obj) ? '[ ' : '{ '
 			for (let i = 0; i < keys.length; i++) {
 				const key = keys[i]
 				const value = values[i]
 				if (i > 3) {
-					element.innerHTML += '...'
+					element.innerHTML += this.styleCollabsedKey('...')
 					break;
 				}
-				element.innerHTML += key + ': ' +
-					(value instanceof Array ? `Array(${value.length})` : value)
+				element.innerHTML +=
+					(Array.isArray(obj) ? '' : this.styleCollabsedKey(key) + ': ') +
+					(
+						Array.isArray(value) ? `Array(${value.length})` :
+						typeof value === 'object' ? '{...}' :
+						this.styleFieldValue(value)
+					)
 					+ (i !== keys.length - 1 ? ', ' : '')
 			}
-			element.innerHTML += ' }'
-		} else {
-			element.innerHTML += '{ <br>'
+			element.innerHTML += (Array.isArray(obj) ? ' ]' : ' }') +' <br/>'
+		} else { // for expanded version
+			element.classList.add('__wireframe-logs_data-area')
+			if(firstInChain)
+				element.classList.add('__wireframe-logs_first-object')
+
 			for (let i = 0; i < keys.length; i++) {
 				const key = keys[i]
 				const value = values[i]
-				if(value instanceof Object) {
-					const parent = document.createElement('div')
-					parent.classList.add('__wireframe-flex')
-					element.appendChild(parent)
+				if(typeof value === 'function') {
+					const text = document.createElement('div')
+					text.innerHTML = `${ this.styleFieldKey(key) }: ${ this.styleFieldValue(value) }, </br>`
+					element.appendChild(text)
+				} else if(value instanceof Object) { // for objects and arrays
 					const innerText = document.createElement('span')
-					innerText.innerHTML = `&nbsp;&nbsp; ${ key } : `
-					const innerObject = document.createElement('div')
-					parent.appendChild(innerText)
-					parent.appendChild(innerObject)
-					this.logObject(value, false, innerObject)
+					innerText.innerHTML = `${ this.styleFieldKey(key) } : `
+					element.appendChild(innerText)
+					this.logObject(value, false, element, false)
 				} else {
 					const text = document.createElement('div')
-					text.innerHTML = `&nbsp;&nbsp; ${ key }: ${ value }, </br>`
+					text.innerHTML = `${ this.styleFieldKey(key) }: ${ this.styleFieldValue(value) }, </br>`
 					element.appendChild(text)
 				}
 			}
-			const close = document.createElement('span')
-			close.innerText = '}'
-			element.appendChild(close)
 		}
 	}
 	private getTime() {
@@ -246,5 +207,26 @@ export class Logger {
 		const m = d.getMinutes();
 		const s = d.getSeconds()
 		return `${ h > 9 ? h : '0' + h }:${ m > 9 ? m : '0' + m }:${ s > 9 ? s : '0' + s }`
+	}
+	private styleFieldKey(key: string) {
+		return `<span class="__wireframe-logs_field-key">${ key }</span>`
+	}
+	private styleCollabsedKey(key: string) {
+		return `<span class="__wireframe-logs_collapsed-key">${ key }</span>`
+	}
+	private styleFieldValue(value: any) {
+		let classes: string = `__wireframe-logs_field-value `
+		if(typeof value === 'function') {
+			classes += '__wireframe-logs-field-value-function'
+			return `<span class="${ classes }">${ value.name + ' f()' }</span>`
+		}
+		else if(typeof value === 'number')
+			classes += '__wireframe-logs_field-value-number'
+		else if(typeof value === 'boolean')
+			classes += '__wireframe-logs_field-value-boolean'
+		else if(typeof value === 'string')
+			classes += '__wireframe-logs_field-value-string'
+
+		return `<span class="${ classes }">${ value }</span>`
 	}
 }

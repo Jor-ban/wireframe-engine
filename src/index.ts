@@ -13,8 +13,9 @@ Engine.create('#canvas', {
             parameters: { x: 2, y: 1, rotateZ: 120 },
             geometry: { type: 'box' },
             material: { color: 'blue' },
-        }
+        },
     ],
+    orbitControls: true,
     renderer: {
         antialias: true,
     },

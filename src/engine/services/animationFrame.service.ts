@@ -1,6 +1,7 @@
 import { Clock } from "three";
 import { EngineState } from "⚙️/shared/engineState";
 
+
 class AnimationFrameFactory {
     public isRunning: boolean = false;
     private _callbacks: Array<(deltaTime: number) => void> = [];

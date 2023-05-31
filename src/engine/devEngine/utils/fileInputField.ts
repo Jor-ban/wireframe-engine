@@ -2,7 +2,7 @@ import { ChangeDetector } from './../changeDetector/index';
 import { Material } from "three";
 import { FolderApi } from "tweakpane";
 import { defaultMapTexture } from "⚙️/shared/consts/defaultTexture";
-import { WireframeTextureLoader } from "⚙️/shared/loaders";
+import { WireframeLoaders } from "⚙️/shared/loaders";
 import { IFileInput } from "./types/FileInput.interface";
 import { filter } from 'rxjs';
 
@@ -81,7 +81,6 @@ export class FileInputField implements IFileInput {
         return new this(container, inputElement, deleteButton)
     }
     private static addLabelEvents(el: HTMLElement, onChange: (url: string) => Promise<void>): void {
-        console.log(el)
         el.addEventListener('dragenter', (e) => {
             e.preventDefault()
         })
@@ -101,7 +100,7 @@ export class FileInputField implements IFileInput {
         const workingMaterial = material as any
         const image = workingMaterial[keyName]?.image || defaultMapTexture.image
         const fileField = this.addImage(folder, keyName, image, async (url: string) => {
-            const texture = await WireframeTextureLoader.loadAsync(url)
+            const texture = await WireframeLoaders.textureLoader.loadAsync(url)
             workingMaterial[keyName] = texture
             material.needsUpdate = true
         })
