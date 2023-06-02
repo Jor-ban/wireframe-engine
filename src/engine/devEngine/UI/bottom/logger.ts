@@ -26,20 +26,26 @@ export class Logger {
 		console.clear = this.clear.bind(this)
 		console.info = this.info.bind(this)
 	}
+
+	public inputLog(msg: string) {
+		const div = document.createElement('div')
+		div.classList.add('__wireframe-flex')
+		div.innerHTML = `<small> ${this.getTime()} &nbsp;&nbsp;&nbsp;&nbsp; </small> ${msg}`
+		this.element.appendChild(div)
+	}
+
 	private error(...message: (any)[]): void {
 		errorsNum.next(errorsNum.value + 1)
 		const err = document.createElement('div')
 		err.classList.add('__wireframe-error')
 		this.element.appendChild(err)
 		for(const msg of message) {
-			if (msg instanceof Object) {
+			if(msg instanceof Error) {
+				this.logSimpleData(err, msg.message)
+			} else if (msg instanceof Object) {
 				this.logTimeAndObject(msg, err)
 			} else {
-				err.innerHTML += `
-				<div class="__wireframe-flex">
-					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
-					${ msg }
-				</div>`
+				this.logSimpleData(err, msg)
 			}
 		}
 		defaultConsole.error(...message)
@@ -49,11 +55,7 @@ export class Logger {
 			if(msg instanceof Object) {
 				this.logTimeAndObject(msg, this.element)
 			} else {
-				this.element.innerHTML += `
-				<div class="__wireframe-flex">
-					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
-					${ msg }
-				</div>`
+				this.logSimpleData(this.element, msg)
 			}
 		}
 		defaultConsole.log(...message)
@@ -67,16 +69,12 @@ export class Logger {
 			if (msg instanceof Object) {
 				this.logObject(msg, false, warn)
 			} else {
-				warn.innerHTML += `
-				<div class="__wireframe-flex">
-					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
-					${ msg }
-				</div>`
+				this.logSimpleData(warn, msg)
 			}
 		}
 		defaultConsole.warn(...message)
 	}
-	private clear(): void {
+	public clear(): void {
 		this.element.innerHTML = ''
 		defaultConsole.clear()
 	}
@@ -88,11 +86,7 @@ export class Logger {
 			if (msg instanceof Object) {
 				this.logTimeAndObject(msg, info)
 			} else {
-				info.innerHTML += `
-				<div class="__wireframe-flex">
-					${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;
-					${ msg }
-				</div>`
+				this.logSimpleData(info, msg)
 			}
 		}
 		defaultConsole.info(...message)
@@ -100,12 +94,18 @@ export class Logger {
 	private logObject(obj: Array<any> | Object, expanded: boolean = false, element: HTMLElement | null = null, firstInChain: boolean = true) {
 		this.toggleObject(obj, expanded, element || this.element, true, firstInChain)
 	}
+	private logSimpleData(container: HTMLElement, msg: any): void {
+		const div = document.createElement('div')
+		div.classList.add('__wireframe-flex')
+		div.innerHTML = `<small> ← ${this.getTime()} &nbsp;&nbsp;&nbsp;&nbsp; ${msg} </small>`
+		container.appendChild(div)
+	}
 	private logTimeAndObject(obj: Object | Array<any>, root: HTMLElement) {
 		const parent = document.createElement('div')
 		parent.classList.add('__wireframe-flex')
 		root.appendChild(parent)
 		const time = document.createElement('div')
-		time.innerHTML = `${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp;`
+		time.innerHTML = `<small> ← ${ this.getTime() } &nbsp;&nbsp;&nbsp;&nbsp; </small>`
 		parent.appendChild(time)
 		this.logObject(obj, false, parent)
 	}
@@ -142,7 +142,6 @@ export class Logger {
 			if(keys.length) {
 				element.appendChild(button)
 				parent.addEventListener('click', (event: MouseEvent) => {
-					defaultConsole.log('parentClick')
 					event.stopImmediatePropagation()
 					if(!expanded) {
 						button.classList.add('__wireframe-button-opened')

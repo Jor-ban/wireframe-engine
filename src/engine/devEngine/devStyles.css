@@ -252,7 +252,30 @@ button.tp-rotv_b {
     background: #3E3F44;
     color: white;
 }
-
+.__wireframe-hide-bottom-menu-btn {
+    cursor: pointer;
+    position: absolute;
+    margin-top: -20px;
+    background-color: #28292E;
+    color: white;
+    border-radius: 10px 0 0 0;
+    border: none;
+}
+.__wireframe-console {
+    color: white;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #3E3F44;
+    padding-bottom: 5px;
+}
+.__wireframe-console .__wireframe-console-input {
+    width: calc(100% - 20px);
+    height: 20px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+}
 .__wireframe-logs {
     color: white;
     height: 330px;

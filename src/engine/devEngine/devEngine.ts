@@ -9,6 +9,7 @@ import { MeshParser } from '⚙️/lib/parsers/MeshParser';
 import { LightParser } from '⚙️/lib/parsers/lightParser';
 import { LightWithHelper } from '⚙️/devEngine/devClasses/lightsWithHelper';
 import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
+import {ChangeDetector} from "⚙️/devEngine/changeDetector";
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
@@ -65,7 +66,7 @@ export class __DevEngine extends __DefaultEngine {
             height: window.innerHeight - topBarHeight - bottomControlsHeight
         }
         document.body.style.overflow = 'hidden'
-        window.addEventListener('resize', () => {
+        const onResize = () => {
             const newCanvasWidth = window.innerWidth - leftControlsWidth - rightControlsWidth
             const newCanvasHeight = window.innerHeight - topBarHeight - bottomControlsHeight
             this.canvasProportion.width = newCanvasWidth
@@ -77,7 +78,9 @@ export class __DevEngine extends __DefaultEngine {
             }
             // Update renderer
             this.renderer?.setSize(newCanvasWidth, newCanvasHeight)
-        })
+        }
+        window.addEventListener('resize', onResize)
+        ChangeDetector.controlStyleChanged$.subscribe(onResize)
     }
     private setMainCamera() {
         const cameraWithHelper = CameraWithHelper.from(this.camera)
