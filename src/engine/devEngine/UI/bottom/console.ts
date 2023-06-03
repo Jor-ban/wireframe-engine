@@ -22,6 +22,7 @@ export class Console {
         dropDown.selectEmitter.subscribe((value: string) => {
             this.input.value = value
             dropDown.setValue(value)
+            setTimeout(() => this.input.focus())
         })
 
         this.input.addEventListener('keyup', (e) => {

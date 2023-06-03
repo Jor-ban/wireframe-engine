@@ -269,7 +269,8 @@ button.tp-rotv_b {
     font-family: monospace;
 }
 .__wireframe-console-dropdown {
-    position: absolute;
+    position: fixed;
+    z-index: 666;
     margin-top: 20px;
     background: #28292E;
     color: white;
@@ -279,7 +280,20 @@ button.tp-rotv_b {
     border-top: none;
 }
 .__wireframe-console-dropdown-option {
-    padding: 5px 40px 5px 5px;
+    padding: 5px 50px 5px 5px;
+    cursor: pointer;
+}
+.__wireframe-console-dropdown-option--active {
+    background: #3E3F44;
+}
+.__wireframe-console-dropdown-option--active:after {
+    content: '(Tab)';
+    display: block;
+    position: absolute;
+    right: 0;
+    font-size: 14px;
+    color: lightgrey;
+    margin-top: -15px;
 }
 .__wireframe-console .__wireframe-console-input {
     width: calc(100% - 20px);
@@ -295,6 +309,7 @@ button.tp-rotv_b {
     height: 330px;
     overflow-y: auto;
     font-size: 14px;
+    padding-bottom: 300px;
 }
 .__wireframe-logs p {
     margin: 0 !important;

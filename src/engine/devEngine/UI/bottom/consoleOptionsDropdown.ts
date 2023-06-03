@@ -2,10 +2,12 @@ import { Subject } from "rxjs";
 
 export class ConsoleOptionsDropdown {
     public selectEmitter: Subject<string> = new Subject<string>();
+    private value: string = '';
     private options: string[] = [];
     private activeOption: number = 0;
     private stableValue: string = '';
     private inputFocused: boolean = false;
+    private activeElement: HTMLElement | null = null;
 
     constructor(private container: HTMLElement, input: HTMLInputElement) {
         window.addEventListener('keydown', (e) => {
@@ -33,8 +35,11 @@ export class ConsoleOptionsDropdown {
         })
     }
     public setValue(value: string): void {
-        this.calculateOptions(value)
-        this.container.style.marginLeft = (value.length * 7 - 12) + 'px'
+        if(this.value !== value) {
+            this.value = value
+            this.calculateOptions(value)
+            this.container.style.marginLeft = (value.length * 7 - 12) + 'px'
+        }
     }
     private calculateOptions(value: string): void {
         if(!value) {
@@ -67,14 +72,14 @@ export class ConsoleOptionsDropdown {
     private selectNext(): void {
         if(this.activeOption < this.options.length - 1) {
             this.activeOption++
+            this.renderOptions()
         }
-        this.renderOptions()
     }
     private selectPrev(): void {
         if(this.activeOption > 0) {
             this.activeOption--
+            this.renderOptions()
         }
-        this.renderOptions()
     }
     private choose(): void {
         this.selectEmitter.next(this.stableValue + this.options[this.activeOption])
@@ -88,6 +93,19 @@ export class ConsoleOptionsDropdown {
             if(i === this.activeOption) {
                 option.classList.add('__wireframe-console-dropdown-option--active')
             }
+            option.addEventListener('mouseenter', () => {
+                this.activeElement?.classList.remove('__wireframe-console-dropdown-option--active')
+                this.activeOption = i
+                this.activeElement = option
+                this.activeElement.classList.add('__wireframe-console-dropdown-option--active')
+            })
+            option.addEventListener('mousedown', () => {
+                this.activeOption = i
+                this.choose()
+            })
+            option.addEventListener('mouseleave', () => {
+                this.activeElement?.classList.remove('__wireframe-console-dropdown-option--active')
+            })
             this.container.appendChild(option)
         }
     }

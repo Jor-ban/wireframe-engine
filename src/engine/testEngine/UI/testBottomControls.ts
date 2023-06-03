@@ -28,7 +28,10 @@ export class TestBottomControls {
         const loggerFolder = this.pane.addFolder({title: 'Logger'})
         loggerFolder.element.children[0].remove()
         const cnsl = new Console(consoleFolder)
-        new Logger(loggerFolder)
+        const logger = new Logger(loggerFolder)
+        cnsl.addInputListener((text: string) => {
+            logger.inputLog(text)
+        })
         Shortcuts.key('~').subscribe(() => {
             this.pane.expanded = !this.pane.expanded
             if(this.pane.expanded) {
