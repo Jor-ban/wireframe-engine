@@ -266,6 +266,20 @@ button.tp-rotv_b {
     margin-bottom: 10px;
     border-bottom: 2px solid #3E3F44;
     padding-bottom: 5px;
+    font-family: monospace;
+}
+.__wireframe-console-dropdown {
+    position: absolute;
+    margin-top: 20px;
+    background: #28292E;
+    color: white;
+    display: inline-block;
+    font-size: 16px;
+    border: 2px solid #3E3F44;
+    border-top: none;
+}
+.__wireframe-console-dropdown-option {
+    padding: 5px 40px 5px 5px;
 }
 .__wireframe-console .__wireframe-console-input {
     width: calc(100% - 20px);
@@ -285,6 +299,11 @@ button.tp-rotv_b {
 .__wireframe-logs p {
     margin: 0 !important;
     padding: 3px;
+}
+.__wireframe-logs-br {
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
 }
 .__wireframe-flex {
     display: flex;

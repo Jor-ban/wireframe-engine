@@ -1,4 +1,4 @@
-import { TabPageApi } from 'tweakpane';
+import { FolderApi, TabPageApi } from 'tweakpane';
 import { BehaviorSubject } from "rxjs";
 
 export const defaultConsole = {
@@ -16,7 +16,7 @@ export const warnsCount = warnsNum.asObservable()
 
 export class Logger {
 	element: HTMLElement;
-	constructor(pane: TabPageApi) {
+	constructor(pane: TabPageApi | FolderApi) {
 		this.element = pane.addFolder({ title: 'Logs' }).element
 		this.element.classList.add('__wireframe-logs')
 		this.element.innerHTML = ''
@@ -28,6 +28,7 @@ export class Logger {
 	}
 
 	public inputLog(msg: string) {
+		this.br()
 		const div = document.createElement('div')
 		div.classList.add('__wireframe-flex')
 		div.innerHTML = `<small> ${this.getTime()} &nbsp;&nbsp;&nbsp;&nbsp; </small> ${msg}`
@@ -35,6 +36,7 @@ export class Logger {
 	}
 
 	private error(...message: (any)[]): void {
+		this.br()
 		errorsNum.next(errorsNum.value + 1)
 		const err = document.createElement('div')
 		err.classList.add('__wireframe-error')
@@ -51,6 +53,7 @@ export class Logger {
 		defaultConsole.error(...message)
 	}
 	private log(...message: (any)[]): void {
+		this.br()
 		for(const msg of message) {
 			if(msg instanceof Object) {
 				this.logTimeAndObject(msg, this.element)
@@ -61,6 +64,7 @@ export class Logger {
 		defaultConsole.log(...message)
 	}
 	private warn(...message: (any)[]): void {
+		this.br()
 		warnsNum.next(warnsNum.value + 1)
 		const warn = document.createElement('div')
 		warn.classList.add('__wireframe-warn')
@@ -79,6 +83,7 @@ export class Logger {
 		defaultConsole.clear()
 	}
 	private info(...message: (any)[]): void {
+		this.br()
 		const info = document.createElement('div')
 		info.classList.add('__wireframe-info')
 		this.element.appendChild(info)
@@ -97,7 +102,7 @@ export class Logger {
 	private logSimpleData(container: HTMLElement, msg: any): void {
 		const div = document.createElement('div')
 		div.classList.add('__wireframe-flex')
-		div.innerHTML = `<small> ← ${this.getTime()} &nbsp;&nbsp;&nbsp;&nbsp; ${msg} </small>`
+		div.innerHTML = `<small> ← ${this.getTime()} &nbsp;&nbsp;&nbsp;&nbsp;</small> ${this.styleFieldValue(msg)}`
 		container.appendChild(div)
 	}
 	private logTimeAndObject(obj: Object | Array<any>, root: HTMLElement) {
@@ -227,5 +232,10 @@ export class Logger {
 			classes += '__wireframe-logs_field-value-string'
 
 		return `<span class="${ classes }">${ value }</span>`
+	}
+	private br() {
+		const br = document.createElement('br')
+		br.classList.add('.__wireframe-logs-br')
+		this.element.appendChild(br)
 	}
 }

@@ -1,4 +1,4 @@
-import { TabPageApi } from "tweakpane";
+import {FolderApi, TabPageApi} from "tweakpane";
 import {ConsoleOptionsDropdown} from "⚙️/devEngine/UI/bottom/consoleOptionsDropdown";
 
 declare global {
@@ -6,16 +6,23 @@ declare global {
 }
 
 export class Console {
-    private readonly input: HTMLInputElement
+    public readonly input: HTMLInputElement
     private listeners: ((value: string) => void)[] = []
-    constructor(pane: TabPageApi) {
+    constructor(pane: TabPageApi | FolderApi) {
         const container = pane.addFolder({ title: 'Console' }).element
         container.classList.add('__wireframe-console')
         container.innerHTML = '<span> ❱ </span>'
         this.input = document.createElement('input')
         this.input.classList.add('__wireframe-console-input')
         this.input.placeholder = 'Type here...'
-        const dropDown = new ConsoleOptionsDropdown(this.input)
+        const dropDownElement = document.createElement('div')
+        container.appendChild(dropDownElement)
+        dropDownElement.classList.add('__wireframe-console-dropdown')
+        const dropDown = new ConsoleOptionsDropdown(dropDownElement, this.input)
+        dropDown.selectEmitter.subscribe((value: string) => {
+            this.input.value = value
+            dropDown.setValue(value)
+        })
 
         this.input.addEventListener('keyup', (e) => {
             if(e.key === 'Enter') {

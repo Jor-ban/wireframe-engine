@@ -3,12 +3,16 @@ import {Pane} from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import {WebGLRenderer} from "three";
 import {logMemory} from "⚙️/shared/PerformanceMonitors";
+import {TestBottomControls} from "⚙️/testEngine/UI/testBottomControls";
+import "./testStyles.css"
 
 export class TestControls {
     public pane: Pane
     constructor(askedFPS: number, renderer: WebGLRenderer) {
         AnimationFrame.run()
         this.pane = new Pane({ title: 'Wireframe Engine Gui' });
+        this.pane.element.classList.add('__wireframe-controls')
+        new TestBottomControls()
         this.pane.registerPlugin(EssentialsPlugin);
         this.addFpsMeter()
         this.pane.addInput({'Play/Pause': 1}, 'Play/Pause', {
