@@ -1,5 +1,5 @@
 import { __DevController } from './UI/controller';
-import { AmbientLight, Light, PerspectiveCamera } from "three";
+import { AmbientLight, Light, Object3D, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { __DefaultEngine } from "⚙️/lib/defaultEngine";
 import { bottomControlsHeight, leftControlsWidth, rightControlsWidth, topBarHeight } from "⚙️/shared/consts/controlsStyles";
@@ -9,12 +9,14 @@ import { MeshParser } from '⚙️/lib/parsers/MeshParser';
 import { LightParser } from '⚙️/lib/parsers/lightParser';
 import { LightWithHelper } from '⚙️/devEngine/devClasses/lightsWithHelper';
 import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
-import {ChangeDetector} from "⚙️/devEngine/changeDetector";
+import { ChangeDetector } from "⚙️/devEngine/changeDetector";
+import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
+import { EngineInterface } from "⚙️/types/Engine.interface";
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
 
-    constructor(projectSettings: ProjectSettings = {}) {
+    private constructor(projectSettings: ProjectSettings) {
         const canvas = document.createElement('canvas')
         document.body.appendChild(canvas)
         super(canvas)
@@ -29,9 +31,6 @@ export class __DevEngine extends __DefaultEngine {
         this.setMainCamera()
         this.setOrbitControls()
         this.setAmbientLight(projectSettings.ambientLight)
-        if(projectSettings.objects?.length) {
-            this.add(...projectSettings.objects.map(o => MeshParser.parse(o)))
-        }
         if(projectSettings.lights?.length) {
             projectSettings.lights.forEach((light: Light | LightJson) => {
                 const parsedLight = LightParser.parse(light)
@@ -45,7 +44,21 @@ export class __DevEngine extends __DefaultEngine {
         }
         this.renderer.render(this.scene, this.devCamera)
         this.initTick(undefined, this.devCamera)
-        new __DevController(this)
+    }
+
+    public static create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {
+        const eng = new __DevEngine(projectSettings)
+        return eng.addObject2Scene(projectSettings.objects).then(() => {
+            new __DevController(eng)
+            return eng
+        })
+    }
+
+    public addObject2Scene(objects: (Object3D | MeshJson)[] | undefined): Promise<EngineInterface> {
+        if(objects?.length)
+            return MeshParser.parseAll(objects).then(obj3ds => this.add(...obj3ds))
+        else
+            return Promise.resolve(this)
     }
 
 

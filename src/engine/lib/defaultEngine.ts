@@ -1,5 +1,4 @@
 import { WRenderer } from './classes/WRenderer';
-import { AnimationFrame } from '../services/animationFrame.service';
 import '../shared/memoryCleaner'
 import { CanvasProportion } from "./parsers/types/CanvasProportion.interface";
 import {
@@ -17,10 +16,14 @@ import { SceneJson } from "./parsers/types/SceneJson.type";
 import { SceneParser } from "./parsers/sceneParser";
 import { RendererJson } from "./parsers/types/RendererJson.type";
 import { RendererParser } from "./parsers/rendererParser";
-import { AmbientLightJson } from "./parsers/types/LightJson.type";
+import {AmbientLightJson, LightJson} from "./parsers/types/LightJson.type";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
+import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
+import { MeshParser } from "⚙️/lib/parsers/MeshParser";
+import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
+import { TimeMachine } from "⚙️/services/timeMachine.service";
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
@@ -33,7 +36,7 @@ export class __DefaultEngine implements EngineInterface {
     public mode: EngineInterface['mode'] = 'dev'
 
     protected userAskedFPS: number = 60
-    protected animationMachine = AnimationFrame
+    protected timMachine = TimeMachine
     protected renderCamera = this.camera
 
     private renderFunction: (deltaTime: number) => void = () => {}
@@ -78,11 +81,11 @@ export class __DefaultEngine implements EngineInterface {
     
     protected initTick(askedFps: number = 60, renderCamera: PerspectiveCamera | OrthographicCamera): void {
         this.userAskedFPS = askedFps
-        this.animationMachine.run(this.userAskedFPS)
+        this.timMachine.run(this.userAskedFPS)
         this.renderFunction = () => {
             this.renderer.render(this.scene, renderCamera)
         }
-        this.animationMachine.addListener(this.renderFunction)
+        this.timMachine.addListener(this.renderFunction)
     }
     public setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface {
         if(this.ambientLight) {
@@ -96,9 +99,19 @@ export class __DefaultEngine implements EngineInterface {
         this.scene = SceneParser.parse(scene)
         return this
     }
-    public add(...objects: Object3D[]): EngineInterface {
-        this.scene.add(...objects)
-        return this
+    public add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface> {
+        const els = objects.map(obj => {
+            if(obj instanceof Object3D)
+                return obj
+            else if(ParserDataType.isLightJson(obj))
+                return LightParser.parse(obj)
+            else
+                return MeshParser.parse(obj)
+        })
+        return Promise.all(els).then(obj3ds => {
+            this.scene.add(...obj3ds)
+            return this
+        })
     }
     public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
         if(renderer instanceof WebGLRenderer) {
@@ -121,7 +134,7 @@ export class __DefaultEngine implements EngineInterface {
         this.renderCamera = camera
     }
     public dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true): void {
-        this.animationMachine.removeListener(this.renderFunction)
+        this.timMachine.removeListener(this.renderFunction)
         if(removeHTMLElement)
             this.renderer.domElement.parentNode?.removeChild(this.renderer.domElement)
         this.renderer.dispose()

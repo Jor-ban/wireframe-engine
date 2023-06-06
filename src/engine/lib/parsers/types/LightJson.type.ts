@@ -16,7 +16,7 @@ export type DirectionalLightJson = AmbientLightJson & {
     castShadow ?: boolean
 }
 export type HemisphereLightJson = AmbientLightJson & {
-    groundColor: string | Color
+    groundColor ?: string | Color
 }
 
 export type LightJson = (AmbientLightJson & PointLightJson & DirectionalLightJson & HemisphereLightJson) & {

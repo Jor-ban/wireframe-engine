@@ -1,15 +1,14 @@
-import { AnimationFrame } from '../services/animationFrame.service';
-import {Pane} from "tweakpane";
+import { Pane } from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
-import {WebGLRenderer} from "three";
-import {logMemory} from "⚙️/shared/PerformanceMonitors";
-import {TestBottomControls} from "⚙️/testEngine/UI/testBottomControls";
+import { WebGLRenderer } from "three";
+import { logMemory } from "⚙️/shared/PerformanceMonitors";
+import { TestBottomControls } from "⚙️/testEngine/UI/testBottomControls";
 import "./testStyles.css"
+import { TimeMachine } from "⚙️/services/timeMachine.service";
 
 export class TestControls {
     public pane: Pane
     constructor(askedFPS: number, renderer: WebGLRenderer) {
-        AnimationFrame.run()
         this.pane = new Pane({ title: 'Wireframe Engine Gui' });
         this.pane.element.classList.add('__wireframe-controls')
         new TestBottomControls()
@@ -26,9 +25,9 @@ export class TestControls {
 
         }).on('change', ({value}) => {
             if(value === 1) {
-                AnimationFrame.setFPS(askedFPS)
+                TimeMachine.setFPS(askedFPS)
             } else {
-                AnimationFrame.setFPS(0)
+                TimeMachine.setFPS(0)
             }
         });
         const others = this.pane.addFolder({title: 'Additional Monitors', expanded: false})
@@ -41,11 +40,11 @@ export class TestControls {
             label: 'FPS',
             lineCount: 1,
         });
-        AnimationFrame.addListener(() => {
+        TimeMachine.addListener(() => {
             // @ts-ignore
             fpsGraph.begin()
         }, true)
-        AnimationFrame.addListener(() => {
+        TimeMachine.addListener(() => {
             // @ts-ignore
             fpsGraph.end()
         })

@@ -1,5 +1,5 @@
-import {Object3dJSON, Nameable, UuidSettable} from "./Object3DJson.type";
-import {BufferGeometry, Material} from "three";
+import { Object3dJSON, Nameable, UuidSettable } from "./Object3DJson.type";
+import { BufferGeometry, Material } from "three";
 import { GeometryJson } from "./GeometryJson.type";
 import { MaterialJson } from "./MaterialJson.type";
 
@@ -8,9 +8,9 @@ export type ComposedMeshJson = Nameable & UuidSettable & {
     geometry?: GeometryJson | BufferGeometry
     material?: MaterialJson | Material
 }
-export type GltfMeshJson = Nameable & UuidSettable & {
+export type PathToMeshJson = Nameable & UuidSettable & {
     parameters?: Object3dJSON
-    path?: string
+    url?: string
 }
 
-export type MeshJson = ComposedMeshJson & GltfMeshJson
+export type MeshJson = ComposedMeshJson & PathToMeshJson

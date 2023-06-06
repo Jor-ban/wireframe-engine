@@ -14,4 +14,5 @@ export interface EngineInterface {
 	orbitControls: OrbitControls | undefined
 
 	dispose(): void
+	add(): Promise<EngineInterface>
 }

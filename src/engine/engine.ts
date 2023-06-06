@@ -35,18 +35,19 @@ export class Engine {
             logo.style.width = '500px'
             splitScreen.appendChild(logo)
             document.body.appendChild(splitScreen)
-            return await import('./devEngine/devEngine').then(({__DevEngine}) => {
-                const engine = new __DevEngine(projectSettings)
-                splitScreen.parentNode?.removeChild(splitScreen)
-                return engine
-            })
+            return await import('./devEngine/devEngine')
+                .then(({__DevEngine}) => __DevEngine.create(projectSettings))
+                .then(engine=> {
+                    splitScreen.parentNode?.removeChild(splitScreen)
+                    return engine
+                })
         } else if(mode == 'test') {
             return await import('./testEngine/testEngine').then(({__TestEngine}) => {
-                return new __TestEngine(canvas, projectSettings)
+                return __TestEngine.create(canvas, projectSettings)
             })
         } else {
             return await import('./prodEngine').then(({__ProdEngine}) => {
-                return new __ProdEngine(canvas, projectSettings)
+                return __ProdEngine.create(canvas, projectSettings)
             })
         }
     }

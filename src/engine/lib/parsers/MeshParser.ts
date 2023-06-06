@@ -1,40 +1,50 @@
 import {
     BoxGeometry,
     BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
-    Material, MeshBasicMaterial, MeshDepthMaterial,
+    Material, Mesh, MeshBasicMaterial, MeshDepthMaterial,
     MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial,
     MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
     MeshToonMaterial,
     Object3D, PlaneGeometry, RingGeometry, SphereGeometry
 } from "three";
-import {Object3dJSON, Positionable, Rotatable, Scalable} from "./types/Object3DJson.type";
-import {MeshJson} from "./types/MeshJson.type";
-import {MaterialJson} from "./types/MaterialJson.type";
-import {GeometryJson} from "./types/GeometryJson.type";
+import { Object3dJSON, Positionable, Rotatable, Scalable } from "./types/Object3DJson.type";
+import { MeshJson } from "./types/MeshJson.type";
+import { MaterialJson } from "./types/MaterialJson.type";
+import { GeometryJson } from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
-import {LightParser} from "./lightParser";
+import { LightParser } from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import {WMesh} from "../classes/WMesh";
-import {WTextGeometry} from "../classes/WTextGeometry";
+import { WMesh } from "⚙️/lib";
+import { WTextGeometry } from "⚙️/lib";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import {WireframeLoaders} from "⚙️/shared/loaders";
 
 const fl = new FontLoader()
 
 export class MeshParser {
-    static parse(object: MeshJson): WMesh {
-        if(object instanceof WMesh) {
-            return object
-        } else {
-            const mesh = new WMesh(
-                this.parseGeometry(object.geometry),
-                this.parseMaterial(object.material)
-            )
-            this.setParameters(mesh, object.parameters)
-            if(object.uuid) {
-                mesh.uuid = object.uuid
+    static parse(object: MeshJson): Promise<Object3D> {
+        return new Promise<Object3D>((resolve) => {
+            if (object instanceof Mesh) {
+                resolve(object)
+            } else if(object.url) {
+                WireframeLoaders.load3dObject(object.url)
+                    .then(obj => this.setParameters(obj, object.parameters))
+                    .then(resolve)
+            } else {
+                const mesh = new WMesh(
+                    this.parseGeometry(object.geometry),
+                    this.parseMaterial(object.material)
+                )
+                this.setParameters(mesh, object.parameters)
+                if (object.uuid) {
+                    mesh.uuid = object.uuid
+                }
+                resolve(mesh)
             }
-            return mesh
-        }
+        })
+    }
+    static parseAll(objects: MeshJson[]): Promise<Object3D[]> {
+        return Promise.all(objects.map(o => this.parse(o)))
     }
     static parseGeometry(geometry: BufferGeometry | GeometryJson | undefined): BufferGeometry {
         if(!geometry) {

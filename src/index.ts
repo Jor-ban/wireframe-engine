@@ -15,7 +15,7 @@ Engine.create('#canvas', {
             material: { color: 'blue' },
         },
     ],
-    // orbitControls: true,
+    orbitControls: true,
     renderer: {
         antialias: true,
     },

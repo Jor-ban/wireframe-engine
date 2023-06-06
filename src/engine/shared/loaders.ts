@@ -1,8 +1,9 @@
-import { TextureLoader } from "three"
+import { Group, TextureLoader } from "three"
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader"
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import {GLTFGroup} from "⚙️/lib/classes/gltfGroup";
 
 class WireframeLoadersFactory {
     private _textureLoader: TextureLoader | null = null
@@ -10,6 +11,19 @@ class WireframeLoadersFactory {
     private _fbxLoader: FBXLoader | null = null
     private _objLoader: OBJLoader | null = null
     private _gltfLoader: GLTFLoader | null = null
+
+    public load3dObject(url: string): Promise<Group> {
+        if(new RegExp(/\.fbx$/).test(url)) {
+            return this.FBXLoader.loadAsync(url)
+        } else if(new RegExp(/\.obj$/).test(url)) {
+            return this.objLoader.loadAsync(url)
+        } else if(new RegExp(/\.gltf$/).test(url)) {
+            return this.GLTFLoader.loadAsync(url).then(gltf => GLTFGroup.from(gltf))
+        } else {
+            const split = url.split('.')
+            throw new Error(`Unknown 3d object type: ${split[split.length - 1]}`)
+        }
+    }
     public get textureLoader(): TextureLoader {
         if(!this._textureLoader)
             this._textureLoader = new TextureLoader()

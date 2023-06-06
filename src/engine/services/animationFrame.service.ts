@@ -1,14 +1,13 @@
-import { Clock } from "three";
 import { EngineState } from "⚙️/shared/engineState";
 
 
-class AnimationFrameFactory {
+export class __AnimationFrameFactory {
     public isRunning: boolean = false;
-    private _callbacks: Array<(deltaTime: number) => void> = [];
+    private _callbacks: Set<(deltaTime: number) => void> = new Set();
     private _tickIntervalId : NodeJS.Timer | number | null = null
     private _animationFrameId: number | null = null
-    private _clock !: Clock
     private _maxFPS: number = 60
+    protected _timeMultiplier: number = 1
 
     /**
      * method to set max fps to run at for whole app
@@ -23,8 +22,7 @@ class AnimationFrameFactory {
      * })
      */
     public run(maxFps ?: number) {
-        this._clock = new Clock(true)
-        this.isRunning = true;
+        this.isRunning = true
         this.setFPS(maxFps ?? this._maxFPS)
         return this
     }
@@ -40,7 +38,7 @@ class AnimationFrameFactory {
      * AnimationFrame.runAt(60)
     **/
     public stop() {
-        this.isRunning = false;
+        this.isRunning = false
         this.setFPS(0)
         return this
     }
@@ -58,9 +56,9 @@ class AnimationFrameFactory {
      **/
     public addListener(listener: (deltaTime: number) => void, runInBeginning ?: boolean) {
         if(runInBeginning) {
-            this._callbacks.unshift(listener)
+            this._callbacks = new Set([listener, ...this._callbacks])
         } else {
-            this._callbacks.push(listener)
+            this._callbacks.add(listener)
         }
         return this
     }
@@ -79,7 +77,7 @@ class AnimationFrameFactory {
      * AnimationFrame.removeListener(listener)
      **/
     public removeListener(listener: (...args: any) => void) {
-        this._callbacks.splice(this._callbacks.findIndex(listener), 1)
+        this._callbacks.delete(listener)
         return this
     }
     /**
@@ -101,26 +99,39 @@ class AnimationFrameFactory {
             window.cancelAnimationFrame(this._animationFrameId)
         }
         if(maxFPS <= 0) { // if maxFPS is 0 or less, render once
-            this.runListeners()
+            this.runListeners(0)
         } else if(maxFPS === Infinity) { // if maxFPS is Infinity, render as often as possible
             this._tickIntervalId = setInterval(this.runListeners.bind(this))
             EngineState.addIntervalId(this._tickIntervalId)
         } else if(maxFPS === 60) { // if maxFPS is - 60, render in max comfort mode
-            const frame = () => {
-                this.runListeners()
-                this._animationFrameId = window.requestAnimationFrame(frame)
+            let lastTime = 0
+            const tick = (timeStamp: number) => {
+                this.runListeners(timeStamp - lastTime)
+                lastTime = timeStamp
+                this._animationFrameId = window.requestAnimationFrame(tick)
             }
-            frame()
+            tick(lastTime)
+        } else if(maxFPS < 60) {
+            const interval = 1000 / maxFPS
+            let lastTime = 0
+            const tick = (timestamp: number) => {
+                requestAnimationFrame(tick)
+                const delta = timestamp - lastTime
+                if (delta > interval) {
+                    this.runListeners(delta)
+                    lastTime = timestamp - (delta % interval)
+                }
+            }
+            tick(0)
         } else {
             this._tickIntervalId = setInterval(this.runListeners.bind(this), 1000 / maxFPS)
             EngineState.addIntervalId(this._tickIntervalId)
         }
         return this
     }
-    private runListeners() {
-        const deltaTime = this._clock.getDelta()
-        for(let i = 0; i < this._callbacks.length; i++) {
-            this._callbacks[i](deltaTime)
+    private runListeners(deltaTime: number) {
+        for(let c of this._callbacks) {
+            c(deltaTime * this._timeMultiplier)
         }
     }
 }
@@ -133,4 +144,4 @@ class AnimationFrameFactory {
  *    // do something
  * })
  */
-export const AnimationFrame = new AnimationFrameFactory();
+export const AnimationFrame = new __AnimationFrameFactory();
