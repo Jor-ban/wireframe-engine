@@ -110,7 +110,7 @@ export class __DefaultEngine implements EngineInterface {
         })
         return Promise.all(els).then(obj3ds => {
             this.scene.add(...obj3ds)
-            return this
+            return Promise.resolve(this)
         })
     }
     public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
@@ -128,6 +128,7 @@ export class __DefaultEngine implements EngineInterface {
         this.camera = CameraParser.parse(this.canvasProportion, camera)
         this.scene.add(this.camera)
         this.camera.position.set(1, 0.5, 3)
+        this.camera.name = 'mainCamera'
         return this
     }
     protected setRenderCamera(camera: PerspectiveCamera | OrthographicCamera): void {

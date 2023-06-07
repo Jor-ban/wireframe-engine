@@ -12,6 +12,7 @@ import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
 import { ChangeDetector } from "⚙️/devEngine/changeDetector";
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { EngineInterface } from "⚙️/types/Engine.interface";
+import {CameraParser} from "⚙️/lib/parsers/cameraParser";
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
@@ -25,10 +26,9 @@ export class __DevEngine extends __DefaultEngine {
         super.setRenderCamera(this.devCamera)
         this.setDevCanvas()
         this.setScene(projectSettings.scene)
-        this.setCamera()
+        this.setMainCamera()
         this.setDevCamera()
         this.setRenderer()
-        this.setMainCamera()
         this.setOrbitControls()
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.lights?.length) {
@@ -96,9 +96,8 @@ export class __DevEngine extends __DefaultEngine {
         ChangeDetector.controlStyleChanged$.subscribe(onResize)
     }
     private setMainCamera() {
-        const cameraWithHelper = CameraWithHelper.from(this.camera)
+        const cameraWithHelper = CameraWithHelper.from(CameraParser.parse(this.canvasProportion))
         cameraWithHelper.addToScene(this.scene)
-        this.scene.remove(this.camera)
         this.camera = cameraWithHelper
     }
     private setDevCamera() {

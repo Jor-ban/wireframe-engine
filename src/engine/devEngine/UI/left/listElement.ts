@@ -35,6 +35,7 @@ export class ListElement {
         const text = document.createElement('div')
         text.classList.add('__wireframe-object-text')
         text.innerHTML = getElementText(this.object)
+        text.title = this.object.uuid
         this.container.draggable = true
         if(this.object instanceof Group) {
             this.container.addEventListener('click', () => {
