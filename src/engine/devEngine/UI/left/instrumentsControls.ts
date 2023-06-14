@@ -5,7 +5,7 @@ import {MathUtils, Object3D} from "three";
 import {ElementTracer} from "./utils/elementTracer";
 import {ChangeDetector} from "../../changeDetector";
 import {WMesh} from "⚙️/lib";
-import {Shortcuts} from "../../shortcuts";
+import {KeyEvent} from "../../shortcuts";
 
 import pointerIconUrl from "../../assets/pointer_icon.svg"
 import moveIconUrl    from '../../assets/move_icon.svg'
@@ -56,7 +56,7 @@ export class InstrumentsControls {
                 this.tfControls.detach()
             }
         })
-        Shortcuts.figureKey('Shift').subscribe((key: KeyboardEvent) => {
+        KeyEvent.figureKey('Shift').subscribe((key: KeyboardEvent) => {
             if(key.type === 'keydown') {
                 this.tfControls.setTranslationSnap(1)
                 this.tfControls.setRotationSnap(MathUtils.degToRad(45))
@@ -67,7 +67,7 @@ export class InstrumentsControls {
                 this.tfControls.setScaleSnap(null)
             }
         })
-        Shortcuts.figureKey('Alt').subscribe((key: KeyboardEvent) => {
+        KeyEvent.figureKey('Alt').subscribe((key: KeyboardEvent) => {
             if(key.type === 'keydown') {
                 this.tfControls.setSpace('local')
             } else {

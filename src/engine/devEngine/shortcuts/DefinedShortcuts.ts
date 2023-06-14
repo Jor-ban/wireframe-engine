@@ -1,6 +1,6 @@
 import {Mesh, Object3D} from "three";
 import {ChangeDetector} from "../changeDetector";
-import {Shortcuts} from "./index";
+import {KeyEvent} from "./index";
 import {InstrumentsEnum} from "../types/Instruments.enum";
 
 export class DefinedShortcuts {
@@ -9,7 +9,7 @@ export class DefinedShortcuts {
         ChangeDetector.clickedObject$.subscribe((obj: Mesh | Object3D | null) => {
             this.activeElement = obj;
         })
-        Shortcuts.key('Delete').subscribe(() => {
+        KeyEvent.key('Delete').subscribe(() => {
             if(this.activeElement !== null) {
                 ChangeDetector.removedObject$.next(this.activeElement)
                 ChangeDetector.clickedObject$.next(null)
@@ -17,16 +17,16 @@ export class DefinedShortcuts {
                 this.activeElement = null
             }
         })
-        Shortcuts.key('x', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
+        KeyEvent.key('x', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
             ChangeDetector.activeInstrument$.next(InstrumentsEnum.pointer)
         })
-        Shortcuts.key('v', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
+        KeyEvent.key('v', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
             ChangeDetector.activeInstrument$.next(InstrumentsEnum.move)
         })
-        Shortcuts.key('r', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
+        KeyEvent.key('r', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
             ChangeDetector.activeInstrument$.next(InstrumentsEnum.rotation)
         })
-        Shortcuts.key('s', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
+        KeyEvent.key('s', {CtrlPressed : false, ShiftPressed: false, AltPressed: false}).subscribe(() => {
             ChangeDetector.activeInstrument$.next(InstrumentsEnum.scale)
         })
     }

@@ -1,4 +1,4 @@
-import {Shortcuts} from "⚙️/devEngine/shortcuts";
+import {KeyEvent} from "⚙️/devEngine/shortcuts";
 import {Pane} from "tweakpane";
 import {Logger} from "⚙️/devEngine/UI/bottom/logger";
 import {Console} from "⚙️/devEngine/UI/bottom/console";
@@ -32,7 +32,7 @@ export class TestBottomControls {
         cnsl.addInputListener((text: string) => {
             logger.inputLog(text)
         })
-        Shortcuts.key('~').subscribe(() => {
+        KeyEvent.key('~').subscribe(() => {
             this.pane.expanded = !this.pane.expanded
             if(this.pane.expanded) {
                 cnsl.input.focus()

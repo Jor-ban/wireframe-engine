@@ -1,14 +1,25 @@
 import { EngineState } from "⚙️/shared/engineState";
 
+export interface AnimationFrameServiceInterface {
+    isRunning: boolean
+    run(maxFps ?: number): AnimationFrameServiceInterface
+    stop(): AnimationFrameServiceInterface
+    addListener(listener: (deltaTime: number) => void, runInBeginning ?: boolean): AnimationFrameServiceInterface
+    removeListener(listener: (deltaTime: number) => void): AnimationFrameServiceInterface
+    setFPS(fps: number): AnimationFrameServiceInterface
+}
 
 export class __AnimationFrameFactory {
-    public isRunning: boolean = false;
+    private _isRunning: boolean = false;
     private _callbacks: Set<(deltaTime: number) => void> = new Set();
     private _tickIntervalId : NodeJS.Timer | number | null = null
     private _animationFrameId: number | null = null
     private _maxFPS: number = 60
     protected _timeMultiplier: number = 1
 
+    get isRunning(): boolean {
+        return this._isRunning
+    }
     /**
      * method to set max fps to run at for whole app
      * @param maxFps - max fps to run at, if not provided, will run at 60 fps
@@ -22,7 +33,7 @@ export class __AnimationFrameFactory {
      * })
      */
     public run(maxFps ?: number) {
-        this.isRunning = true
+        this._isRunning = true
         this.setFPS(maxFps ?? this._maxFPS)
         return this
     }
@@ -38,7 +49,7 @@ export class __AnimationFrameFactory {
      * AnimationFrame.runAt(60)
     **/
     public stop() {
-        this.isRunning = false
+        this._isRunning = false
         this.setFPS(0)
         return this
     }
@@ -124,7 +135,7 @@ export class __AnimationFrameFactory {
             }
             tick(0)
         } else {
-            this._tickIntervalId = setInterval(this.runListeners.bind(this), 1000 / maxFPS)
+            this._tickIntervalId = setInterval(this.runListeners.bind(this, 1000 / maxFPS), 1000 / maxFPS)
             EngineState.addIntervalId(this._tickIntervalId)
         }
         return this

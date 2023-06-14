@@ -79,4 +79,4 @@ class ShortcutsFactory extends Subject<KeyboardEvent> {
     }
 }
 
-export const Shortcuts = new ShortcutsFactory()
+export const KeyEvent = new ShortcutsFactory()

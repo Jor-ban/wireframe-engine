@@ -96,7 +96,12 @@ export class __DevEngine extends __DefaultEngine {
         ChangeDetector.controlStyleChanged$.subscribe(onResize)
     }
     private setMainCamera() {
-        const cameraWithHelper = CameraWithHelper.from(CameraParser.parse(this.canvasProportion))
+        const cameraWithHelper = CameraWithHelper.from(
+            CameraParser.parse({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            })
+        )
         cameraWithHelper.addToScene(this.scene)
         this.camera = cameraWithHelper
     }

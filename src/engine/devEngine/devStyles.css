@@ -616,6 +616,29 @@ button.__wireframe-dropdown-button--active {
     border-left: 2px solid darkgrey !important;
 }
 
+.__gltf-animation-container {
+    color: #bbbcc4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.__gltf-animation-container button {
+    border: none;
+    color: #bbbcc4;
+    background-color: #3E3F44;
+    cursor: pointer;
+    padding: 0;
+    margin: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+.__gltf-animation-container .__gltf-animation-controls-row {
+    display: flex;
+}
+
 .tp-tabv_c, .tp-fldv_c {
     border-left: none;
 }

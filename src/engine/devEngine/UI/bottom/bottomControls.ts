@@ -7,7 +7,7 @@ import {
 	rightControlsWidth,
 	updateBottomControlsHeight
 } from "⚙️/shared/consts/controlsStyles";
-import { Shortcuts } from "⚙️/devEngine/shortcuts";
+import { KeyEvent } from "⚙️/devEngine/shortcuts";
 import { Console } from "./console";
 
 export class BottomControls {
@@ -30,7 +30,7 @@ export class BottomControls {
 			pages: [
 				{ title: 'Explorer' },
 				{ title: 'Console' },
-				{ title: 'Animation' },
+				{ title: 'Time' },
 			]
 		})
 		this.tabsButtonElement = tabs.element.children[0].children[1].children[0].children[0]
@@ -91,7 +91,7 @@ export class BottomControls {
 			}
 		}
 		onClick()
-		Shortcuts.key('~').subscribe(onClick)
+		KeyEvent.key('~').subscribe(onClick)
 		button.addEventListener('click', onClick)
 	}
 }

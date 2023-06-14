@@ -24,6 +24,8 @@ import { WMesh } from "⚙️/lib";
 import { LightControls } from "./utils/LightControls";
 import { CameraControls } from './utils/CameraControls';
 import { Subscription } from 'rxjs';
+import { GLTFControls } from "⚙️/devEngine/UI/right/utils/GltfControls";
+import { GLTFGroup } from "⚙️/lib/classes/gltfGroup";
 
 export class ActiveElementControls {
     private readonly pane: TabPageApi
@@ -84,20 +86,22 @@ export class ActiveElementControls {
         pane.addSeparator()
         const tabs = pane.addTab({
             pages: [
-                {title: 'Geometry'},
-                {title: 'Material'},
-                {title: 'Physics'}, // TODO
                 {title: 'Mesh'},
+                {title: 'Physics'},
+                {title: 'Material'},
+                {title: 'Geometry'},
             ]
         })
-
-        new GeometryControls(child, tabs.pages[0])
-        this.addMaterials(child, tabs.pages[1])
-        this.addPhysics(child, tabs.pages[2])
-        this.addMeshOptions(child, tabs.pages[3])
+        this.addMeshOptions(child, tabs.pages[0])
+        this.addPhysics(child, tabs.pages[1])
+        this.addMaterials(child, tabs.pages[2])
+        new GeometryControls(child, tabs.pages[3])
     }
-    private addForGroup(group: Group, pane: Pane | TabPageApi | FolderApi): void {
+    private addForGroup(group: Group | GLTFGroup, pane: Pane | TabPageApi | FolderApi): void {
         this.addForObject3D(group, pane)
+        if(group instanceof GLTFGroup) {
+            GLTFControls.addForGltf(group, this.pane)
+        }
     }
     private addMaterials(mesh: WMesh, pane: FolderApi | TabPageApi) {
         const materials = mesh.material instanceof Array ? mesh.material : [mesh.material];
