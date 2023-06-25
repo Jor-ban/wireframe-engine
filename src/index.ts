@@ -1,5 +1,6 @@
 import { Engine } from "⚙️/engine";
-import fox from './static/models/Fox.glb?url'
+// import fox from './static/models/Fox.glb?url'
+import trees from './static/models/trees.fbx?url'
 
 Engine.create('#canvas', {
     objects: [
@@ -16,7 +17,7 @@ Engine.create('#canvas', {
         //     material: { color: 'blue' },
         // },
         {
-            url: fox,
+            url: trees,
             parameters: { scaleX: 0.1, scaleY: 0.1, scaleZ: 0.1, },
         }
     ],

@@ -6,15 +6,17 @@
   "scripts": {
     "dev": "npm run start",
     "start": "concurrently --kill-others \"node ./src/engine/devEngine/fileManager/index.js\" \"vite --mode dev\"",
-    "dev:watch": "cross-env NODE_ENV=dev concurrently --kill-others \"nodemon ./src/engine/devEngine/fileManager/index.js\" \"vite\"",
+    "dev:test": "vite --mode test",
+    "dev:prod": "vite --mode prod",
+    "dev:watch": "concurrently --kill-others \"nodemon ./src/engine/devEngine/fileManager/index.js\" \"vite --mode dev\"",
     "dev:fileManager-only": "nodemon ./src/engine/fileManager/index.js",
-    "dev:frontend-only": "cross-env NODE_ENV=dev vite",
-    "prod": "cross-env NODE_ENV=prod vite",
-    "test": "cross-env NODE_ENV=test vite --mode test",
-    "build:dev": "cross-env NODE_ENV=dev vite build",
-    "build": "cross-env NODE_ENV=prod tsc && vite build",
+    "dev:frontend-only": "vite --mode dev",
+    "prod": "vite --mode prod",
+    "test": "vite --mode test",
+    "build:dev": "vite build --mode dev",
+    "build": "vite build --mode prod",
     "preview": "vite preview",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build:dev && firebase deploy"
   },
   "repository": {
     "type": "git",
@@ -33,7 +35,6 @@
     "axios": "^0.27.2",
     "concurrently": "^7.3.0",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
     "gsap": "^3.9.1",
     "nodemon": "^2.0.19",
     "three": "^0.137.5",

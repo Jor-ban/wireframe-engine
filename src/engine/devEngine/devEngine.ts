@@ -12,10 +12,11 @@ import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
 import { ChangeDetector } from "⚙️/devEngine/changeDetector";
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { EngineInterface } from "⚙️/types/Engine.interface";
-import {CameraParser} from "⚙️/lib/parsers/cameraParser";
+import { CameraParser } from "⚙️/lib/parsers/cameraParser";
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
+    public devControls: __DevController | null = null
 
     private constructor(projectSettings: ProjectSettings) {
         const canvas = document.createElement('canvas')
@@ -47,9 +48,13 @@ export class __DevEngine extends __DefaultEngine {
     }
 
     public static create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {
-        const eng = new __DevEngine(projectSettings)
+        let eng = new __DevEngine(projectSettings)
         return eng.addObject2Scene(projectSettings.objects).then(() => {
-            new __DevController(eng)
+            eng.devControls = new __DevController(eng)
+            eng.extensionsList.forEach(async (ext) => {
+                const res = await ext(eng)
+                if(res && res instanceof __DevEngine) eng = res
+            })
             return eng
         })
     }

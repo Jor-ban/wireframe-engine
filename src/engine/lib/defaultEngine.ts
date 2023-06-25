@@ -24,6 +24,7 @@ import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { MeshParser } from "⚙️/lib/parsers/MeshParser";
 import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
 import { TimeMachine } from "⚙️/services/timeMachine.service";
+import {EngineExtensionInterface} from "⚙️/types/EngineExtensionInterface";
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
@@ -34,6 +35,7 @@ export class __DefaultEngine implements EngineInterface {
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
     public mode: EngineInterface['mode'] = 'dev'
+    public extensionsList = new Set<EngineExtensionInterface>()
 
     protected userAskedFPS: number = 60
     protected timMachine = TimeMachine
@@ -142,5 +144,9 @@ export class __DefaultEngine implements EngineInterface {
         if(contextLoss)
             this.renderer.forceContextLoss()
         this.orbitControls?.dispose()
+    }
+    public use(extension: EngineExtensionInterface): EngineInterface {
+        this.extensionsList.add(extension)
+        return this
     }
 }

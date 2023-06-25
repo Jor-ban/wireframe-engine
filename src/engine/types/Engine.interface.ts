@@ -1,12 +1,14 @@
-import { WRenderer } from '../lib/classes/WRenderer';
+import { WRenderer } from '⚙️/lib';
 import { AmbientLight, OrthographicCamera, PerspectiveCamera, Scene } from 'three';
-import { CanvasProportion } from '../lib/parsers/types/CanvasProportion.interface';
+import { CanvasProportion } from '⚙️/lib/parsers/types/CanvasProportion.interface';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { RendererJson } from "⚙️/lib/parsers/types/RendererJson.type";
 
 export interface EngineInterface {
 	canvasProportion: CanvasProportion
 	canvas: HTMLCanvasElement
-	renderer: WRenderer
+	renderer: WRenderer | RendererJson
 	camera: PerspectiveCamera | OrthographicCamera
 	scene: Scene
 	mode: 'dev' | 'prod' | 'test'
@@ -15,4 +17,5 @@ export interface EngineInterface {
 
 	dispose(): void
 	add(): Promise<EngineInterface>
+	use(extension: EngineExtensionInterface): EngineInterface
 }

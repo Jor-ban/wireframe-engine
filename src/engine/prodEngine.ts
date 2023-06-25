@@ -24,9 +24,16 @@ export class __ProdEngine extends __DefaultEngine {
     }
 
     public static create(canvas: HTMLCanvasElement, projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
-        const eng = new __ProdEngine(canvas, projectSettings)
+        let eng = new __ProdEngine(canvas, projectSettings)
         if(projectSettings.objects?.length)
             return MeshParser.parseAll(projectSettings.objects).then(obj3ds => eng.add(...obj3ds))
+                .then(async () => {
+                    eng.extensionsList.forEach(async (ext) => {
+                        const res = await ext(eng)
+                        if(res && res instanceof __ProdEngine) eng = res
+                    })
+                    return eng
+                })
         else
             return Promise.resolve(eng)
     }
