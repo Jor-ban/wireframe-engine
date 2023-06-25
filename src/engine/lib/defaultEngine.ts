@@ -35,7 +35,7 @@ export class __DefaultEngine implements EngineInterface {
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
     public mode: EngineInterface['mode'] = 'dev'
-    public extensionsList = new Set<EngineExtensionInterface>()
+    public extensionsList: EngineExtensionInterface[] = []
 
     protected userAskedFPS: number = 60
     protected timMachine = TimeMachine
@@ -146,7 +146,16 @@ export class __DefaultEngine implements EngineInterface {
         this.orbitControls?.dispose()
     }
     public use(extension: EngineExtensionInterface): EngineInterface {
-        this.extensionsList.add(extension)
+        this.extensionsList.push(extension)
         return this
+    }
+    public setProperty<T>(property: string, value: T): EngineInterface {
+        // @ts-ignore
+        this[property] = value
+        return this
+    }
+    public getProperty<T>(property: string): T {
+        // @ts-ignore
+        return this[property]
     }
 }

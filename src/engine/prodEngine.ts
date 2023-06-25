@@ -15,6 +15,8 @@ export class __ProdEngine extends __DefaultEngine {
         this.setCamera(projectSettings.camera)
         this.setRenderer(projectSettings.renderer)
         this.setAmbientLight(projectSettings.ambientLight)
+        if(projectSettings.extensions)
+            super.extensionsList = projectSettings.extensions
         if(projectSettings.lights?.length)
             this.add(...projectSettings.lights.map((light: LightJson | Light) => LightParser.parse(light)))
         if(projectSettings.orbitControls)

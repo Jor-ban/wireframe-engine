@@ -8,6 +8,7 @@ import { LightJson } from "../lib/parsers/types/LightJson.type";
 import { MeshJson } from "../lib/parsers/types/MeshJson.type";
 import { EngineModes } from "./engineModes";
 import { OrbitControlsJson } from "../lib/parsers/types/OrbitControlsJson.type";
+import {EngineExtensionInterface} from "⚙️/types/EngineExtensionInterface";
 
 export interface ProjectSettings {
     camera ?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera', // only 2 types of cameras are supported
@@ -20,4 +21,5 @@ export interface ProjectSettings {
     orbitControls ?: boolean | OrbitControlsJson // orbit controls
     maxFPS ?: number // max fps <= 0 is no tick ; default is 60; Infinity is for max possible
     mode?: EngineModes | 'dev' | 'test' | 'prod' // loading mode (only for specific cases)
+    extensions?: EngineExtensionInterface[]
 }

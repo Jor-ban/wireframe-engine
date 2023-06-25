@@ -32,6 +32,8 @@ export class __DevEngine extends __DefaultEngine {
         this.setRenderer()
         this.setOrbitControls()
         this.setAmbientLight(projectSettings.ambientLight)
+        if(projectSettings.extensions)
+            super.extensionsList = projectSettings.extensions
         if(projectSettings.lights?.length) {
             projectSettings.lights.forEach((light: Light | LightJson) => {
                 const parsedLight = LightParser.parse(light)
