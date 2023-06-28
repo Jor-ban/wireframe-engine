@@ -1,4 +1,5 @@
 import { LightJson } from "⚙️/lib/parsers/types/LightJson.type";
+import { PathToMeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 
 export class ParserDataType {
     public static isLightJson(obj: any): obj is LightJson {
@@ -14,5 +15,8 @@ export class ParserDataType {
             obj.type === 'point' ||
             obj.type === 'directional' ||
             obj.type === 'hemisphere'
+    }
+    public static isJsonWithPath(obj: any): obj is Required<PathToMeshJson> {
+        return obj.path !== undefined
     }
 }

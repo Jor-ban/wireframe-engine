@@ -24,11 +24,12 @@ import {SkyboxControls} from "./utils/SkyboxControls";
 export class RightControls {
 	private rightPane !: Pane
 	public objectTab !: TabPageApi
-	protected sceneTab !: TabPageApi
-	protected statsTab !: TabPageApi
-	private renderer: WebGLRenderer
+	public sceneTab !: TabPageApi
+	public statsTab !: TabPageApi
+	private readonly renderer: WebGLRenderer
 	private readonly axesHelper: AxesHelper
 	private readonly scene: Scene
+	public readonly activeElementControls: ActiveElementControls
 	constructor({scene, renderer, camera, ambientLight}: __DevEngine) {
 		this.scene = scene
 		this.renderer = renderer
@@ -40,7 +41,7 @@ export class RightControls {
 		CameraControls.addForCamera(camera, cameraControls)
 		const ambientLightFolder = Object3DControls.createFolder('Ambient Light', this.sceneTab)
 		LightControls.addLight(ambientLight, ambientLightFolder)
-		new ActiveElementControls(this.objectTab)
+		this.activeElementControls = new ActiveElementControls(this.objectTab)
 		logMemory(this.statsTab, this.renderer)
 	}
 

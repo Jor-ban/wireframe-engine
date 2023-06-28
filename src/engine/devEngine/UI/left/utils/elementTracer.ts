@@ -136,8 +136,10 @@ export class ElementTracer {
         this.setHoveredObjectParameters(mesh)
         if(mesh instanceof WMesh) {
             this.hoveredObject.geometry = mesh.geometry
+            this.hoveredObject.visible = true
+        } else {
+            this.hoveredObject.visible = false
         }
-        this.hoveredObject.visible = true
     }
     private onMouseMove = (event: MouseEvent) => {
         this.mouseMoved = true
@@ -156,9 +158,10 @@ export class ElementTracer {
         if(obj instanceof WMesh) {
             this.emitHover(obj)
         } else if(LightWithHelper.isLightHelper(obj)) {
-            this.emitHover(obj.light)
+            this.activeObject = obj.light
+            ChangeDetector.hoveredObject$.next(obj.light)
         } else {
-            this.hoveredObject.visible = false
+            ChangeDetector.hoveredObject$.next(null)
         }
     }
     private mouseUp(event: MouseEvent): void {

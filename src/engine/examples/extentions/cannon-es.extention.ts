@@ -1,5 +1,6 @@
 import { EngineInterface } from "⚙️/types/Engine.interface";
 
-export function CannonEsExtension(eng: EngineInterface): EngineInterface {
+export async function CannonEsExtension(eng: EngineInterface): Promise<EngineInterface> {
+    console.log(eng.mode)
     return eng
 }

@@ -6,12 +6,9 @@ import { bottomControlsHeight, leftControlsWidth, rightControlsWidth, topBarHeig
 import { ProjectSettings } from "⚙️/types/ProjectSettings.interface";
 import { CameraWithHelper } from '⚙️/devEngine/devClasses/camerasWithHelper';
 import { MeshParser } from '⚙️/lib/parsers/MeshParser';
-import { LightParser } from '⚙️/lib/parsers/lightParser';
 import { LightWithHelper } from '⚙️/devEngine/devClasses/lightsWithHelper';
-import { LightJson } from '⚙️/lib/parsers/types/LightJson.type';
 import { ChangeDetector } from "⚙️/devEngine/changeDetector";
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
-import { EngineInterface } from "⚙️/types/Engine.interface";
 import { CameraParser } from "⚙️/lib/parsers/cameraParser";
 
 export class __DevEngine extends __DefaultEngine {
@@ -34,24 +31,13 @@ export class __DevEngine extends __DefaultEngine {
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.extensions)
             super.extensionsList = projectSettings.extensions
-        if(projectSettings.lights?.length) {
-            projectSettings.lights.forEach((light: Light | LightJson) => {
-                const parsedLight = LightParser.parse(light)
-                const lightWithHelper = LightWithHelper.from(parsedLight)
-                if(lightWithHelper instanceof AmbientLight) {
-                    this.add(lightWithHelper)
-                } else if(lightWithHelper) { // no undefined
-                    lightWithHelper.addToScene(this.scene)
-                }
-            })
-        }
         this.renderer.render(this.scene, this.devCamera)
         this.initTick(undefined, this.devCamera)
     }
 
     public static create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {
         let eng = new __DevEngine(projectSettings)
-        return eng.addObject2Scene(projectSettings.objects).then(() => {
+        return eng.addObject2Scene(projectSettings.scene?.children).then(() => {
             eng.devControls = new __DevController(eng)
             eng.extensionsList.forEach(async (ext) => {
                 const res = await ext(eng)
@@ -61,11 +47,24 @@ export class __DevEngine extends __DefaultEngine {
         })
     }
 
-    public addObject2Scene(objects: (Object3D | MeshJson)[] | undefined): Promise<EngineInterface> {
+    public addObject2Scene(objects: (Object3D | MeshJson)[] | undefined): Promise<void> {
         if(objects?.length)
-            return MeshParser.parseAll(objects).then(obj3ds => this.add(...obj3ds))
+            return MeshParser.parseAll(objects).then(obj3ds => {
+                obj3ds.forEach(obj => {
+                    if(obj instanceof Light) {
+                        const lightWithHelper = LightWithHelper.from(obj)
+                        if(lightWithHelper instanceof AmbientLight) {
+                            this.add(lightWithHelper)
+                        } else if(lightWithHelper) {
+                            lightWithHelper.addToScene(this.scene)
+                        }
+                    } else {
+                        this.add(obj)
+                    }
+                })
+            })
         else
-            return Promise.resolve(this)
+            return Promise.resolve()
     }
 
 

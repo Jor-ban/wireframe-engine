@@ -15,7 +15,7 @@ export class HemisphereLightWithHelper extends HemisphereLight implements Elemen
         ChangeDetector.hoveredObject$.subscribe((hoveredObject) => {
             if(hoveredObject === this) {
                 this.helper.visible = true
-            } else if(this.active) {
+            } else if(!this.active) {
                 this.helper.visible = false
             }
         })

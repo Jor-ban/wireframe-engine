@@ -60,7 +60,9 @@ export class TopBar {
                 }
                 const group = new Group()
                 place.add(group)
-                ChangeDetector.addedObject$.next(group)
+                setTimeout(() => {
+                    ChangeDetector.addedObject$.next(group)
+                })
             }
         }
         const activeObjectDropdown: HiddenMenuOption = {

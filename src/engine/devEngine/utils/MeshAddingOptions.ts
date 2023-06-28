@@ -79,6 +79,8 @@ function addMesh(obj: WMesh | Light | undefined, scene: Scene) {
         } else {
             parent.add(obj)
         }
-        ChangeDetector.addedObject$.next(obj)
+        setTimeout(() => {
+            ChangeDetector.addedObject$.next(obj)
+        })
     }
 }

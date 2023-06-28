@@ -1,7 +1,4 @@
 import { ProjectSettings } from "./types/ProjectSettings.interface";
-import { Light } from "three";
-import { LightJson } from "./lib/parsers/types/LightJson.type";
-import { LightParser } from "./lib/parsers/lightParser";
 import { MeshParser } from "./lib/parsers/MeshParser";
 import { __DefaultEngine } from './lib/defaultEngine';
 import { EngineInterface } from "⚙️/types/Engine.interface";
@@ -17,8 +14,6 @@ export class __ProdEngine extends __DefaultEngine {
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.extensions)
             super.extensionsList = projectSettings.extensions
-        if(projectSettings.lights?.length)
-            this.add(...projectSettings.lights.map((light: LightJson | Light) => LightParser.parse(light)))
         if(projectSettings.orbitControls)
             this.orbitControls = OrbitControlsParser.parse(projectSettings.orbitControls, this.camera, canvas)
         this.renderer.render(this.scene, this.camera)
@@ -27,8 +22,8 @@ export class __ProdEngine extends __DefaultEngine {
 
     public static create(canvas: HTMLCanvasElement, projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
         let eng = new __ProdEngine(canvas, projectSettings)
-        if(projectSettings.objects?.length)
-            return MeshParser.parseAll(projectSettings.objects).then(obj3ds => eng.add(...obj3ds))
+        if(projectSettings.scene?.children?.length)
+            return MeshParser.parseAll(projectSettings.scene.children).then(obj3ds => eng.add(...obj3ds))
                 .then(async () => {
                     eng.extensionsList.forEach(async (ext) => {
                         const res = await ext(eng)

@@ -1,6 +1,6 @@
 import {
     BoxGeometry,
-    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
+    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Light,
     Material, Mesh, MeshBasicMaterial, MeshDepthMaterial,
     MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial,
     MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
@@ -16,20 +16,24 @@ import { LightParser } from "./lightParser";
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { WMesh } from "⚙️/lib";
 import { WTextGeometry } from "⚙️/lib";
+import { WireframeLoaders } from "⚙️/shared/loaders";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
-import {WireframeLoaders} from "⚙️/shared/loaders";
+import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
+import { LightJson } from "⚙️/lib/parsers/types/LightJson.type";
 
 const fl = new FontLoader()
 
 export class MeshParser {
-    static parse(object: MeshJson): Promise<Object3D> {
+    static parse(object: MeshJson | Light | LightJson): Promise<Object3D> {
         return new Promise<Object3D>((resolve) => {
             if (object instanceof Mesh) {
                 resolve(object)
-            } else if(object.url) {
+            } else if(ParserDataType.isJsonWithPath(object)) {
                 WireframeLoaders.load3dObject(object.url)
                     .then(obj => this.setParameters(obj, object.parameters))
                     .then(resolve)
+            } else if(object instanceof Light || ParserDataType.isLightJson(object)) {
+                resolve(LightParser.parse(object))
             } else {
                 const mesh = new WMesh(
                     this.parseGeometry(object.geometry),

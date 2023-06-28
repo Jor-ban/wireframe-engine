@@ -11,7 +11,7 @@ export class ElementsListControls {
     private scene: Scene
     private rootContainerElement: HTMLElement
     private devCamera: PerspectiveCamera
-    private rootContainer: ObjectsContainer
+    private rootContainer !: ObjectsContainer
 
     constructor(engineState: __DevEngine, container: HTMLElement) {
         this.scene = engineState.scene
@@ -21,8 +21,10 @@ export class ElementsListControls {
         container.appendChild(header)
         const elementsContainer = document.createElement('div')
         this.rootContainerElement.appendChild(elementsContainer)
-        this.rootContainer = new ObjectsContainer(this.scene.children, elementsContainer)
-        this.createEmptyFieldBottom()
+        setTimeout(() => {
+            this.rootContainer = new ObjectsContainer(this.scene.children, elementsContainer)
+            this.createEmptyFieldBottom()
+        })
     }
     private createEmptyFieldBottom() {
         this.createEmptyField().addEventListener('drop', (e) => {
@@ -78,7 +80,9 @@ export class ElementsListControls {
             const group = new Group()
             group.name = 'New Group'
             this.scene.add(group)
-            ChangeDetector.addedObject$.next(group)
+            setTimeout(() => {
+                ChangeDetector.addedObject$.next(group)
+            })
         })
         buttonsRow.appendChild(groupBtn)
         // object button

@@ -12,12 +12,16 @@ export const debugParams = {
 }
 
 export class __DevController {
+    public readonly rightControls !: RightControls
+    public readonly leftControls !: LeftControls
+    public readonly bottomControls !: BottomControls
+    public readonly topBar !: TopBar
     constructor(engineData: __DevEngine) {
         const { devCamera, scene } = engineData
-        new RightControls(engineData)
-        new LeftControls(engineData)
-        new BottomControls()
-        new TopBar(devCamera, scene)
+        this.rightControls = new RightControls(engineData)
+        this.leftControls = new LeftControls(engineData)
+        this.bottomControls = new BottomControls()
+        this.topBar = new TopBar(devCamera, scene)
         DefinedShortcuts.init()
         hideContextMenu()
     }

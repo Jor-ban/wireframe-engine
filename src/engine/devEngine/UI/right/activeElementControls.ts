@@ -31,6 +31,10 @@ export class ActiveElementControls {
     private readonly pane: TabPageApi
     private selectedObj: Object3D | null = null
     private subList: Set<Subscription> = new Set() // !TODO
+    public meshTab: FolderApi | TabPageApi | null = null
+    public physicsTab: FolderApi | TabPageApi | null = null
+    public materialTab: FolderApi | TabPageApi | null = null
+    public geometryTab: FolderApi | TabPageApi | null = null
 
     constructor(pane: TabPageApi) {
         this.pane = pane
@@ -42,6 +46,7 @@ export class ActiveElementControls {
         })
     }
     public select(selectedObj: Object3D | null) : void {
+        this.physicsTab = this.meshTab = this.materialTab = this.geometryTab = null
         this.subList.forEach((sub) => sub.unsubscribe())
         for(let child of this.pane.children) {
             this.pane.remove(child)
@@ -92,6 +97,11 @@ export class ActiveElementControls {
                 {title: 'Geometry'},
             ]
         })
+        this.meshTab = tabs.pages[0]
+        this.physicsTab = tabs.pages[1]
+        this.materialTab = tabs.pages[2]
+        this.geometryTab = tabs.pages[3]
+
         this.addMeshOptions(child, tabs.pages[0])
         this.addPhysics(child, tabs.pages[1])
         this.addMaterials(child, tabs.pages[2])
@@ -136,7 +146,10 @@ export class ActiveElementControls {
         }
     }
     private addPhysics(child: WMesh, pane: FolderApi | TabPageApi) {
-        // TODO
+        setTimeout(() => {
+            if(!pane.children.length)
+                pane.addButton({title: 'No Physics engine is implemented yet'})
+        }, 500)
     }
     private addMeshOptions(child: WMesh, pane: FolderApi | TabPageApi) {
         pane.addInput(child, 'castShadow')

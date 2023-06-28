@@ -23,7 +23,7 @@ export class DirectionalLightWithHelper extends DirectionalLight implements Elem
         ChangeDetector.hoveredObject$.subscribe((hoveredObject) => {
             if(hoveredObject === this) {
                 this.helper.visible = true
-            } else if(this.active) {
+            } else if(!this.active) {
                 this.helper.visible = false
             }
         })

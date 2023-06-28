@@ -1,4 +1,6 @@
-import {LoadingManager, TextureEncoding} from "three";
+import {LoadingManager, Object3D, TextureEncoding} from "three";
+import {MeshJson} from "⚙️/lib/parsers/types/MeshJson.type";
+import {LightJson} from "⚙️/lib/parsers/types/LightJson.type";
 
 export type SceneJson = {
     skybox?: {
@@ -10,5 +12,6 @@ export type SceneJson = {
         negZ: string,
     } | [string, string, string, string, string, string], // Array loads multiple images in the same order as in object
     encoding ?: TextureEncoding,
-    loadingManager?: LoadingManager
+    loadingManager?: LoadingManager,
+    children ?: (Object3D | MeshJson | LightJson)[], // array of objects
 }
