@@ -121,7 +121,7 @@ export class __DevEngine extends __DefaultEngine {
         this.camera = cameraWithHelper
     }
     private setDevCamera() {
-        this.devCamera = new PerspectiveCamera(60, this.canvasProportion.width / this.canvasProportion.height, 0.1, 1000)
+        this.devCamera = new PerspectiveCamera(60, this.canvasProportion.width / this.canvasProportion.height, 0.1, 8_192)
         this.devCamera.uuid = '__wireframe-dev-camera__'
         this.devCamera.position.set(1, 0.5, 3)
         this.scene.add(this.devCamera)

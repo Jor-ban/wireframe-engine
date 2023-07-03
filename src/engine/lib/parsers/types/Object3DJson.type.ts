@@ -17,6 +17,7 @@ export type Rotatable = {
     rotateZ?: number
 }
 export type Scalable = {
+    scale?: number
     scaleX?: number
     scaleY?: number
     scaleZ?: number
