@@ -13,8 +13,8 @@ export class __ProdEngine extends __DefaultEngine implements EngineInterface {
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.extensions) {
             super.extensionsList = projectSettings.extensions
-            super.extensionsList.forEach(ext => {
-                if(ext.beforeCreate) ext.beforeCreate()
+            projectSettings.extensions.forEach(ext => {
+                if(ext.beforeCreate) ext.beforeCreate(projectSettings)
             })
         }
         if(projectSettings.orbitControls)
@@ -29,7 +29,7 @@ export class __ProdEngine extends __DefaultEngine implements EngineInterface {
             if(ext.afterCreate) ext.afterCreate(eng)
         })
         if(projectSettings.scene?.children?.length)
-            return eng.parsingManager.parseAll(projectSettings.scene.children).then(obj3ds => eng.add(...obj3ds))
+            return eng.add(...projectSettings.scene?.children)
                 .then(async () => {
                     for (const ext of eng.extensionsList) {
                         if(ext.onInit) {

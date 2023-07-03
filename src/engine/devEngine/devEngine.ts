@@ -68,7 +68,7 @@ export class __DevEngine extends __DefaultEngine {
                             lightWithHelper.addToScene(this.scene)
                         }
                     } else {
-                        this.add(obj)
+                        this.scene.add(obj)
                     }
                 })
             })

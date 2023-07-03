@@ -1,8 +1,9 @@
 import { Engine } from "⚙️/engine";
 import weapons from './static/models/weapons.fbx?url'
 import { CannonEsExtension } from "⚙\uFE0F/examples/extentions/cannon-physics/cannon-es.extention";
+import { Camera, DecoratorsExtension } from "⚙️/examples/extentions/decorators";
 
-Engine.create('#canvas', {
+await Engine.create('#canvas', {
     scene: {
         children: [
             // {
@@ -29,7 +30,19 @@ Engine.create('#canvas', {
         antialias: true,
     },
     extensions: [
-       // CannonEsExtension
+       // CannonEsExtension,
+        DecoratorsExtension
     ],
     cannonPhysics: true,
 })
+
+@Camera({
+    type: 'perspectiveCamera',
+})
+export class MainCamera {
+    constructor() {
+        console.log('camera created');
+    }
+}
+
+console.log(MainCamera)
