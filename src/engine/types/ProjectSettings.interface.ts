@@ -18,4 +18,6 @@ export interface ProjectSettings {
     maxFPS ?: number // max fps <= 0 is no tick ; default is 60; Infinity is for max possible
     mode?: EngineModes | 'dev' | 'test' | 'prod' // loading mode (only for specific cases)
     extensions?: EngineExtensionInterface[]
+
+    [key: string]: any // for custom extensions
 }

@@ -9,7 +9,6 @@ export class ObjectsContainer {
         private container: HTMLElement
     ) {
         ChangeDetector.addedObject$.subscribe((obj) => {
-            console.log(obj.parent, this.children)
             if(obj.parent?.children === this.children) {
                 this.update()
             }

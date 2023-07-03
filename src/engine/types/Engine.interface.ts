@@ -8,6 +8,7 @@ import { AmbientLightJson, LightJson } from "⚙️/lib/parsers/types/LightJson.
 import { SceneJson } from "⚙️/lib/parsers/types/SceneJson.type";
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { CameraJson } from "⚙️/lib/parsers/types/CameraJson.type";
+import { ParsingManager } from "⚙️/lib/parsers/ParsingManager";
 
 export interface EngineInterface {
 	canvasProportion: CanvasProportion
@@ -19,6 +20,7 @@ export interface EngineInterface {
 	ambientLight: AmbientLight
 	orbitControls: OrbitControls | undefined
 	extensionsList: EngineExtensionInterface[]
+	parsingManager: ParsingManager
 
 	dispose(): void
 	add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface>

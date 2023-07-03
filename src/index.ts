@@ -1,6 +1,6 @@
 import { Engine } from "⚙️/engine";
 import trees from './static/models/trees.fbx?url'
-import { CannonEsExtension } from "⚙️/examples/extentions/cannon-es.extention";
+import { CannonEsExtension } from "⚙\uFE0F/examples/extentions/cannon-physics/cannon-es.extention";
 
 Engine.create('#canvas', {
     scene: {
@@ -10,7 +10,8 @@ Engine.create('#canvas', {
                 material: {
                     type: 'basic',
                     color: 'red'
-                }
+                },
+                physics: true,
             },
             {
                 parameters: { x: 2, y: 1, rotateZ: 120 },
@@ -28,6 +29,7 @@ Engine.create('#canvas', {
         antialias: true,
     },
     extensions: [
-        CannonEsExtension,
-    ]
+       CannonEsExtension
+    ],
+    cannonPhysics: true,
 })

@@ -16,15 +16,14 @@ import { SceneJson } from "./parsers/types/SceneJson.type";
 import { SceneParser } from "./parsers/sceneParser";
 import { RendererJson } from "./parsers/types/RendererJson.type";
 import { RendererParser } from "./parsers/rendererParser";
-import {AmbientLightJson, LightJson} from "./parsers/types/LightJson.type";
+import { AmbientLightJson, LightJson } from "./parsers/types/LightJson.type";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EngineInterface } from '../types/Engine.interface';
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
-import { MeshParser } from "⚙️/lib/parsers/MeshParser";
-import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
 import { TimeMachine } from "⚙️/services/timeMachine.service";
-import {EngineExtensionInterface} from "⚙️/types/EngineExtensionInterface";
+import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { ParsingManager } from "⚙️/lib/parsers/ParsingManager";
 
 export class __DefaultEngine implements EngineInterface {
     public canvasProportion !: CanvasProportion;
@@ -36,6 +35,7 @@ export class __DefaultEngine implements EngineInterface {
     public ambientLight !: AmbientLight
     public mode: EngineInterface['mode'] = 'dev'
     public extensionsList: EngineExtensionInterface[] = []
+    public parsingManager: ParsingManager
 
     protected userAskedFPS: number = 60
     protected timMachine = TimeMachine
@@ -45,6 +45,7 @@ export class __DefaultEngine implements EngineInterface {
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
+        this.parsingManager = new ParsingManager()
     }
 
     public setCanvasSizes(canvasSizes ?: CanvasProportion): EngineInterface {
@@ -103,12 +104,7 @@ export class __DefaultEngine implements EngineInterface {
     }
     public add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface> {
         const els = objects.map(obj => {
-            if(obj instanceof Object3D)
-                return obj
-            else if(ParserDataType.isLightJson(obj))
-                return LightParser.parse(obj)
-            else
-                return MeshParser.parse(obj)
+            return this.parsingManager.parse(obj)
         })
         return Promise.all(els).then(obj3ds => {
             this.scene.add(...obj3ds)

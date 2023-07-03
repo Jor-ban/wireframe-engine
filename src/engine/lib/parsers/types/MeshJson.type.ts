@@ -7,6 +7,8 @@ export type ComposedMeshJson = Nameable & UuidSettable & {
     parameters?: Object3dJSON
     geometry?: GeometryJson | BufferGeometry
     material?: MaterialJson | Material
+
+    [key: string]: any // for custom extensions
 }
 export type PathToMeshJson = Nameable & UuidSettable & {
     parameters?: Object3dJSON

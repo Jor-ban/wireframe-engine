@@ -8,7 +8,7 @@ import {
     PointLight,
 } from "three";
 import { AmbientLightJson, LightJson } from './types/LightJson.type';
-import {MeshParser} from "./MeshParser";
+import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
 
 export class LightParser {
     static parse(light: Light | LightJson): Light {
@@ -23,18 +23,18 @@ export class LightParser {
             } else if(light.type === 'directional') {
                 lightInstance = new DirectionalLight(color, intensity)
                 light.castShadow = light.castShadow || false
-                MeshParser.position(lightInstance, light.parameters)
-                MeshParser.rotate(lightInstance, light.parameters)
+                Object3dParser.position(lightInstance, light.parameters)
+                Object3dParser.rotate(lightInstance, light.parameters)
             } else if(light.type === 'hemisphere') {
                 lightInstance = new HemisphereLight(color, this.parseColor(light.groundColor), intensity)
-                MeshParser.position(lightInstance, light.parameters)
+                Object3dParser.position(lightInstance, light.parameters)
             } else { // point or undefined
                 lightInstance = new PointLight(color, intensity, light.distance, light.decay)
                 if(light.power) {
                     lightInstance.power = light.power
                 }
                 lightInstance.castShadow = light.castShadow ?? false
-                MeshParser.position(lightInstance, light.parameters)
+                Object3dParser.position(lightInstance, light.parameters)
             }
 
             if(light.name) {

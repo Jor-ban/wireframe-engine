@@ -1,39 +1,34 @@
 import {
     BoxGeometry,
-    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Light,
-    Material, Mesh, MeshBasicMaterial, MeshDepthMaterial,
+    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
+    Material, MeshBasicMaterial, MeshDepthMaterial,
     MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial,
     MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
     MeshToonMaterial,
     Object3D, PlaneGeometry, RingGeometry, SphereGeometry
 } from "three";
-import { Object3dJSON, Positionable, Rotatable, Scalable } from "./types/Object3DJson.type";
 import { MeshJson } from "./types/MeshJson.type";
 import { MaterialJson } from "./types/MaterialJson.type";
 import { GeometryJson } from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import { LightParser } from "./lightParser";
-import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { Font } from 'three/examples/jsm/loaders/FontLoader';
 import { WMesh } from "⚙️/lib";
 import { WTextGeometry } from "⚙️/lib";
 import { WireframeLoaders } from "⚙️/shared/loaders";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
-import { LightJson } from "⚙️/lib/parsers/types/LightJson.type";
+import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
 
-const fl = new FontLoader()
-
-export class MeshParser {
-    static parse(object: MeshJson | Light | LightJson): Promise<Object3D> {
+export class MeshParser extends Object3dParser {
+    public static parse(object: MeshJson): Promise<Object3D> {
         return new Promise<Object3D>((resolve) => {
-            if (object instanceof Mesh) {
+            if (object instanceof Object3D) {
                 resolve(object)
             } else if(ParserDataType.isJsonWithPath(object)) {
                 WireframeLoaders.load3dObject(object.url)
                     .then(obj => this.setParameters(obj, object.parameters))
                     .then(resolve)
-            } else if(object instanceof Light || ParserDataType.isLightJson(object)) {
-                resolve(LightParser.parse(object))
             } else {
                 const mesh = new WMesh(
                     this.parseGeometry(object.geometry),
@@ -47,10 +42,7 @@ export class MeshParser {
             }
         })
     }
-    static parseAll(objects: MeshJson[]): Promise<Object3D[]> {
-        return Promise.all(objects.map(o => this.parse(o)))
-    }
-    static parseGeometry(geometry: BufferGeometry | GeometryJson | undefined): BufferGeometry {
+    public static parseGeometry(geometry: BufferGeometry | GeometryJson | undefined): BufferGeometry {
         if(!geometry) {
             return new BoxGeometry(1, 1, 1)
         } else if(geometry instanceof BufferGeometry) {
@@ -134,7 +126,7 @@ export class MeshParser {
                         if(geometry.font instanceof Font) {
                             font = geometry.font
                         } else {
-                            fl.load(geometry.font, (loadedFont) => {
+                            WireframeLoaders.fontLoader.load(geometry.font, (loadedFont) => {
                                 font = loadedFont
                             })
                         }
@@ -147,7 +139,7 @@ export class MeshParser {
             }
         }
     }
-    static parseMaterial(material?: Material | MaterialJson): Material {
+    public static parseMaterial(material?: Material | MaterialJson): Material {
         if(!material) {
             return new MeshBasicMaterial({color: 0xffffff})
         } if(material instanceof Material) {
@@ -178,33 +170,5 @@ export class MeshParser {
                     return new MeshBasicMaterial(material)
             }
         }
-    }
-    static setParameters(mesh: Object3D, parameters: Object3dJSON | undefined): Object3D {
-        this.position(mesh, parameters)
-        this.scale(mesh, parameters)
-        this.rotate(mesh, parameters)
-        return mesh
-    }
-    static position(object: Object3D, positions?: Positionable): Object3D {
-        if(positions) {
-            object.position.set(positions.x ?? 0, positions.y ?? 0, positions.z ?? 0);
-        }
-        return object
-    }
-    static scale(object: Object3D, scales?: Scalable): Object3D {
-        if(scales){
-            object.scale.set(scales.scaleX ?? 1, scales.scaleY ?? 1, scales.scaleY ?? 1)
-        }
-        return object
-    }
-    static rotate(object: Object3D, rotation: Rotatable | undefined): Object3D {
-        if(rotation){
-            object.rotation.set(
-                rotation.rotateX ? rotation.rotateX * Math.PI / 180 : 0,
-                rotation.rotateY ? rotation.rotateY * Math.PI / 180 : 0,
-                rotation.rotateZ ? rotation.rotateZ * Math.PI / 180 : 0
-            )
-        }
-        return object
     }
 }

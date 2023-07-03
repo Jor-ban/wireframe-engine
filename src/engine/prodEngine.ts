@@ -1,10 +1,9 @@
 import { ProjectSettings } from "./types/ProjectSettings.interface";
-import { MeshParser } from "./lib/parsers/MeshParser";
 import { __DefaultEngine } from './lib/defaultEngine';
 import { EngineInterface } from "⚙️/types/Engine.interface";
 import { OrbitControlsParser } from "⚙️/lib/parsers/OrbitControlsParser";
 
-export class __ProdEngine extends __DefaultEngine {
+export class __ProdEngine extends __DefaultEngine implements EngineInterface {
     private constructor(canvas: HTMLCanvasElement, projectSettings: ProjectSettings) {
         super(canvas)
         this.setCanvasSizes(projectSettings.canvasSizes)
@@ -12,8 +11,12 @@ export class __ProdEngine extends __DefaultEngine {
         this.setCamera(projectSettings.camera)
         this.setRenderer(projectSettings.renderer)
         this.setAmbientLight(projectSettings.ambientLight)
-        if(projectSettings.extensions)
+        if(projectSettings.extensions) {
             super.extensionsList = projectSettings.extensions
+            super.extensionsList.forEach(ext => {
+                if(ext.beforeCreate) ext.beforeCreate()
+            })
+        }
         if(projectSettings.orbitControls)
             this.orbitControls = OrbitControlsParser.parse(projectSettings.orbitControls, this.camera, canvas)
         this.renderer.render(this.scene, this.camera)
@@ -22,16 +25,27 @@ export class __ProdEngine extends __DefaultEngine {
 
     public static create(canvas: HTMLCanvasElement, projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
         let eng = new __ProdEngine(canvas, projectSettings)
+        eng.extensionsList.forEach(ext => {
+            if(ext.afterCreate) ext.afterCreate(eng)
+        })
         if(projectSettings.scene?.children?.length)
-            return MeshParser.parseAll(projectSettings.scene.children).then(obj3ds => eng.add(...obj3ds))
+            return eng.parsingManager.parseAll(projectSettings.scene.children).then(obj3ds => eng.add(...obj3ds))
                 .then(async () => {
-                    eng.extensionsList.forEach(async (ext) => {
-                        const res = await ext(eng)
-                        if(res && res instanceof __ProdEngine) eng = res
-                    })
+                    for (const ext of eng.extensionsList) {
+                        if(ext.onInit) {
+                            const res = await ext.onInit(eng)
+                            if(res && res instanceof __ProdEngine) eng = res
+                        }
+                    }
                     return eng
                 })
         else
             return Promise.resolve(eng)
+    }
+    public override dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true) {
+        super.dispose(removeHTMLElement, contextLoss);
+        this.extensionsList.forEach(ext => {
+            if(ext.beforeDestroy) ext.beforeDestroy(this)
+        })
     }
 }
