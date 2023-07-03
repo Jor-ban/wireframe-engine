@@ -23,9 +23,7 @@ import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
 export class MeshParser extends Object3dParser {
     public static parse(object: MeshJson): Promise<Object3D> {
         return new Promise<Object3D>((resolve) => {
-            if (object instanceof Object3D) {
-                resolve(object)
-            } else if(ParserDataType.isJsonWithPath(object)) {
+            if(ParserDataType.isJsonWithPath(object)) {
                 WireframeLoaders.load3dObject(object.url)
                     .then(obj => this.setParameters(obj, object.parameters))
                     .then(resolve)

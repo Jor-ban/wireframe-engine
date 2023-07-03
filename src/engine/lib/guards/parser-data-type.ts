@@ -17,6 +17,6 @@ export class ParserDataType {
             obj.type === 'hemisphere'
     }
     public static isJsonWithPath(obj: any): obj is Required<PathToMeshJson> {
-        return obj.path !== undefined
+        return obj.url !== undefined
     }
 }
