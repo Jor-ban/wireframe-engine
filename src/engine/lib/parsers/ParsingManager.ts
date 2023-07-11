@@ -4,6 +4,7 @@ import { LightJson } from "⚙️/lib/parsers/types/LightJson.type";
 import { Object3D } from "three";
 import {ParserDataType} from "⚙️/lib/guards/parser-data-type";
 import {LightParser} from "⚙️/lib/parsers/lightParser";
+import {GroupParser} from "⚙️/lib/parsers/GroupParser";
 
 export type ParseListener = (json: Object, arg: Object3D) => any
 
@@ -16,10 +17,14 @@ export class ParsingManager {
         if(json instanceof Object3D) {
             mesh = json
         } else {
-            if(ParserDataType.isLightJson(json))
+            if(ParserDataType.isLight(json))
                 mesh = LightParser.parse(json)
+            else if(ParserDataType.isGroup(json))
+                mesh = await GroupParser.parseAsync(json)
+            else if(ParserDataType.isJsonWithPath(json))
+                mesh = await MeshParser.parseUrlFileJson(json)
             else
-                mesh = await MeshParser.parse(json)
+                mesh = MeshParser.parse(json)
         }
         for(let callback of this.listeners) {
             callback(json, mesh)

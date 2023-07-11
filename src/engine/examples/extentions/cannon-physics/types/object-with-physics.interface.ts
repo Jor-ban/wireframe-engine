@@ -1,9 +1,5 @@
 import CANNON from "cannon-es";
 
-export interface ObjectWithPhysicsInterface {
-    physics?: boolean | CannonPhysicsJsonInterface
-}
-
 export interface CannonPhysicsJsonInterface {
     mass?: number,
     shape?: 'box' | 'sphere' | 'plane' | 'particle',

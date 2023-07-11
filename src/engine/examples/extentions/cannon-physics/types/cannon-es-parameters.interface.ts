@@ -1,14 +1,15 @@
 import {Color} from "three";
 
 export interface CannonEsParametersInterface {
-    cannonPhysics?: boolean | {
+    physics?: {
         gravity?: number
         gravityX?: number
         gravityZ?: number
     }
-    debugger: {
+    debugger?: {
         enableInTest?: boolean,
         scale?: number;
         color?: string | number | Color;
     }
+    active?: boolean
 }

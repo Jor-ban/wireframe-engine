@@ -6,7 +6,7 @@ import {
 } from "⚙️/examples/extentions/cannon-physics/types/object-with-physics.interface";
 
 export class PhysicsParser {
-    static parse(physics: CannonPhysicsJsonInterface | true, object: Object3D): CANNON.Body {
+    static parse(object: Object3D, physics: CannonPhysicsJsonInterface | true = true): CANNON.Body {
         if(physics === true) physics = {}
         const bodyJson: CannonPhysicsBodyInterface = {}
         if('collisionFilterGroup' in physics) bodyJson.collisionFilterGroup
@@ -71,10 +71,7 @@ export class PhysicsParser {
         bodyJson.shape = this.getShape(physics.shape, object)
         if('isTrigger' in physics) bodyJson.isTrigger = physics.isTrigger
 
-        const body = new CANNON.Body(bodyJson)
-        // @ts-ignore
-        object['rigidBody'] = body
-        return body
+        return new CANNON.Body(bodyJson)
     }
     static getShape(shape: 'box' | 'sphere'| 'plane'| 'particle' | undefined, object: Object3D): CANNON.Shape {
         switch(shape) {

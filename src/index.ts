@@ -1,28 +1,26 @@
 import { Engine } from "⚙️/engine";
-import weapons from './static/models/weapons.fbx?url'
-import { CannonEsExtension } from "⚙\uFE0F/examples/extentions/cannon-physics/cannon-es.extention";
-import { Camera, DecoratorsExtension } from "⚙️/examples/extentions/decorators";
+import { CannonEsExtension } from "⚙\uFE0F/examples/extentions/cannon-physics";
+import { DecoratorsExtension, Mesh, Model} from "⚙️/examples/extentions/decorators";
+import * as THREE from "three";
+import {GetRigidBody, WithPhysics} from "⚙️/examples/extentions/cannon-physics";
+import CANNON from "cannon-es";
 
-await Engine.create('#canvas', {
+const eng = await Engine.create('#canvas', {
     scene: {
         children: [
-            // {
-            //     geometry: { type: 'sphere' },
-            //     material: {
-            //         type: 'basic',
-            //         color: 'red'
-            //     },
-            //     physics: true,
-            // },
-            // {
-            //     parameters: { x: 2, y: 1, rotateZ: 120 },
-            //     geometry: { type: 'box' },
-            //     material: { color: 'blue' },
-            // },
             {
-                url: weapons,
-                parameters: {scale: 0.01},
-            }
+                geometry: { type: "sphere" },
+                material: {
+                    type: "basic",
+                    color: 'red'
+                },
+                physics: true,
+            },
+            {
+                parameters: { x: 2, y: 1, rotateZ: 120 },
+                geometry: { type: 'box' },
+                material: { color: 'blue' },
+            },
         ]
     },
     orbitControls: true,
@@ -30,19 +28,31 @@ await Engine.create('#canvas', {
         antialias: true,
     },
     extensions: [
-       // CannonEsExtension,
+        CannonEsExtension,
         DecoratorsExtension
     ],
     cannonPhysics: true,
 })
 
-@Camera({
-    type: 'perspectiveCamera',
+
+@Mesh({
+    geometry: { type: "sphere" },
 })
+@WithPhysics()
 export class MainCamera {
-    constructor() {
-        console.log('camera created');
+    name = 'mainCamera'
+
+    @Model()
+    private mesh: THREE.Mesh
+
+    @GetRigidBody()
+    private rb: CANNON.Body
+
+    constructor() {}
+
+    onInit(camera: THREE.Object3D) {
+        console.log(this.mesh, this.rb)
+        this.mesh.removeFromParent()
+        this.rb.world?.removeBody(this.rb)
     }
 }
-
-console.log(MainCamera)

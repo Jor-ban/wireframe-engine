@@ -1,44 +1,43 @@
 import {
     BoxGeometry,
-    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry,
-    Material, MeshBasicMaterial, MeshDepthMaterial,
+    BufferGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Group,
+    Material, Mesh, MeshBasicMaterial, MeshDepthMaterial,
     MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial,
     MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
-    MeshToonMaterial,
-    Object3D, PlaneGeometry, RingGeometry, SphereGeometry
+    MeshToonMaterial, PlaneGeometry, RingGeometry, SphereGeometry
 } from "three";
-import { MeshJson } from "./types/MeshJson.type";
+import {MeshJson, PathToMeshJson} from "./types/MeshJson.type";
 import { MaterialJson } from "./types/MaterialJson.type";
 import { GeometryJson } from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import { LightParser } from "./lightParser";
 import { Font } from 'three/examples/jsm/loaders/FontLoader';
-import { WMesh } from "⚙️/lib";
-import { WTextGeometry } from "⚙️/lib";
+import {WMesh, WTextGeometry} from "⚙️/lib";
 import { WireframeLoaders } from "⚙️/shared/loaders";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
-import { ParserDataType } from "⚙️/lib/guards/parser-data-type";
 import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
 
 export class MeshParser extends Object3dParser {
-    public static parse(object: MeshJson): Promise<Object3D> {
-        return new Promise<Object3D>((resolve) => {
-            if(ParserDataType.isJsonWithPath(object)) {
-                WireframeLoaders.load3dObject(object.url)
-                    .then(obj => this.setParameters(obj, object.parameters))
-                    .then(resolve)
-            } else {
-                const mesh = new WMesh(
-                    this.parseGeometry(object.geometry),
-                    this.parseMaterial(object.material)
-                )
-                this.setParameters(mesh, object.parameters)
-                if (object.uuid) {
-                    mesh.uuid = object.uuid
-                }
-                resolve(mesh)
-            }
-        })
+    public static parse(object: MeshJson): Mesh {
+        const mesh = new WMesh(
+            this.parseGeometry(object.geometry),
+            this.parseMaterial(object.material)
+        )
+        this.setParameters(mesh, object.parameters)
+        if (object.uuid) {
+            mesh.uuid = object.uuid
+        }
+        return mesh
+    }
+    public static parseUrlFileJson(object: PathToMeshJson): Promise<Group> {
+        if(!object.url) {
+            throw new Error("[MeshParser -> parseUrlFileJson]: Cannot parse mesh without url")
+        }
+        return WireframeLoaders.load3dObject(object.url)
+            .then(obj => {
+                this.setParameters(obj, object.parameters)
+                return obj
+            })
     }
     public static parseGeometry(geometry: BufferGeometry | GeometryJson | undefined): BufferGeometry {
         if(!geometry) {
