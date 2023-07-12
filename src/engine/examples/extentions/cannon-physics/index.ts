@@ -16,8 +16,8 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     private world!: CANNON.World
     private debugger: { update:() => void } | null = null
     private wireframesMap: Map<CANNON.Body, Object3D> = new Map()
+    private rigidBodyMap: WeakMap<Object3D, CANNON.Body> | null = null
     private activeMesh: Object3D | undefined = undefined
-
 
     beforeCreate(projectSettings: any): void {
         this.active = true
@@ -29,14 +29,17 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     onInit(eng: EngineInterface): void {
         eng.setProperty(CannonWorldKey, this.world)
         if(eng.mode === 'dev') {
+            this.rigidBodyMap = new WeakMap()
             this.debugger = CannonDebugger(eng.scene, this.world, {
                 ...( this.settings?.debugger ?? {} ),
                 onInit: this.onDebuggerInit.bind(this)
             })
-            TimeMachine.addListener((dt) => {
+            const tm = TimeMachine.newInstance()
+            tm.addListener((dt) => {
                 this.debugger?.update()
                 this.world.step(dt / 1000, dt, 3)
             })
+            tm.play()
         } else {
             TimeMachine.addListener((dt) => {
                 this.world.step(dt / 1000, dt, 3)
@@ -62,8 +65,9 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
             ChangeDetector.clickedObject$.subscribe((obj) => {
                 if(this.activeMesh) this.activeMesh.visible = false
 
-                if(obj && '__rigidBody' in obj && obj.__rigidBody instanceof CANNON.Body) {
-                    const mesh = this.wireframesMap.get(obj['__rigidBody'])
+                const body = this.rigidBodyMap?.get(obj)
+                if(body) {
+                    const mesh = this.wireframesMap.get(body)
                     if(mesh) {
                         mesh.visible = !mesh.visible
                     }
@@ -81,7 +85,9 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
                 constructor.prototype.__onInitListeners = []
             }
             constructor.prototype.__onInitListeners.unshift((obj: Object3D) => {
-                constructor.prototype.__rigidBody = this.addBody(obj, physicsJson)
+                const body = this.addBody(obj, physicsJson)
+                this.rigidBodyMap?.set(obj, body)
+                constructor.prototype.__rigidBody = body
             })
         }
     }
@@ -104,6 +110,7 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
             target.__onInitListeners.push((obj: Object3D) => {
                 const body = this.addBody(obj, physicsJson)
                 target.__rigidBody = body
+                this.rigidBodyMap?.set(obj, body)
                 target[propertyName] = body
             })
         }

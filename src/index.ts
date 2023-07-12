@@ -9,14 +9,6 @@ const eng = await Engine.create('#canvas', {
     scene: {
         children: [
             {
-                geometry: { type: "sphere" },
-                material: {
-                    type: "basic",
-                    color: 'red'
-                },
-                physics: true,
-            },
-            {
                 parameters: { x: 2, y: 1, rotateZ: 120 },
                 geometry: { type: 'box' },
                 material: { color: 'blue' },
@@ -37,10 +29,14 @@ const eng = await Engine.create('#canvas', {
 
 @Mesh({
     geometry: { type: "sphere" },
+    material: { color: "yellow" },
+    parameters: { x: 1, y: 3, z: 2 },
 })
-@WithPhysics()
-export class MainCamera {
-    name = 'mainCamera'
+@WithPhysics({
+    mass: 1,
+})
+export class Sphere {
+    name = 'Sphere'
 
     @Model()
     private mesh: THREE.Mesh
@@ -51,8 +47,6 @@ export class MainCamera {
     constructor() {}
 
     onInit(camera: THREE.Object3D) {
-        console.log(this.mesh, this.rb)
-        this.mesh.removeFromParent()
-        this.rb.world?.removeBody(this.rb)
+        void eng.add(this.mesh)
     }
 }

@@ -90,7 +90,6 @@ export class FileInputField implements IFileInput {
         el.addEventListener('drop', (e) => {
             e.preventDefault()
             draggingObject
-            // console.log(e.dataTransfer?.files)
         })
         el.addEventListener('dragover', (e) => {
             e.preventDefault()
