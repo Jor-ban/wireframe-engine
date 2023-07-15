@@ -36,7 +36,7 @@
     "concurrently": "^7.3.0",
     "cors": "^2.8.5",
     "gsap": "^3.9.1",
-    "nodemon": "^1.14.9",
+    "nodemon": "^3.0.1",
     "three": "^0.137.5",
     "typescript": "^4.7.2",
     "vite": "^3.2.3"
