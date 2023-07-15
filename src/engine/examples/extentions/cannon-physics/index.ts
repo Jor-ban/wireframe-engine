@@ -78,7 +78,7 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     }
 
     public WITH_PHYSICS(physicsJson: CannonPhysicsJsonInterface | undefined = undefined) {
-        if(!this.active) throw new Error('[CannonEsExtension -> @HasPhysics] is not active, add CannonEsExtension to extensions list')
+        if(!this.active) throw new Error('[CannonEsExtension -> @WithPhysics] is not active, add CannonEsExtension to extensions list')
         return (constructor: Function): any => {
             constructor = constructor as DecorationTargetInterface
             if(!constructor.prototype.__onInitListeners) {
@@ -103,7 +103,7 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     }
 
     public RIGID_BODY(physicsJson: CannonPhysicsJsonInterface | undefined = undefined) {
-        if(!this.active) throw new Error('[CannonEsExtension -> @HasPhysics] is not active, add CannonEsExtension to extensions list')
+        if(!this.active) throw new Error('[CannonEsExtension -> @RigidBody] is not active, add CannonEsExtension to extensions list')
         return (target: DecorationTargetInterface['prototype'], propertyName: string) => {
             if(!target.__onInitListeners)
                 target.__onInitListeners = []

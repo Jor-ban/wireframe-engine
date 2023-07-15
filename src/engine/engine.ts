@@ -1,10 +1,11 @@
 import { EngineInterface } from './types/Engine.interface';
 import { ProjectSettings } from './types/ProjectSettings.interface';
+import { __ProdEngine } from "⚙️/prodEngine";
 import logoUrl from './shared/assets/wireframe-logo.svg?url'
 
 export class Engine {
     public static async create(selectorOrElement: string | HTMLCanvasElement, projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
-        const mode = this.getMode(projectSettings)
+        projectSettings.mode = this.getMode(projectSettings)
         let canvas: HTMLCanvasElement
         if(typeof selectorOrElement === 'string') {
             const el = document.querySelector<HTMLCanvasElement>(selectorOrElement)
@@ -15,7 +16,7 @@ export class Engine {
         } else {
             canvas = selectorOrElement
         }
-        if(mode == 'dev') {
+        if(projectSettings.mode == 'dev') {
             const splitScreen = document.createElement('div')
             splitScreen.style.display = 'flex'
             splitScreen.style.alignItems = 'center'
@@ -39,14 +40,12 @@ export class Engine {
                     splitScreen.parentNode?.removeChild(splitScreen)
                     return engine
                 })
-        } else if(mode == 'test') {
+        } else if(projectSettings.mode == 'test') {
             return await import('./testEngine/testEngine').then(({__TestEngine}) => {
                 return __TestEngine.create(canvas, projectSettings)
             })
         } else {
-            return await import('./prodEngine').then(({__ProdEngine}) => {
-                return __ProdEngine.create(canvas, projectSettings)
-            })
+            return __ProdEngine.create(canvas, projectSettings)
         }
     }
 

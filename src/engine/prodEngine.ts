@@ -6,6 +6,7 @@ import { OrbitControlsParser } from "⚙️/lib/parsers/OrbitControlsParser";
 export class __ProdEngine extends __DefaultEngine implements EngineInterface {
     private constructor(canvas: HTMLCanvasElement, projectSettings: ProjectSettings) {
         super(canvas)
+        super.mode = projectSettings.mode || 'prod'
         this.setCanvasSizes(projectSettings.canvasSizes)
         this.setScene(projectSettings.scene)
         this.setCamera(projectSettings.camera)

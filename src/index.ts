@@ -4,6 +4,7 @@ import { DecoratorsExtension, Mesh, Model} from "⚙️/examples/extentions/deco
 import * as THREE from "three";
 import {GetRigidBody, WithPhysics} from "⚙️/examples/extentions/cannon-physics";
 import CANNON from "cannon-es";
+import {AddControl, ControlsDecoratorsExtension, DevControl} from "⚙️/examples/extentions/controls-decorators";
 
 const eng = await Engine.create('#canvas', {
     scene: {
@@ -21,7 +22,8 @@ const eng = await Engine.create('#canvas', {
     },
     extensions: [
         CannonEsExtension,
-        DecoratorsExtension
+        DecoratorsExtension,
+        ControlsDecoratorsExtension,
     ],
     cannonPhysics: true,
 })
@@ -43,6 +45,9 @@ export class Sphere {
 
     @GetRigidBody()
     private rb: CANNON.Body
+
+    @DevControl({ type: Number, defaultValue: 0, })
+    public num = 0
 
     constructor() {}
 
