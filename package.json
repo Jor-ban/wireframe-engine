@@ -14,7 +14,7 @@
     "prod": "vite --mode prod",
     "test": "vite --mode test",
     "build:dev": "vite build --mode dev",
-    "build": "vite build --mode prod",
+    "build": "tsc && vite build --mode prod",
     "preview": "vite preview",
     "deploy": "npm run build:dev && firebase deploy"
   },

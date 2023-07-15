@@ -30,7 +30,7 @@ import {
     TangentSpaceNormalMap,
 } from 'three/src/constants';
 import { WMesh } from "⚙️/lib";
-import { FileInputField } from '@/engine/devEngine/utils/fileInputField';
+import { FileInputField } from '⚙️/devEngine/utils/fileInputField';
 
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
