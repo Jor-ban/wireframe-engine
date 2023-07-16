@@ -68,23 +68,32 @@ export class PhysicsParser {
             else
                 bodyJson.linearFactor = physics.linearFactor
         }
-        bodyJson.shape = this.getShape(physics.shape, object)
+        bodyJson.shape = this.getShape(physics, object)
         if('isTrigger' in physics) bodyJson.isTrigger = physics.isTrigger
 
         return new CANNON.Body(bodyJson)
     }
-    static getShape(shape: 'box' | 'sphere'| 'plane'| 'particle' | undefined, object: Object3D): CANNON.Shape {
-        switch(shape) {
-            case 'box': return new CANNON.Box(this.getHalfExtents(object))
-            case 'sphere': return new CANNON.Sphere(this.getHalfExtents(object).x)
+    static getShape(data: CannonPhysicsJsonInterface, object: Object3D): CANNON.Shape {
+        let size: CANNON.Vec3 | undefined
+        if('size' in data) {
+            if(Array.isArray(data.size))
+                size = new CANNON.Vec3(data.size[0], data.size[1], data.size[2])
+            else
+                size = data.size
+        } else {
+            size = this.getHalfExtents(object)
+        }
+        switch(data.shape) {
+            case 'box': return new CANNON.Box(size)
+            case 'sphere': return new CANNON.Sphere(size.x)
             case 'plane': return new CANNON.Plane()
             case 'particle': return new CANNON.Particle()
             default:
                 if('geometry' in object) {
                     if(object.geometry instanceof SphereGeometry) {
-                        return new CANNON.Sphere(this.getHalfExtents(object).x)
+                        return new CANNON.Sphere(size.x)
                     } else {
-                        return new CANNON.Box(this.getHalfExtents(object))
+                        return new CANNON.Box(size)
                     }
                 } else {
                     throw new Error('[Cannon-es Physics] -> Cannot get shape for object')
