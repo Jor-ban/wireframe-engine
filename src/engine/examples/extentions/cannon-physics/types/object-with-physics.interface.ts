@@ -25,6 +25,10 @@ export interface CannonPhysicsJsonInterface {
     linearFactor?: CANNON.Vec3 |  [number, number, number],
     angularFactor?: CANNON.Vec3 |  [number, number, number],
     isTrigger?: boolean;
+    bindToMesh?: boolean | {
+        position?: boolean;
+        quaternion?: boolean;
+    };
 }
 
 export interface CannonPhysicsBodyInterface {

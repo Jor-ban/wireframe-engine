@@ -13,23 +13,22 @@ export const CannonWorldKey = 'cannonPhysicsWorld'
 class CannonEsExtensionFactory implements EngineExtensionInterface {
     public active: boolean = false
     private settings: CannonEsParametersInterface | null = null
-    private world!: CANNON.World
+    private world = new CANNON.World({
+        gravity: new CANNON.Vec3(0, -9.82, 0)
+    })
     private debugger: { update:() => void } | null = null
     private wireframesMap: Map<CANNON.Body, Object3D> = new Map()
-    private rigidBodyMap: WeakMap<Object3D, CANNON.Body> | null = null
+    private rigidBodyMap: WeakMap<Object3D, CANNON.Body> | null = new WeakMap()
     private activeMesh: Object3D | undefined = undefined
 
     beforeCreate(projectSettings: any): void {
         this.active = true
         const { gravity, gravityX, gravityZ } = this.settings?.physics ?? {}
-        this.world = new CANNON.World({
-            gravity: new CANNON.Vec3(gravityX ?? 0, gravity ?? -9.82, gravityZ ?? 0)
-        })
+        this.world.gravity.set(gravityX ?? 0, gravity ?? -9.82, gravityZ ?? 0)
     }
     onInit(eng: EngineInterface): void {
         eng.setProperty(CannonWorldKey, this.world)
         if(eng.mode === 'dev') {
-            this.rigidBodyMap = new WeakMap()
             this.debugger = CannonDebugger(eng.scene, this.world, {
                 ...( this.settings?.debugger ?? {} ),
                 onInit: this.onDebuggerInit.bind(this)
@@ -37,15 +36,15 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
             const tm = TimeMachine.newInstance()
             tm.addListener((dt) => {
                 this.debugger?.update()
-                this.world.step(dt / 1000, dt, 3)
             })
             tm.play()
+            this.initEvents()
         } else {
+            this.rigidBodyMap = null
             TimeMachine.addListener((dt) => {
-                this.world.step(dt / 1000, dt, 3)
-            })
+                this.world.fixedStep()
+            }).play()
         }
-        this.initEvents()
     }
 
     public setParameters(params: CannonEsParametersInterface): EngineExtensionInterface {
@@ -64,7 +63,6 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
         import('../../../devEngine/changeDetector/index').then(({ ChangeDetector }) => {
             ChangeDetector.clickedObject$.subscribe((obj) => {
                 if(this.activeMesh) this.activeMesh.visible = false
-
                 const body = this.rigidBodyMap?.get(obj)
                 if(body) {
                     const mesh = this.wireframesMap.get(body)
@@ -78,7 +76,6 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     }
 
     public WITH_PHYSICS(physicsJson: CannonPhysicsJsonInterface | undefined = undefined) {
-        if(!this.active) throw new Error('[CannonEsExtension -> @WithPhysics] is not active, add CannonEsExtension to extensions list')
         return (constructor: Function): any => {
             constructor = constructor as DecorationTargetInterface
             if(!constructor.prototype.__onInitListeners) {
@@ -103,7 +100,6 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     }
 
     public RIGID_BODY(physicsJson: CannonPhysicsJsonInterface | undefined = undefined) {
-        if(!this.active) throw new Error('[CannonEsExtension -> @RigidBody] is not active, add CannonEsExtension to extensions list')
         return (target: DecorationTargetInterface['prototype'], propertyName: string) => {
             if(!target.__onInitListeners)
                 target.__onInitListeners = []
@@ -120,6 +116,18 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     public addBody(object: Object3D, physicsJson: CannonPhysicsJsonInterface | undefined = undefined): CANNON.Body {
         const body = PhysicsParser.parse(object, physicsJson)
         this.world.addBody(body)
+        if(physicsJson.bindToMesh) {
+            const data = typeof physicsJson.bindToMesh === 'boolean' ? {
+                position: true,
+                quaternion: true,
+            } : physicsJson.bindToMesh
+            TimeMachine.addListener(() => {
+                if(data.position) // @ts-ignore
+                    object.position.copy(body.position)
+                if(data.quaternion) // @ts-ignore
+                    object.quaternion.copy(body.quaternion)
+            })
+        }
         return body
     }
 }

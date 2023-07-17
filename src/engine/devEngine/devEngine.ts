@@ -36,6 +36,9 @@ export class __DevEngine extends __DefaultEngine {
         }
         this.renderer.render(this.scene, this.devCamera)
         this.initTick(undefined, this.devCamera)
+        this.parsingManager.addListener((json, mesh) => {
+            setTimeout(() => ChangeDetector.addedObject$.next(mesh))
+        })
     }
 
     public static create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {

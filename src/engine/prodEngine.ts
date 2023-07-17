@@ -29,19 +29,30 @@ export class __ProdEngine extends __DefaultEngine implements EngineInterface {
         eng.extensionsList.forEach(ext => {
             if(ext.afterCreate) ext.afterCreate(eng)
         })
-        if(projectSettings.scene?.children?.length)
-            return eng.add(...projectSettings.scene?.children)
-                .then(async () => {
-                    for (const ext of eng.extensionsList) {
-                        if(ext.onInit) {
-                            const res = await ext.onInit(eng)
-                            if(res && res instanceof __ProdEngine) eng = res
+        return new Promise((resolve) => {
+            if(projectSettings.scene?.children?.length)
+                return eng.add(...projectSettings.scene?.children)
+                    .then(async () => {
+                        for (const ext of eng.extensionsList) {
+                            if(ext.onInit) {
+                                const res = await ext.onInit(eng)
+                                if(res && res instanceof __ProdEngine) eng = res
+                            }
                         }
-                    }
-                    return eng
-                })
-        else
-            return Promise.resolve(eng)
+                        resolve(eng)
+                    })
+            else
+                return resolve(eng)
+        }).then(async (eng: EngineInterface) => {
+            await Promise.all(eng.extensionsList.map(async (ext) => {
+                if (ext.onInit) {
+                    const res = await ext.onInit(eng);
+                    if (res && res instanceof __ProdEngine)
+                        eng = res;
+                }
+            }))
+            return eng
+        })
     }
     public override dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true) {
         super.dispose(removeHTMLElement, contextLoss);

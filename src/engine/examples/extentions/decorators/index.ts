@@ -26,6 +26,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
     CAMERA(cameraJson: (CameraJson | THREE.Camera) & DecoratedObjectType) {
         if(!this.engine) this.logError('Camera')
         return (constructor: Function): void => {
+
             const camera = Object.assign(CameraParser.parse(this.engine.canvasProportion, cameraJson), constructor)
             if(cameraJson.addByDefault) {
                 this.engine.add(camera)
@@ -35,6 +36,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
     }
     MESH(meshJson: (MeshJson | THREE.Mesh) & DecoratedObjectType) {
         return (constructor: Function): void => {
+            this.setName(constructor, meshJson)
             let mesh: THREE.Mesh
             if (meshJson instanceof THREE.Mesh)
                 mesh = Object.assign(meshJson, constructor)
@@ -157,6 +159,9 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
             constructor.prototype.__onInitListeners = []
         }
         constructor.prototype.onInit?.(object)
+    }
+    private setName(constructor: Function, options: { name?: string }) {
+        options.name = options.name ?? constructor.name ?? constructor.prototype.constructor.name
     }
 
     private logError(decoratorName: string): Error {

@@ -8,7 +8,7 @@ export class __TestEngine {
     public testControls: TestControls
     public static create(canvas: HTMLCanvasElement, projectSettings: ProjectSettings = {}): Promise<EngineInterface> {
         return __ProdEngine.create(canvas, {...projectSettings, mode: 'test'})
-            .then(engine => {
+            .then(async (engine) => {
                 engine['testControls'] = new TestControls(60, engine.renderer as WRenderer)
                 return engine
             })
