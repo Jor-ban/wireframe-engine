@@ -3,16 +3,20 @@ import {Object3D} from "three";
 export abstract class WhenReady<T extends Object3D = Object3D> {
     constructor() {
         if(!this.__proto__.__onInitListeners) this.__proto__.__onInitListeners = []
-        this.__proto__.__onInitListeners.push((obj: T) => {
-            console.log(this.__proto__.__onInitListeners)
-            this.__proto__.awaitingCallbacks.forEach((cb) => cb(obj))
-        })
     }
-    public whenReady(cb: (obj: T) => void) {
+    public whenInstanceReady(cb: (obj: T) => void) {
         if(!this.__proto__.__object) {
-            this.__proto__.awaitingCallbacks.push(cb)
+            this.__proto__.__onInitListeners.push(cb)
         } else {
             cb(this.__proto__.__object)
+        }
+    }
+
+    public static whenReady(cb: (obj: Object3D) => void) {
+        if(!this.prototype.__object) {
+            this.prototype.__onInitListeners.push(cb)
+        } else {
+            cb(this.prototype.__object)
         }
     }
 }

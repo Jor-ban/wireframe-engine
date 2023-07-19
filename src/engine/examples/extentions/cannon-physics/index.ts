@@ -7,13 +7,14 @@ import CannonDebugger from 'cannon-es-debugger'
 import { CannonPhysicsJsonInterface } from "⚙️/examples/extentions/cannon-physics/types/object-with-physics.interface";
 import { TimeMachine } from "⚙️/services/timeMachine.service";
 import { DecorationTargetInterface } from "⚙️/examples/extentions/cannon-physics/types/decoration-target.interface";
-import { PhysicsParser } from "⚙️/examples/extentions/cannon-physics/physics-parser";
+import { defaultPhysicsMaterial, PhysicsParser } from "⚙️/examples/extentions/cannon-physics/physics-parser";
 
 export const CannonWorldKey = 'cannonPhysicsWorld'
+
 class CannonEsExtensionFactory implements EngineExtensionInterface {
     public active: boolean = false
     private settings: CannonEsParametersInterface | null = null
-    private world = new CANNON.World({
+    public world = new CANNON.World({
         gravity: new CANNON.Vec3(0, -9.82, 0)
     })
     private debugger: { update:() => void } | null = null
@@ -42,7 +43,7 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
         } else {
             this.rigidBodyMap = null
             TimeMachine.addListener((dt) => {
-                this.world.fixedStep()
+                this.world.step(1 / 60, dt, 3)
             }).play()
         }
     }
@@ -115,6 +116,14 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
 
     public addBody(object: Object3D, physicsJson: CannonPhysicsJsonInterface | undefined = undefined): CANNON.Body {
         const body = PhysicsParser.parse(object, physicsJson)
+        if(physicsJson.contactMaterial) {
+            const contactMaterial = new CANNON.ContactMaterial(
+                body.material,
+                physicsJson.contactMaterial.relativeTo ?? defaultPhysicsMaterial,
+                physicsJson.contactMaterial
+            )
+            this.world.addContactMaterial(contactMaterial)
+        }
         this.world.addBody(body)
         if(physicsJson.bindToMesh) {
             const data = typeof physicsJson.bindToMesh === 'boolean' ? {

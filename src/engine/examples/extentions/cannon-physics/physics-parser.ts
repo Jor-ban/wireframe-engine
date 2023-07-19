@@ -5,6 +5,8 @@ import {
     CannonPhysicsJsonInterface
 } from "⚙️/examples/extentions/cannon-physics/types/object-with-physics.interface";
 
+export const defaultPhysicsMaterial = new CANNON.Material('defaultPhysicsMaterial')
+
 export class PhysicsParser {
     static parse(object: Object3D, physics: CannonPhysicsJsonInterface | true = true): CANNON.Body {
         if(physics === true) physics = {}
@@ -30,11 +32,6 @@ export class PhysicsParser {
                 bodyJson.velocity = physics.velocity
         }
         bodyJson.mass = physics.mass ?? 0
-        if(physics.material) {
-            bodyJson.material = new CANNON.Material()
-            if(physics.material.friction) bodyJson.material.friction = physics.material.friction
-            if(physics.material.restitution) bodyJson.material.restitution = physics.material.restitution
-        }
         if('linearDamping' in physics) bodyJson.linearDamping = physics.linearDamping
         if(physics.type) {
             bodyJson.type = this.getBodyType(physics.type)
@@ -68,6 +65,13 @@ export class PhysicsParser {
             else
                 bodyJson.linearFactor = physics.linearFactor
         }
+        if(physics.material instanceof CANNON.Material)
+            bodyJson.material = physics.material
+        else if(typeof physics.material === 'object')
+            bodyJson.material = new CANNON.Material(physics.material)
+        else
+            bodyJson.material = defaultPhysicsMaterial
+
         bodyJson.shape = this.getShape(physics, object)
         if('isTrigger' in physics) bodyJson.isTrigger = physics.isTrigger
 

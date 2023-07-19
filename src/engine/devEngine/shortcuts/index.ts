@@ -10,10 +10,7 @@ export interface ShortcutKeyOptions {
 }
 
 class ShortcutsFactory extends Subject<KeyboardEvent> {
-    private keyDown: Subject<KeyboardEvent> = new Subject<KeyboardEvent>()
-    get keyDown$() {
-        return this.keyDown.asObservable()
-    }
+    private _keyDown: Subject<KeyboardEvent> = new Subject<KeyboardEvent>()
     constructor() {
         super();
         window.addEventListener('keyup', (e: KeyboardEvent) => {
@@ -23,7 +20,7 @@ class ShortcutsFactory extends Subject<KeyboardEvent> {
         })
         window.addEventListener('keydown', (e: KeyboardEvent) => {
             if(!(e.target instanceof HTMLInputElement)) {
-                this.keyDown.next(e)
+                this._keyDown.next(e)
             }
         })
     }
@@ -31,7 +28,22 @@ class ShortcutsFactory extends Subject<KeyboardEvent> {
         key: string | number,
         keyOptions : ShortcutKeyOptions | undefined = undefined
     ) : Observable<KeyboardEvent> {
-        return this.pipe(filter((e: KeyboardEvent) => {
+        return this.listenTo(this, key, keyOptions)
+    }
+    keyUp(
+        key: string | number,
+        keyOptions : ShortcutKeyOptions | undefined = undefined
+    ): Observable<KeyboardEvent> {
+        return this.listenTo(this, key, keyOptions)
+    }
+    keyDown(
+        key: string | number,
+        keyOptions : ShortcutKeyOptions | undefined = undefined
+    ) : Observable<KeyboardEvent> {
+        return this.listenTo(this._keyDown, key, keyOptions)
+    }
+    private listenTo($: Observable<KeyboardEvent>, key: string | number, keyOptions : ShortcutKeyOptions | undefined = undefined) {
+        return $.pipe(filter((e: KeyboardEvent) => {
             let res = true
             if(keyOptions) {
                 const { CtrlPressed, ShiftPressed, AltPressed } = keyOptions
@@ -72,10 +84,10 @@ class ShortcutsFactory extends Subject<KeyboardEvent> {
         const keyUp = this.pipe( filter((e: KeyboardEvent) => {
             return e.code.replace(/Left|Right/i, '') === validKeyName
         }))
-        const keyDown = this.keyDown.pipe( filter((e: KeyboardEvent) => {
+        const _keyDown = this._keyDown.pipe( filter((e: KeyboardEvent) => {
             return e.code.replace(/Left|Right/i, '') === validKeyName
         }))
-        return merge(keyUp, keyDown)
+        return merge(keyUp, _keyDown)
     }
 }
 
