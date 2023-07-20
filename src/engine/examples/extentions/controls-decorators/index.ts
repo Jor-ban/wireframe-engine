@@ -10,32 +10,39 @@ class ControlsDecoratorsExtensionFactory implements EngineExtensionInterface {
 
     ADD_CONTROL(config: ControlDecoratorConfigInterface) {
         return (target: any, propertyName: string) => {
-            if(!this.engine) throw new Error('[ControlsDecoratorsExtension -> @AddControl] ControlsDecoratorsExtension is not added to extensions list')
-            if(this.engine.mode === 'dev' && config?.addInDev) {
-                this.addDevControl(target, propertyName, config)
-            } else if(this.engine.mode === 'test') {
-                const name = config.name ?? propertyName
-                const value = config.defaultValue ?? (typeof config.type === 'string' ? '' : 0)
-                setTimeout(() => {
-                    (this.engine as any).testControls.pane.addInput(
-                        { ...target, [name]: value },
-                        name,
-                        { ...config }
-                    ).on('change', ({ value }: { value: number | string }) => {
-                        target[propertyName] = value
-                        if(config.onUpdate) config.onUpdate(target)
+            setTimeout(() => {
+                if(!this.engine) {
+                    console.error('[ControlsDecoratorsExtension -> @AddControl] ControlsDecoratorsExtension is not added to extensions list')
+                    return
+                }
+                if(this.engine.mode === 'dev' && config?.addInDev) {
+                    this.addDevControl(target, propertyName, config)
+                } else if(this.engine.mode === 'test') {
+                    const name = config.name ?? propertyName
+                    const value = config.defaultValue ?? (typeof config.type === 'string' ? '' : 0)
+                    setTimeout(() => {
+                        (this.engine as any).testControls.pane.addInput(
+                            { ...target, [name]: value },
+                            name,
+                            { ...config }
+                        ).on('change', ({ value }: { value: number | string }) => {
+                            target[propertyName] = value
+                            if(config.onUpdate) config.onUpdate(target)
+                        })
                     })
-                })
-            }
+                }
+            }, 3000)
         }
     }
 
     public DEV_CONTROL(config: ControlDecoratorConfigInterface) {
         return (target: any, propertyName: string) => {
-            if (!this.engine) throw new Error('[ControlsDecoratorsExtension -> @AddControl] ControlsDecoratorsExtension is not added to extensions list')
-            if(this.engine.mode === 'dev') {
-                this.addDevControl(target, propertyName, config)
-            }
+            setTimeout(() => {
+                if (!this.engine) throw new Error('[ControlsDecoratorsExtension -> @AddControl] ControlsDecoratorsExtension is not added to extensions list')
+                if(this.engine.mode === 'dev') {
+                    this.addDevControl(target, propertyName, config)
+                }
+            }, 3000)
         }
     }
 

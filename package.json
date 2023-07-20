@@ -13,8 +13,8 @@
     "dev:frontend-only": "vite --mode dev",
     "prod": "vite --mode prod",
     "test": "vite --mode test",
-    "build:dev": "vite build --mode dev",
-    "build": "tsc && vite build --mode prod",
+    "build:dev": "vite build --mode dev --emptyOutDir",
+    "build": "tsc && vite build --mode prod --emptyOutDir",
     "preview": "vite preview",
     "deploy": "npm run build:dev && firebase deploy"
   },

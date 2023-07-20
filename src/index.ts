@@ -5,8 +5,9 @@ import * as THREE from "three";
 import {GetRigidBody, WithPhysics} from "⚙️/examples/extentions/cannon-physics";
 import CANNON from "cannon-es";
 import {AddControl, ControlsDecoratorsExtension, DevControl} from "⚙️/examples/extentions/controls-decorators";
+import {WhenReady} from "⚙️/examples/utilClasses/when-ready";
 
-const eng = await Engine.create('#canvas', {
+Engine.create('#canvas', {
     scene: {
         children: [
             {
@@ -26,8 +27,11 @@ const eng = await Engine.create('#canvas', {
         ControlsDecoratorsExtension,
     ],
     cannonPhysics: true,
+}).then((eng) => {
+    Sphere.whenReady((s) => {
+        void eng.add(s)
+    })
 })
-
 
 @Mesh({
     geometry: { type: "sphere" },
@@ -37,7 +41,7 @@ const eng = await Engine.create('#canvas', {
 @WithPhysics({
     mass: 1,
 })
-export class Sphere {
+export class Sphere extends WhenReady {
     name = 'Sphere'
 
     @Model()
@@ -48,10 +52,4 @@ export class Sphere {
 
     @DevControl({ type: Number, defaultValue: 0, })
     public num = 0
-
-    constructor() {}
-
-    onInit(camera: THREE.Object3D) {
-        void eng.add(this.mesh)
-    }
 }
