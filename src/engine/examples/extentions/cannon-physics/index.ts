@@ -36,14 +36,23 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
             })
             const tm = TimeMachine.newInstance()
             tm.addListener((dt) => {
-                this.debugger?.update()
+                this.debugger.update()
             })
             tm.play()
             this.initEvents()
+        } else if(eng.mode === 'test') {
+            this.debugger = CannonDebugger(eng.scene, this.world, {
+                ...( this.settings?.debugger ?? {} ),
+                onInit: this.onDebuggerInit.bind(this)
+            })
+            TimeMachine.addListener((dt) => {
+                this.world.step(1/60, dt, 3)
+                this.debugger.update()
+            }).play()
         } else {
             this.rigidBodyMap = null
             TimeMachine.addListener((dt) => {
-                this.world.step(1 / 60, dt, 3)
+                this.world.step(1/60, dt, 3)
             }).play()
         }
     }
@@ -57,17 +66,18 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
     }
 
     private onDebuggerInit(body: CANNON.Body, mesh: Object3D, shape: CANNON.Shape) {
-        mesh.visible = false
+        if(!body['alwaysShow'])
+            mesh.visible = false
         this.wireframesMap.set(body, mesh)
     }
     private initEvents() {
         import('../../../devEngine/changeDetector/index').then(({ ChangeDetector }) => {
             ChangeDetector.clickedObject$.subscribe((obj) => {
-                if(this.activeMesh) this.activeMesh.visible = false
+                if(this.activeMesh && !this.activeMesh['alwaysShow']) this.activeMesh.visible = false
                 const body = this.rigidBodyMap?.get(obj)
                 if(body) {
                     const mesh = this.wireframesMap.get(body)
-                    if(mesh) {
+                    if(mesh && !mesh['alwaysShow']) {
                         mesh.visible = !mesh.visible
                     }
                     this.activeMesh = mesh
@@ -123,6 +133,9 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
                 physicsJson.contactMaterial
             )
             this.world.addContactMaterial(contactMaterial)
+        }
+        if(physicsJson.alwaysShow) {
+            body['alwaysShow'] = true
         }
         this.world.addBody(body)
         if(physicsJson.bindToMesh) {

@@ -6,7 +6,7 @@ import {
 } from "three";
 import {Font} from "three/examples/jsm/loaders/FontLoader";
 import {WMesh, WTextGeometry} from "../../../lib";
-import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
 
 export class MeshGenerator {
     static addCube(camera: PerspectiveCamera): WMesh {
@@ -49,7 +49,7 @@ export class MeshGenerator {
             })
             return this.createMesh(textGeometry, camera)
         } else {
-            return ;
+            return undefined
         }
     }
     private static createMesh(geometry: BufferGeometry, camera: PerspectiveCamera) {

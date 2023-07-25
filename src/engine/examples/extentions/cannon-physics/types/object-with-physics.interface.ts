@@ -35,6 +35,7 @@ export interface CannonPhysicsJsonInterface {
         position?: boolean
         quaternion?: boolean
     }
+    alwaysShow?: boolean
 }
 
 export interface CannonPhysicsBodyInterface {

@@ -11,7 +11,7 @@ import {TpChangeEvent} from "tweakpane";
 import {WTextGeometry} from "⚙️/lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
-import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
 
 export class GeometryRedactor {
     static recreateGeometry<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<any>): T | undefined {

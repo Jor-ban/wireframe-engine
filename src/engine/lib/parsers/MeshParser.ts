@@ -14,7 +14,7 @@ import { LightParser } from "./lightParser";
 import { Font } from 'three/examples/jsm/loaders/FontLoader';
 import {WMesh, WTextGeometry} from "⚙️/lib";
 import { WireframeLoaders } from "⚙️/shared/loaders";
-import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
 import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
 
 export class MeshParser extends Object3dParser {
