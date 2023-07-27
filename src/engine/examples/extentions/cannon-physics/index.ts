@@ -123,6 +123,9 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
         }
     }
 
+    public createRigidBody(physicsJson: CannonPhysicsJsonInterface | undefined = undefined): CANNON.Body {
+        return this.addBody(new Object3D(), physicsJson)
+    }
 
     public addBody(object: Object3D, physicsJson: CannonPhysicsJsonInterface | undefined = undefined): CANNON.Body {
         const body = PhysicsParser.parse(object, physicsJson)
@@ -158,3 +161,4 @@ export const CannonEsExtension = new CannonEsExtensionFactory()
 export const WithPhysics = CannonEsExtension.WITH_PHYSICS.bind(CannonEsExtension)
 export const GetRigidBody = CannonEsExtension.GET_RIGID_BODY.bind(CannonEsExtension)
 export const RigidBody = CannonEsExtension.RIGID_BODY.bind(CannonEsExtension)
+export const createRigidBody = CannonEsExtension.createRigidBody.bind(CannonEsExtension)
