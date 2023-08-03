@@ -8,6 +8,7 @@ export class TestBottomControls {
     pane: Pane
     constructor() {
         this.container = document.createElement('div')
+
         document.body.appendChild(this.container)
         this.container.classList.add('__wireframe-test-bottom-controls', '__wireframe-controls')
         this.pane = new Pane({title: 'Console (~)', container: this.container, expanded: false})

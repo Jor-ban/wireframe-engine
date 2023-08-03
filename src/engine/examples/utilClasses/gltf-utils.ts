@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {AnimationAction, AnimationMixer} from "three";
+import {AnimationAction, AnimationClip, AnimationMixer} from "three";
 import {TimeMachine} from "⚙️/services/timeMachine.service";
 import {__AnimationFrameFactory} from "⚙️/services/animationFrame.service";
 
@@ -9,12 +9,12 @@ export class GLTFUtils {
     private _actionCb: (dt: number) => void
     private dtMul = 1
 
-    public playAnimation(indexOrName: number, dtMultiplier: number = 1) {
+    public playAnimation(indexOrName: number | string, dtMultiplier: number = 1) {
         this.dtMul = dtMultiplier
         if(typeof indexOrName === 'string') {
-            const foundAnimation = this.animations.find(a => a.name === indexOrName)
-            if(!foundAnimation) throw new Error(`GLTFUtils: Animation with name ${indexOrName} not found`)
-            indexOrName = foundAnimation
+            const index = this.animations.findIndex(a => a.name === indexOrName)
+            if(index === -1) throw new Error(`GLTFUtils: Animation with name ${indexOrName} not found`)
+            indexOrName = index
         }
         if(!this._actionCb) {
             this._actionCb = (function(dt: number)  {
@@ -27,7 +27,7 @@ export class GLTFUtils {
         this.activeAction.play()
         if(exAction !== this.activeAction) exAction?.stop()
     }
-    get animations() {
+    get animations(): AnimationClip[] {
         if(!this.__object?.gltfData) throw new Error('GLTFUtils: Object is not a GLTFGroup')
         return this.__object.gltfData.animations
     }

@@ -6,4 +6,7 @@ export type EngineExtensionInterface = {
     afterCreate?: (engine: EngineInterface) => void
     onInit?: (engine: EngineInterface) => void | Promise<EngineInterface>
     beforeDestroy?: (engine: EngineInterface) => void
+
+    getNewInstance: () => EngineExtensionInterface
+    withParameters?: (params: any) => EngineExtensionInterface
 }

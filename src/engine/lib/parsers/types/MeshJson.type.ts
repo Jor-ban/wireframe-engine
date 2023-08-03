@@ -3,10 +3,13 @@ import { BufferGeometry, Material } from "three";
 import { GeometryJson } from "./GeometryJson.type";
 import { MaterialJson } from "./MaterialJson.type";
 
-export type ComposedMeshJson = Nameable & UuidSettable & {
+export type MaterializableJson = {
+    material?: MaterialJson | Material
+}
+
+export type ComposedMeshJson = MaterializableJson & Nameable & UuidSettable & {
     parameters?: Object3dJSON
     geometry?: GeometryJson | BufferGeometry
-    material?: MaterialJson | Material
 
     [key: string]: any // for custom extensions
 }

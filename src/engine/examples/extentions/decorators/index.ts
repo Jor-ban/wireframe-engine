@@ -13,6 +13,8 @@ import { GroupJsonInterface } from "⚙️/lib/parsers/types/GroupJson.interface
 import { GroupParser } from "⚙️/lib/parsers/GroupParser";
 import { DecoratedObjectType } from "⚙️/examples/extentions/decorators/types/decorated-object.type";
 import { DecorationTargetInterface } from "⚙\uFE0F/examples/extentions/decorators/types/decoration-target.interface";
+import {ExtrudeFromSvgJson} from "⚙️/lib/parsers/types/ExtrudeFromSvgJson.type";
+import {ExtrudeFromSvgParser} from "⚙️/lib/parsers/ExtrudeFromSvg";
 
 class DecoratorsExtensionFactory implements EngineExtensionInterface {
     DecoratorsExtension = this
@@ -20,7 +22,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
     afterCreate(eng: EngineInterface): void {
         this.engine = eng
     }
-    get newInstance() {
+    getNewInstance() {
         return new DecoratorsExtensionFactory()
     }
     CAMERA(cameraJson: (CameraJson | THREE.Camera) & DecoratedObjectType) {
@@ -44,6 +46,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
                 mesh = Object.assign(MeshParser.parse(meshJson), constructor)
 
             if(meshJson.addByDefault) {
+                console.log('@Mesh addByDefault')
                 if(!this.engine) this.logError('Mesh')
                 this.engine.add(mesh)
             }
@@ -137,6 +140,18 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
         }
     }
 
+    EXTRUDE_FROM_SVG(data: ExtrudeFromSvgJson & DecoratedObjectType) {
+        return (constructor: Function): void => {
+            ExtrudeFromSvgParser.parse(data).then((extrudeMesh: THREE.Group) => {
+                if(data.addByDefault) {
+                    if(!this.engine) this.logError('ExtrudeFromSvg')
+                    this.engine.add(extrudeMesh)
+                }
+                this.emitInit(constructor, extrudeMesh)
+            })
+        }
+    }
+
     MODEL() {
         return (target: DecorationTargetInterface<THREE.Object3D>['prototype'], propertyKey: string): void => {
             if(!target.__onInitListeners) target.__onInitListeners = []
@@ -168,8 +183,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
         throw new Error(`[DecoratorsExtension] -> @${decoratorName} -> engine is not defined, \n
         You have to add DecoratorsExtension to extensions list in engine settings \n
         Example: \n
-        <script async type="module" src="./index.ts"></script> \n
-        const engine = await Engine.create({ \n
+        const engine = Engine.create({ \n
             extensions: [ DecoratorsExtension ] \n
         }) \n
         Or Wait for engine to be created and then call @${decoratorName}() \n`)
@@ -186,3 +200,4 @@ export const Group = DecoratorsExtension.GROUP.bind(DecoratorsExtension)
 export const AsyncGroup = DecoratorsExtension.ASYNC_GROUP.bind(DecoratorsExtension)
 export const FromFile = DecoratorsExtension.FROM_FILE.bind(DecoratorsExtension)
 export const Model = DecoratorsExtension.MODEL.bind(DecoratorsExtension)
+export const ExtrudeFromSvg = DecoratorsExtension.EXTRUDE_FROM_SVG.bind(DecoratorsExtension)

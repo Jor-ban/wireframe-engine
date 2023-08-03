@@ -11,6 +11,7 @@ export class TestControls {
     constructor(askedFPS: number, renderer: WebGLRenderer) {
         this.pane = new Pane({ title: 'Wireframe Engine Gui' });
         this.pane.element.classList.add('__wireframe-controls')
+        this.pane.element.parentElement.style.zIndex = '667'
         new TestBottomControls()
         this.pane.registerPlugin(EssentialsPlugin);
         this.addFpsMeter()

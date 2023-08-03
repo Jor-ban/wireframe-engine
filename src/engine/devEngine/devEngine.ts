@@ -126,8 +126,21 @@ export class __DevEngine extends __DefaultEngine {
     private setDevCamera() {
         this.devCamera = new PerspectiveCamera(60, this.canvasProportion.width / this.canvasProportion.height, 0.1, 8_192)
         this.devCamera.uuid = '__wireframe-dev-camera__'
-        this.devCamera.position.set(1, 0.5, 3)
+        const devCameraSessionData = sessionStorage.getItem('devCamera')
+        if(devCameraSessionData) {
+            const devCameraData = JSON.parse(devCameraSessionData)
+            this.devCamera.position.set(devCameraData.position.x, devCameraData.position.y, devCameraData.position.z)
+            this.devCamera.rotation.set(devCameraData.rotation.x, devCameraData.rotation.y, devCameraData.rotation.z)
+        } else {
+            this.devCamera.position.set(1, 0.5, 3)
+        }
         this.scene.add(this.devCamera)
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('devCamera', JSON.stringify({
+                position: this.devCamera.position,
+                rotation: this.devCamera.rotation.toVector3(),
+            }))
+        })
     }
     public override dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true) {
         super.dispose(removeHTMLElement, contextLoss);

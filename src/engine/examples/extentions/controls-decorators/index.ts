@@ -67,7 +67,7 @@ class ControlsDecoratorsExtensionFactory implements EngineExtensionInterface {
         })
     }
 
-    get newInstance() {
+    getNewInstance() {
         return new ControlsDecoratorsExtensionFactory()
     }
 }

@@ -6,7 +6,7 @@ export abstract class WhenReady<T extends Object3D = Object3D> {
     }
     public whenInstanceReady(cb: (obj: T) => void) {
         if(!this.__proto__.__object) {
-            this.__proto__.__onInitListeners.push(cb)
+            this.__proto__.__onInitListeners?.push(cb)
         } else {
             cb(this.__proto__.__object)
         }
@@ -14,7 +14,7 @@ export abstract class WhenReady<T extends Object3D = Object3D> {
 
     public static whenReady(cb: (obj: Object3D) => void) {
         if(!this.prototype.__object) {
-            this.prototype.__onInitListeners.push(cb)
+            this.prototype.__onInitListeners?.push(cb)
         } else {
             cb(this.prototype.__object)
         }

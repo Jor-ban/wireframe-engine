@@ -57,12 +57,16 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
         }
     }
 
-    public setParameters(params: CannonEsParametersInterface): EngineExtensionInterface {
+    public withParameters(params: CannonEsParametersInterface): EngineExtensionInterface {
         this.settings = params
         if(params.active !== false) {
             this.active = true
         }
         return this
+    }
+
+    getNewInstance() {
+        return new CannonEsExtensionFactory()
     }
 
     private onDebuggerInit(body: CANNON.Body, mesh: Object3D, shape: CANNON.Shape) {

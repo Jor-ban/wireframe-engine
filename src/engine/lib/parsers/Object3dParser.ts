@@ -8,6 +8,13 @@ export class Object3dParser {
         this.position(mesh, parameters)
         this.scale(mesh, parameters)
         this.rotate(mesh, parameters)
+        if(parameters.name) mesh.name = parameters.name
+        if(parameters.uuid) mesh.uuid = parameters.uuid
+        if(parameters.castShadow) mesh.castShadow = parameters.castShadow
+        if(parameters.receiveShadow) mesh.receiveShadow = parameters.receiveShadow
+        if(parameters.visible) mesh.visible = parameters.visible
+        if(parameters.frustumCulled) mesh.frustumCulled = parameters.frustumCulled
+
         return mesh
     }
     public static position(object: Object3D, positions: Positionable): Object3D {

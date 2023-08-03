@@ -23,7 +23,7 @@ export type Scalable = {
     scaleZ?: number
 }
 
-export type Object3dJSON = Positionable & Rotatable & Scalable & UuidSettable & {
+export type Object3dJSON = Nameable & Positionable & Rotatable & Scalable & UuidSettable & {
     castShadow?: boolean
     visible?: boolean
     receiveShadow?: boolean
