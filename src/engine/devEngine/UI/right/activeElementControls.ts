@@ -67,6 +67,8 @@ export class ActiveElementControls {
                 CameraControls.addForCamera(selectedObj, this.pane)
             } else if (selectedObj instanceof WMesh) {
                 this.forObject(selectedObj, this.pane)
+            } else if(selectedObj instanceof Object3D) {
+                this.addForObject3D(selectedObj, this.pane)
             }
         }
     }

@@ -9,6 +9,7 @@ import { LightWithHelper } from '⚙️/devEngine/devClasses/lightsWithHelper';
 import { ChangeDetector } from "⚙️/devEngine/changeDetector";
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { CameraParser } from "⚙️/lib/parsers/cameraParser";
+import {TimeMachine} from "⚙️/services/timeMachine.service";
 
 export class __DevEngine extends __DefaultEngine {
     public devCamera !: PerspectiveCamera
@@ -46,6 +47,7 @@ export class __DevEngine extends __DefaultEngine {
         eng.extensionsList.forEach(ext => {
             if(ext.afterCreate) ext.afterCreate(eng)
         })
+        TimeMachine.stop()
         return eng.addObject2Scene(projectSettings.scene?.children).then(async () => {
             eng.devControls = new __DevController(eng)
             await Promise.all(eng.extensionsList.map(async (ext) => {

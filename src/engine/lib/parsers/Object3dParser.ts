@@ -25,7 +25,7 @@ export class Object3dParser {
         object.scale.set(
             scales.scaleX ?? scales.scale ?? 1,
             scales.scaleY ?? scales.scale ?? 1,
-            scales.scaleY ?? scales.scale ?? 1
+            scales.scaleZ ?? scales.scale ?? 1
         )
         return object
     }

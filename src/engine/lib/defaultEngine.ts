@@ -38,7 +38,7 @@ export class __DefaultEngine implements EngineInterface {
     public parsingManager: ParsingManager
 
     protected userAskedFPS: number = 60
-    protected timMachine = TimeMachine
+    protected timMachine = TimeMachine.newInstance()
     protected renderCamera = this.camera
 
     private renderFunction: (deltaTime: number) => void = () => {}

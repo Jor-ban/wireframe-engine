@@ -4,6 +4,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { GLTFGroup } from "⚙️/lib/classes/gltfGroup";
+import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
 
 class WireframeLoadersFactory {
     private _textureLoader: TextureLoader | null = null
@@ -49,8 +50,12 @@ class WireframeLoadersFactory {
         return this._objLoader
     }
     public get GLTFLoader(): GLTFLoader {
-        if(!this._gltfLoader)
+        if(!this._gltfLoader) {
             this._gltfLoader = new GLTFLoader()
+            const dracoLoader = new DRACOLoader();
+            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+            this._gltfLoader.setDRACOLoader(dracoLoader);
+        }
 
         return this._gltfLoader
     }

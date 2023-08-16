@@ -150,12 +150,12 @@ export class ElementTracer {
         this.rayCaster.setFromCamera(this.mouse, this.camera)
         const intersects = this.rayCaster.intersectObjects(this.scene.children)
         const obj = intersects
-            .filter((el) =>
-                (el.object instanceof WMesh || LightWithHelper.isLightHelper(el.object)) &&
+            .filter((el: any) =>
+                ('__clickable' in el.object || LightWithHelper.isLightHelper(el.object)) &&
                 el.object !== this.hoveredObject &&
                 el.object !== this.clickedObject
             )[0]?.object
-        if(obj instanceof WMesh) {
+        if(obj && '__clickable' in obj) {
             this.emitHover(obj)
         } else if(LightWithHelper.isLightHelper(obj)) {
             this.activeObject = obj.light

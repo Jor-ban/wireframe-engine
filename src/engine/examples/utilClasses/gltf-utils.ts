@@ -1,7 +1,6 @@
 // @ts-nocheck
 import {AnimationAction, AnimationClip, AnimationMixer} from "three";
 import {TimeMachine} from "⚙️/services/timeMachine.service";
-import {__AnimationFrameFactory} from "⚙️/services/animationFrame.service";
 
 export class GLTFUtils {
     public activeAction: AnimationAction | null = null
@@ -9,7 +8,7 @@ export class GLTFUtils {
     private _actionCb: (dt: number) => void
     private dtMul = 1
 
-    public playAnimation(indexOrName: number | string, dtMultiplier: number = 1) {
+    public playAnimation(indexOrName: number | string, dtMultiplier: number = 1, timeMachine: TimeMachine = TimeMachine) {
         this.dtMul = dtMultiplier
         if(typeof indexOrName === 'string') {
             const index = this.animations.findIndex(a => a.name === indexOrName)
@@ -20,7 +19,7 @@ export class GLTFUtils {
             this._actionCb = (function(dt: number)  {
                 this._mixer.update(dt / this.dtMul)
             }).bind(this)
-            TimeMachine.addListener(this._actionCb)
+            timeMachine.addListener(this._actionCb)
         }
         const exAction = this.activeAction
         this.activeAction = this.animationMixer.clipAction(this.animations[indexOrName])

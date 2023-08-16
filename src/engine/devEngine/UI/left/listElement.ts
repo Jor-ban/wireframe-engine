@@ -17,7 +17,7 @@ export class ListElement {
     ) {
         this.container = document.createElement("div")
         if(
-            this.object instanceof WMesh ||
+            '__clickable' in this.object ||
             this.object instanceof Group ||
             this.object instanceof Light ||
             this.object instanceof Camera && this.object.uuid !== '__wireframe-dev-camera__'

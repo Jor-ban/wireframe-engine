@@ -28,7 +28,6 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
     CAMERA(cameraJson: (CameraJson | THREE.Camera) & DecoratedObjectType) {
         if(!this.engine) this.logError('Camera')
         return (constructor: Function): void => {
-
             const camera = Object.assign(CameraParser.parse(this.engine.canvasProportion, cameraJson), constructor)
             if(cameraJson.addByDefault) {
                 this.engine.add(camera)
@@ -64,7 +63,6 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
                     return mesh
                 })
                 .then((object: THREE.Group): THREE.Group => {
-                    // @ts-ignore
                     this.emitInit(constructor, object, true)
                     return object
                 })
@@ -163,8 +161,9 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
 
     private emitInit<T extends THREE.Object3D>(constructor: Function, object: T, asyncLoaded: boolean = false): void {
         constructor = constructor as DecorationTargetInterface<THREE.Object3D>
-        constructor.prototype.__asyncLoaded = true
+        constructor.prototype.__asyncLoaded = asyncLoaded
         constructor.prototype.__object = object
+        object.name = object.name ?? constructor.prototype.name
         const initListeners = constructor.prototype.__onInitListeners
         if(initListeners && Array.isArray(initListeners)) {
             initListeners.forEach((listener: Function) => {
@@ -173,7 +172,7 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
         } else {
             constructor.prototype.__onInitListeners = []
         }
-        constructor.prototype.onInit?.(object)
+        constructor.prototype.onInit?.(constructor.prototype.__object)
     }
     private setName(constructor: Function, options: { name?: string }) {
         options.name = options.name ?? constructor.name ?? constructor.prototype.constructor.name
