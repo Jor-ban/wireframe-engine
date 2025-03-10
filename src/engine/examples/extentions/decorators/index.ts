@@ -12,7 +12,7 @@ import { LightParser } from "⚙️/lib/parsers/lightParser";
 import { GroupJsonInterface } from "⚙️/lib/parsers/types/GroupJson.interface";
 import { GroupParser } from "⚙️/lib/parsers/GroupParser";
 import { DecoratedObjectType } from "⚙️/examples/extentions/decorators/types/decorated-object.type";
-import { DecorationTargetInterface } from "⚙\uFE0F/examples/extentions/decorators/types/decoration-target.interface";
+import { DecorationTargetInterface } from "⚙️/examples/extentions/decorators/types/decoration-target.interface";
 import {ExtrudeFromSvgJson} from "⚙️/lib/parsers/types/ExtrudeFromSvgJson.type";
 import {ExtrudeFromSvgParser} from "⚙️/lib/parsers/ExtrudeFromSvg";
 

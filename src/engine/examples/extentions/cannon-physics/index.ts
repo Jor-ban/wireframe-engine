@@ -1,5 +1,5 @@
-import { EngineInterface } from "⚙\uFE0F/types/Engine.interface";
-import { EngineExtensionInterface } from "⚙\uFE0F/types/EngineExtensionInterface";
+import { EngineInterface } from "⚙️/types/Engine.interface";
+import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
 import { Object3D } from "three";
 import * as CANNON from "cannon-es";
 import { CannonEsParametersInterface } from "⚙️/examples/extentions/cannon-physics/types/cannon-es-parameters.interface";

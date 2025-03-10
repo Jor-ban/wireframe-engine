@@ -1,5 +1,5 @@
-import { WScene } from '../classes/WScene';
-import {CubeTextureLoader, Scene, sRGBEncoding} from "three";
+import { WScene } from '⚙️/lib';
+import {CubeTextureLoader, Scene, sRGBEncoding, Color} from "three";
 import {SceneJson} from "./types/SceneJson.type";
 import {defaultSkybox} from "⚙️/shared/consts/defaultSkybox";
 
@@ -24,14 +24,19 @@ export class SceneParser {
         const sceneInstance = new WScene()
         let { skybox, loadingManager, encoding } = scene
         if(skybox) {
-            if(!Array.isArray(skybox)) {
-                skybox = [skybox.posX, skybox.negX, skybox.posY, skybox.negY, skybox.posZ, skybox.negZ]
+            if(skybox instanceof Color) {
+                sceneInstance.background = skybox
+                sceneInstance.environment = skybox
+            } else {
+                if(!Array.isArray(skybox)) {
+                    skybox = [skybox.posX, skybox.negX, skybox.posY, skybox.negY, skybox.posZ, skybox.negZ]
+                }
+                const cubeTextureLoader = new CubeTextureLoader(loadingManager)
+                const envMap = cubeTextureLoader.load(skybox)
+                envMap.encoding = encoding || sRGBEncoding
+                sceneInstance.background = envMap
+                sceneInstance.environment = envMap
             }
-            const cubeTextureLoader = new CubeTextureLoader(loadingManager)
-            const envMap = cubeTextureLoader.load(skybox)
-            envMap.encoding = encoding || sRGBEncoding
-            sceneInstance.background = envMap
-            sceneInstance.environment = envMap
         } else {
             sceneInstance.background = defaultSkybox
             sceneInstance.environment = defaultSkybox
