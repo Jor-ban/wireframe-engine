@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-export interface OnInit<T = THREE.Object3D> {
-    onInit: (object: T) => void
+export interface OnInit<T extends THREE.Object3D = THREE.Object3D> {
+    onInit: (object: THREE.Object3D) => void
 }
 export interface OnInitCamera extends OnInit<THREE.Camera> {}
 export interface OnInitMesh extends OnInit<THREE.Mesh> {}

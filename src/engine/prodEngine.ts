@@ -13,7 +13,7 @@ export class __ProdEngine extends __DefaultEngine implements EngineInterface {
         this.setRenderer(projectSettings.renderer)
         this.setAmbientLight(projectSettings.ambientLight)
         if(projectSettings.extensions) {
-            super.extensionsList = projectSettings.extensions
+            super.extensionsList = projectSettings.extensions.map(ext => ext.getNewInstance())
             projectSettings.extensions.forEach(ext => {
                 if(ext.beforeCreate) ext.beforeCreate(projectSettings)
             })

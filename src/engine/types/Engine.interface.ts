@@ -24,6 +24,7 @@ export interface EngineInterface {
 
 	dispose(): void
 	add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface>
+	remove(...objects: Object3D[]): EngineInterface
 	use(extension: EngineExtensionInterface): EngineInterface
 	setCanvasSizes(canvasSizes?: CanvasProportion): EngineInterface
 	setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface

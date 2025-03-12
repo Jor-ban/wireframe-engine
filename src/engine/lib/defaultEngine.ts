@@ -35,17 +35,16 @@ export class __DefaultEngine implements EngineInterface {
     public ambientLight !: AmbientLight
     public mode: EngineInterface['mode'] = 'dev'
     public extensionsList: EngineExtensionInterface[] = []
-    public parsingManager: ParsingManager
+    public parsingManager = new ParsingManager()
 
     protected userAskedFPS: number = 60
-    protected timMachine = TimeMachine.newInstance()
+    protected timeMachine = TimeMachine.newInstance()
     protected renderCamera = this.camera
 
     private renderFunction: (deltaTime: number) => void = () => {}
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
-        this.parsingManager = new ParsingManager()
     }
 
     public setCanvasSizes(canvasSizes ?: CanvasProportion): EngineInterface {
@@ -84,11 +83,11 @@ export class __DefaultEngine implements EngineInterface {
     
     protected initTick(askedFps: number = 60, renderCamera: PerspectiveCamera | OrthographicCamera): void {
         this.userAskedFPS = askedFps
-        this.timMachine.run(this.userAskedFPS)
+        this.timeMachine.run(this.userAskedFPS)
         this.renderFunction = () => {
             this.renderer.render(this.scene, renderCamera)
         }
-        this.timMachine.addListener(this.renderFunction)
+        this.timeMachine.addListener(this.renderFunction)
     }
     public setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface {
         if(this.ambientLight) {
@@ -102,15 +101,19 @@ export class __DefaultEngine implements EngineInterface {
         this.scene = SceneParser.parse(scene)
         return this
     }
-    public add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface> {
+    public async add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface> {
         const els = objects.map(obj => {
             return this.parsingManager.parse(obj)
         })
-        return Promise.all(els).then(obj3ds => {
-            this.scene.add(...obj3ds)
-            return Promise.resolve(this)
-        })
+        const obj3ds = await Promise.all(els);
+        this.scene.add(...obj3ds);
+        return this;
     }
+    public remove(...objects: Object3D[]): EngineInterface {
+        this.scene.remove(...objects);
+        return this
+    }
+
     public setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface {
         if(renderer instanceof WebGLRenderer) {
             this.renderer = WRenderer.from(renderer)
@@ -133,7 +136,7 @@ export class __DefaultEngine implements EngineInterface {
         this.renderCamera = camera
     }
     public dispose(removeHTMLElement: boolean = false, contextLoss: boolean = true): void {
-        this.timMachine.removeListener(this.renderFunction)
+        this.timeMachine.removeListener(this.renderFunction)
         if(removeHTMLElement)
             this.renderer.domElement.parentNode?.removeChild(this.renderer.domElement)
         this.renderer.dispose()

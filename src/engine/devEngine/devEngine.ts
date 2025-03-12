@@ -42,43 +42,43 @@ export class __DevEngine extends __DefaultEngine {
         })
     }
 
-    public static create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {
+    public static async create(projectSettings: ProjectSettings = {}): Promise<__DevEngine> {
         let eng = new __DevEngine(projectSettings)
         eng.extensionsList.forEach(ext => {
-            if(ext.afterCreate) ext.afterCreate(eng)
+            if (ext.afterCreate) ext.afterCreate(eng)
         })
         TimeMachine.stop()
-        return eng.addObject2Scene(projectSettings.scene?.children).then(async () => {
-            eng.devControls = new __DevController(eng)
-            await Promise.all(eng.extensionsList.map(async (ext) => {
-                if (ext.onInit) {
-                    const res = await ext.onInit(eng);
-                    if (res && res instanceof __DevEngine)
-                        eng = res;
-                }
-            }))
-            return eng
-        })
+        await eng.addObject2Scene(projectSettings.scene?.children);
+        eng.devControls = new __DevController(eng);
+        await Promise.all(eng.extensionsList.map(async (ext_1) => {
+            if (ext_1.onInit) {
+                const res = await ext_1.onInit(eng);
+                if (res && res instanceof __DevEngine)
+                    eng = res;
+            }
+        }));
+        return eng;
     }
 
-    public addObject2Scene(objects: (Object3D | MeshJson)[] | undefined): Promise<void> {
-        if(objects?.length)
-            return this.parsingManager.parseAll(objects).then(obj3ds => {
-                obj3ds.forEach(obj => {
-                    if(obj instanceof Light) {
-                        const lightWithHelper = LightWithHelper.from(obj)
-                        if(lightWithHelper instanceof AmbientLight) {
-                            this.add(lightWithHelper)
-                        } else if(lightWithHelper) {
-                            lightWithHelper.addToScene(this.scene)
-                        }
-                    } else {
-                        this.scene.add(obj)
+    public async addObject2Scene(objects: (Object3D | MeshJson)[] | undefined): Promise<void> {
+        if (objects?.length) {
+            const obj3ds = await this.parsingManager.parseAll(objects);
+            obj3ds.forEach(obj => {
+                if (obj instanceof Light) {
+                    const lightWithHelper = LightWithHelper.from(obj);
+                    if (lightWithHelper instanceof AmbientLight) {
+                        this.add(lightWithHelper);
+                    } else if (lightWithHelper) {
+                        lightWithHelper.addToScene(this.scene);
                     }
-                })
+                } else {
+                    this.scene.add(obj);
+                }
             })
-        else
+        } else {
             return Promise.resolve()
+
+        }
     }
 
 
