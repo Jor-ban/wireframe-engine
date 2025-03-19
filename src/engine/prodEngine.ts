@@ -12,9 +12,9 @@ export class __ProdEngine extends __DefaultEngine implements EngineInterface {
         this.setCamera(projectSettings.camera)
         this.setRenderer(projectSettings.renderer)
         this.setAmbientLight(projectSettings.ambientLight)
-        if(projectSettings.extensions) {
-            super.extensionsList = projectSettings.extensions.map(ext => ext.getNewInstance())
-            projectSettings.extensions.forEach(ext => {
+        if(projectSettings.plugins) {
+            super.extensionsList = projectSettings.plugins
+            projectSettings.plugins.forEach(ext => {
                 if(ext.beforeCreate) ext.beforeCreate(projectSettings)
             })
         }

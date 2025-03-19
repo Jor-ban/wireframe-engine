@@ -1,9 +1,9 @@
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { EnginePluginInterface } from "⚙\uFE0F/types/EnginePluginInterface";
 import { EngineInterface } from "⚙️/types/Engine.interface";
 import { debounceTime, fromEvent } from "rxjs";
 import { UiFrameworkSettingsInterface } from "⚙️/examples/extentions/UIFramework/types/ui-framework-settings.interface";
 
-class UIFrameworkFactory implements EngineExtensionInterface {
+class UIFrameworkFactory implements EnginePluginInterface {
     public htmlElement: HTMLElement
     private settings: UiFrameworkSettingsInterface | null = null
     private domParser: DOMParser = new DOMParser()
@@ -19,6 +19,7 @@ class UIFrameworkFactory implements EngineExtensionInterface {
         }
         this.htmlElement.style.position = 'absolute'
         this.htmlElement.style.zIndex = '666'
+        this.htmlElement.style.pointerEvents = 'none'
         this.htmlElement.style.display = 'block'
         const canvas = engine.canvas
         if(this.settings?.enableResizeReaction !== false) {
@@ -48,7 +49,7 @@ class UIFrameworkFactory implements EngineExtensionInterface {
     public getNewInstance() {
         return new UIFrameworkFactory()
     }
-    public withParameters(params: UiFrameworkSettingsInterface) {
+    public withParameters(params: UiFrameworkSettingsInterface): this {
         this.settings = params
         return this
     }

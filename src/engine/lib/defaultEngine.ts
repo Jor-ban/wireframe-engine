@@ -19,10 +19,10 @@ import { RendererParser } from "./parsers/rendererParser";
 import { AmbientLightJson, LightJson } from "./parsers/types/LightJson.type";
 import { LightParser } from "./parsers/lightParser";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { EngineInterface } from '../types/Engine.interface';
+import { EngineInterface } from '@/engine';
 import { MeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
 import { TimeMachine } from "⚙️/services/timeMachine.service";
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { EnginePluginInterface } from "⚙\uFE0F/types/EnginePluginInterface";
 import { ParsingManager } from "⚙️/lib/parsers/ParsingManager";
 
 export class __DefaultEngine implements EngineInterface {
@@ -34,7 +34,7 @@ export class __DefaultEngine implements EngineInterface {
     public orbitControls !: OrbitControls
     public ambientLight !: AmbientLight
     public mode: EngineInterface['mode'] = 'dev'
-    public extensionsList: EngineExtensionInterface[] = []
+    public extensionsList: EnginePluginInterface[] = []
     public parsingManager = new ParsingManager()
 
     protected userAskedFPS: number = 60
@@ -126,9 +126,9 @@ export class __DefaultEngine implements EngineInterface {
         if(this.camera) {
             this.scene.remove(this.camera)
         }
+
         this.camera = CameraParser.parse(this.canvasProportion, camera)
         this.scene.add(this.camera)
-        this.camera.position.set(1, 0.5, 3)
         this.camera.name = 'mainCamera'
         return this
     }
@@ -144,7 +144,7 @@ export class __DefaultEngine implements EngineInterface {
             this.renderer.forceContextLoss()
         this.orbitControls?.dispose()
     }
-    public use(extension: EngineExtensionInterface): EngineInterface {
+    public use(extension: EnginePluginInterface): EngineInterface {
         this.extensionsList.push(extension)
         return this
     }
@@ -156,5 +156,10 @@ export class __DefaultEngine implements EngineInterface {
     public getProperty<T>(property: string): T {
         // @ts-ignore
         return this[property]
+    }
+
+    public addTweak() {
+        // NOOP
+        console.log('noop')
     }
 }

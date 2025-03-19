@@ -1,5 +1,5 @@
 import { EngineInterface } from "⚙️/types/Engine.interface";
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { EnginePluginInterface } from "⚙\uFE0F/types/EnginePluginInterface";
 import { Object3D } from "three";
 import * as CANNON from "cannon-es";
 import { CannonEsParametersInterface } from "⚙️/examples/extentions/cannon-physics/types/cannon-es-parameters.interface";
@@ -11,7 +11,7 @@ import { defaultPhysicsMaterial, PhysicsParser } from "⚙️/examples/extention
 
 export const CannonWorldKey = 'cannonPhysicsWorld'
 
-class CannonEsExtensionFactory implements EngineExtensionInterface {
+class CannonEsExtensionFactory implements EnginePluginInterface {
     public active: boolean = false
     private settings: CannonEsParametersInterface | null = null
     public world = new CANNON.World({
@@ -57,7 +57,7 @@ class CannonEsExtensionFactory implements EngineExtensionInterface {
         }
     }
 
-    public withParameters(params: CannonEsParametersInterface): EngineExtensionInterface {
+    public withParameters(params: CannonEsParametersInterface): EnginePluginInterface {
         this.settings = params
         if(params.active !== false) {
             this.active = true

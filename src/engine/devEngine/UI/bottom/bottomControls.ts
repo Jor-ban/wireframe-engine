@@ -31,6 +31,7 @@ export class BottomControls {
 				{ title: 'Explorer' },
 				{ title: 'Console' },
 				{ title: 'Time' },
+				{ title: 'Camera Render' }
 			]
 		})
 		this.tabsButtonElement = tabs.element.children[0].children[1].children[0].children[0]

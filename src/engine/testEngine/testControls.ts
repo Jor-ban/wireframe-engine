@@ -1,4 +1,4 @@
-import { Pane } from "tweakpane";
+import {InputParams, Pane} from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import { WebGLRenderer } from "three";
 import { logMemory } from "⚙️/shared/PerformanceMonitors";
@@ -33,6 +33,12 @@ export class TestControls {
         });
         const others = this.pane.addFolder({title: 'Additional Monitors', expanded: false})
         logMemory(others, renderer)
+    }
+
+    public addTweak<K extends object>(obj: K, key: keyof K, params ?: InputParams & {onChangeFn: (value: K[keyof K]) => void}): void {
+        this.pane.addInput(obj, key, params).on('change', ({ value }) => {
+            params?.onChangeFn?.(value)
+        });
     }
 
     private addFpsMeter() {

@@ -1,8 +1,8 @@
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { EnginePluginInterface } from "⚙\uFE0F/types/EnginePluginInterface";
 import { EngineInterface } from "⚙️/types/Engine.interface";
 import { ControlDecoratorConfigInterface } from "./types/control-decorator-config.interface";
 
-class ControlsDecoratorsExtensionFactory implements EngineExtensionInterface {
+class ControlsDecoratorsExtensionFactory implements EnginePluginInterface {
     engine: EngineInterface | null = null
     onInit(eng: EngineInterface) {
         this.engine = eng

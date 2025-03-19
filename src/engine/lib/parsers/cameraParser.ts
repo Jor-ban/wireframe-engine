@@ -3,6 +3,7 @@ import { WOrthographicCamera } from "../classes/WOrthographicCamera";
 import { WPerspectiveCamera } from "../classes/WPerspectiveCamera";
 import { CameraJson } from "./types/CameraJson.type";
 import { CanvasProportion } from "./types/CanvasProportion.interface";
+import {Object3dParser} from "⚙️/lib/parsers/Object3dParser";
 
 export class CameraParser {
     public static parse(
@@ -44,6 +45,9 @@ export class CameraParser {
             }
             if(camera.uuid) {
                 c.uuid = camera.uuid
+            }
+            if(camera.parameters) {
+                Object3dParser.setParameters(c, camera.parameters)
             }
         } else {
             console.error("[Engine -> Camera] : Only Perspective Camera or Orthographic camera types are supported")

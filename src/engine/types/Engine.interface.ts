@@ -2,7 +2,7 @@ import { WRenderer } from '⚙️/lib';
 import { AmbientLight, Camera, Object3D, OrthographicCamera, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { CanvasProportion } from '⚙️/lib/parsers/types/CanvasProportion.interface';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
+import { EnginePluginInterface } from "⚙\uFE0F/types/EnginePluginInterface";
 import { RendererJson } from "⚙️/lib/parsers/types/RendererJson.type";
 import { AmbientLightJson, LightJson } from "⚙️/lib/parsers/types/LightJson.type";
 import { SceneJson } from "⚙️/lib/parsers/types/SceneJson.type";
@@ -19,13 +19,13 @@ export interface EngineInterface {
 	mode: 'dev' | 'prod' | 'test'
 	ambientLight: AmbientLight
 	orbitControls: OrbitControls | undefined
-	extensionsList: EngineExtensionInterface[]
+	extensionsList: EnginePluginInterface[]
 	parsingManager: ParsingManager
 
 	dispose(): void
 	add(...objects: (Object3D | MeshJson | LightJson)[]): Promise<EngineInterface>
 	remove(...objects: Object3D[]): EngineInterface
-	use(extension: EngineExtensionInterface): EngineInterface
+	use(extension: EnginePluginInterface): EngineInterface
 	setCanvasSizes(canvasSizes?: CanvasProportion): EngineInterface
 	setAmbientLight(ambientLight ?: AmbientLight | AmbientLightJson): EngineInterface
 	setRenderer(renderer?: WebGLRenderer | RendererJson): EngineInterface
@@ -33,4 +33,5 @@ export interface EngineInterface {
 	setCamera(camera?: Camera | CameraJson | 'perspectiveCamera' | 'orthographicCamera' | undefined): EngineInterface
 	setProperty<T>(property: string, value: T): EngineInterface
 	getProperty<T>(property: string): T
+	addTweak<K extends object>(obj: K, key: keyof K, onChangeFn ?: (value: K[keyof K]) => void): void
 }

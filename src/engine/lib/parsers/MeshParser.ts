@@ -143,9 +143,12 @@ export class MeshParser extends Object3dParser {
             return material
         } else {
             material = {
+                ...material,
                 color: LightParser.parseColor(material.color),
             }
-            switch(material.type) {
+            const matType = material.type
+            delete material.type
+            switch(matType) {
                 case 'toon':
                     return new MeshToonMaterial(material)
                 case 'lambert':

@@ -29,9 +29,9 @@ export class __DevEngine extends __DefaultEngine {
         this.setRenderer()
         this.setOrbitControls()
         this.setAmbientLight(projectSettings.ambientLight)
-        if(projectSettings.extensions) {
-            this.extensionsList = projectSettings.extensions
-            projectSettings.extensions.forEach(ext => {
+        if(projectSettings.plugins) {
+            this.extensionsList = projectSettings.plugins
+            projectSettings.plugins.forEach(ext => {
                 if(ext.beforeCreate) ext.beforeCreate(projectSettings)
             })
         }

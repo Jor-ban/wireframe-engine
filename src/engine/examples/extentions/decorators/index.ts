@@ -1,44 +1,49 @@
-import { EngineExtensionInterface } from "⚙️/types/EngineExtensionInterface";
-import { EngineInterface } from "⚙️/types/Engine.interface";
-import { CameraJson } from "⚙️/lib/parsers/types/CameraJson.type";
-import { CameraParser } from "⚙️/lib/parsers/cameraParser";
-import { MeshParser } from "⚙️/lib/parsers/MeshParser";
-import { MeshJson, PathToMeshJson } from "⚙️/lib/parsers/types/MeshJson.type";
-import { LightJson } from "⚙️/lib/parsers/types/LightJson.type";
-import { Object3dParser } from "⚙️/lib/parsers/Object3dParser";
+import {EnginePluginInterface} from "⚙\uFE0F/types/EnginePluginInterface";
+import {EngineInterface} from "⚙️/types/Engine.interface";
+import {CameraJson} from "⚙️/lib/parsers/types/CameraJson.type";
+import {CameraParser} from "⚙️/lib/parsers/cameraParser";
+import {MeshParser} from "⚙️/lib/parsers/MeshParser";
+import {MeshJson, PathToMeshJson} from "⚙️/lib/parsers/types/MeshJson.type";
+import {LightJson} from "⚙️/lib/parsers/types/LightJson.type";
+import {Object3dParser} from "⚙️/lib/parsers/Object3dParser";
 import * as THREE from "three";
-import { Object3dJSON } from "⚙️/lib/parsers/types/Object3DJson.type";
-import { LightParser } from "⚙️/lib/parsers/lightParser";
-import { GroupJsonInterface } from "⚙️/lib/parsers/types/GroupJson.interface";
-import { GroupParser } from "⚙️/lib/parsers/GroupParser";
-import { DecoratedObjectType } from "⚙️/examples/exteObject3Dntions/decorators/types/decorated-object.type";
-import { DecorationTargetInterface } from "⚙️/examples/extentions/decorators/types/decoration-target.interface";
+import {Object3dJSON} from "⚙️/lib/parsers/types/Object3DJson.type";
+import {LightParser} from "⚙️/lib/parsers/lightParser";
+import {GroupJsonInterface} from "⚙️/lib/parsers/types/GroupJson.interface";
+import {GroupParser} from "⚙️/lib/parsers/GroupParser";
+import {DecoratedObjectType} from "./types/decorated-object.type";
+import {DecorationTargetInterface} from "⚙️/examples/extentions/decorators/types/decoration-target.interface";
 import {ExtrudeFromSvgJson} from "⚙️/lib/parsers/types/ExtrudeFromSvgJson.type";
 import {ExtrudeFromSvgParser} from "⚙️/lib/parsers/ExtrudeFromSvg";
 import {ProjectSettings} from "⚙️/types/ProjectSettings.interface";
-import {
-    ControllerFunctional,
-    IControllerFunctional
-} from "⚙️/examples/extentions/decorators/classes/controller-functional";
+import {ControllerFunctional} from "⚙️/examples/extentions/decorators/classes/controller-functional";
 import {ControllerParamsInterface} from "⚙️/examples/extentions/decorators/types/controller-params.interface";
-import {BehaviorSubject, combineLatest, filter, Observable, Subject, take} from "rxjs";
+import {BehaviorSubject, combineLatest, filter, Observable, of, Subject, take} from "rxjs";
 
-class DecoratorsExtensionFactory implements EngineExtensionInterface {
+class DecoratorsExtensionFactory implements EnginePluginInterface {
     engine !: EngineInterface
-    controllers: ControllerFunctional[] = []
-    private controllerClassToInstanceMap = new WeakMap<Function, ControllerFunctional>()
+    controllers: { [key: string | number | symbol]: Observable<ControllerFunctional> } = {}
+    private controllerClassToInstanceMap = new WeakMap<Function, Observable<ControllerFunctional | null>>()
     private decoratorClassToInstanceMap = new WeakMap<Function, Observable<DecorationTargetInterface['prototype']>>()
 
     beforeCreate(settings: ProjectSettings): void {
         if(settings['controllers']) {
-            this.controllers = (settings['controllers'] as Function[])
-                .map(c => this.controllerClassToInstanceMap.get(c))
+            this.controllers = {}
+            // TODO, mount controllers too
+            for(let key of Object.keys(settings['controllers'])) {
+                this.controllers[key] = this.controllerClassToInstanceMap.get(settings['controllers'][key])
+                    .pipe(
+                        filter(c => !!c)
+                    )
+            }
         }
     }
     afterCreate(eng: EngineInterface): void {
         this.engine = eng
-        this.controllers.forEach(c => {
-            c.__provider__.next(eng)
+        combineLatest(this.controllers).pipe(take(1)).subscribe((controllersObj) => {
+            Object.values(controllersObj).forEach(controller => {
+                controller.__provider__.next(eng)
+            })
         })
     }
     getNewInstance() {
@@ -66,7 +71,6 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
                 mesh = Object.assign(MeshParser.parse(meshJson), constructor)
 
             if(meshJson.addByDefault) {
-                console.log('@Mesh addByDefault')
                 if(!this.engine) this.logError('Mesh')
                 void this.engine.add(mesh)
             }
@@ -179,10 +183,13 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
     }
 
     MODEL() {
-        return (target: DecorationTargetInterface<THREE.Object3D>['prototype'], propertyKey: string): void => {
-            if(!target.__onInitListeners) target.__onInitListeners = []
-            target.__onInitListeners.push((object: THREE.Object3D) => {
-                target[propertyKey] = object
+        return (constructor: DecorationTargetInterface<THREE.Object3D>['prototype'], propertyKey: string): void => {
+            const instance = this.decoratorClassToInstanceMap.get(constructor) ??
+                Reflect.construct(constructor, []) as DecorationTargetInterface<THREE.Object3D>['prototype']
+            (this.decoratorClassToInstanceMap.get(constructor) as Subject<DecorationTargetInterface<THREE.Object3D>['prototype']>).next(instance)
+            if(!instance.__onInitListeners) instance.__onInitListeners = []
+            instance.__onInitListeners.push((object: THREE.Object3D) => {
+                instance[propertyKey] = object
             })
         }
     }
@@ -195,68 +202,61 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
                 }
             });
 
-            const instance = Reflect.construct(constructor, []) as ControllerFunctional & IControllerFunctional
-            this.controllerClassToInstanceMap.set(constructor, instance)
-            instance.__provider__ = new BehaviorSubject<EngineInterface | ControllerFunctional | null>(null)
-            instance.__onInitListeners__ = [(objects) => {
+            const bs = new BehaviorSubject<ControllerFunctional | null>(null)
+            const objects$: { [key: string | number | symbol]: Observable<THREE.Object3D> } = {}
+            this.controllerClassToInstanceMap.set(constructor, bs)
+
+            for(let key in (params?.objects)) {
+                const object = params.objects[key]
+                if(object instanceof THREE.Object3D) {
+                    objects$[key] = of(object)
+                } else {
+                    objects$[key] = this.decoratorClassToInstanceMap.get(object)
+                }
+            }
+
+            const subControllers$: { [key: string | number | symbol]: Observable<ControllerFunctional> } = {}
+            for(let key in params?.controllers) {
+                subControllers$[key] = this.controllerClassToInstanceMap.get(params.controllers[key]).pipe(
+                    filter(c => !!c)
+                )
+            }
+
+            combineLatest({
+                objects: Object.values(params?.objects ?? {}).length ? combineLatest(objects$) : of({}),
+                controllers: Object.values(params?.controllers ?? {}).length ? combineLatest(subControllers$) : of({}),
+            }).pipe(
+                take(1),
+            ).subscribe(({ objects, controllers }) => {
+                const object3ds = {}
+                for(let key in objects) {
+                    object3ds[key] = objects[key]['__object']
+                }
+
+                const instance = Reflect.construct(constructor, [objects, controllers]) as ControllerFunctional
+                instance.__objects__ = object3ds
+                instance.__controllers__ = controllers
                 instance.__provider__.pipe(
                     filter(p => !!p),
                     take(1),
-                ).subscribe((p) => {
-                    instance.onObjectsInit?.(objects)
-                })
-            }]
+                ).subscribe(provider => {
+                    for(let key in controllers) {
+                        controllers[key]['__provider__'].next(instance)
+                    }
 
-            if(params.controllers) {
-                params.controllers.forEach((controller) => {
-                    const inst = this.controllerClassToInstanceMap.get(controller)
-                    inst.__provider__.next(instance)
+                    instance['onControllerInit']?.()
+                    if (params?.autoMount) {
+                        instance.mountSelf()
+                    }
                 })
-            }
 
-            if (params.autoMount) {
-                instance.__onInitListeners__.push((objects) => {
-                    instance.__provider__.pipe(
-                        filter(p => !!p),
-                        take(1),
-                    ).subscribe((p) => {
-                        instance.mountSelf();
-                    })
-                })
-            }
-
-            const objects = new Array(params.objects?.length ?? 0)
-            if(params.objects) {
-                combineLatest(
-                    params.objects.map((obj): THREE.Object3D | Observable<THREE.Object3D> => {
-                        if(obj instanceof THREE.Object3D) {
-                            return obj
-                        } else {
-                            return this.decoratorClassToInstanceMap.get(obj)
-                        }
-                    })
-                ).pipe(
-                    filter((objects) => {
-                        return objects && objects.every((object) => !!object)
-                    }),
-                    take(1),
-                ).subscribe((objects) => {
-                    instance.__objects__ = objects.map(obj => obj.__object)
-                    instance.__onInitListeners__.forEach(cb => {
-                        cb(instance.__objects__)
-                    })
-                })
-            } else {
-                instance.__objects__ = []
-                instance.__onInitListeners__.forEach(cb => {
-                    cb(objects)
-                })
-            }
+                bs.next(instance)
+            })
         }
     }
 
     private emitInit<T extends THREE.Object3D>(constructor: Function, object: T, asyncLoaded: boolean = false): void {
-        const instance = Reflect.construct(constructor, []) as DecorationTargetInterface<THREE.Object3D>['prototype']
+        const instance = Reflect.construct(constructor, [object]) as DecorationTargetInterface<THREE.Object3D>['prototype']
         (this.decoratorClassToInstanceMap.get(constructor) as Subject<DecorationTargetInterface<THREE.Object3D>['prototype']>).next(instance)
         instance.__asyncLoaded = asyncLoaded
         instance.__object = object
@@ -291,14 +291,14 @@ class DecoratorsExtensionFactory implements EngineExtensionInterface {
 }
 
 export const DecoratorsExtension = new DecoratorsExtensionFactory()
-export const Camera = DecoratorsExtension.CAMERA.bind(DecoratorsExtension)
-export const Mesh = DecoratorsExtension.MESH.bind(DecoratorsExtension)
-export const Light = DecoratorsExtension.LIGHT.bind(DecoratorsExtension)
-export const Object3d = DecoratorsExtension.OBJECT3D.bind(DecoratorsExtension)
-export const EmptyObject = DecoratorsExtension.EMPTY_OBJECT.bind(DecoratorsExtension)
-export const Group = DecoratorsExtension.GROUP.bind(DecoratorsExtension)
-export const AsyncGroup = DecoratorsExtension.ASYNC_GROUP.bind(DecoratorsExtension)
-export const FromFile = DecoratorsExtension.FROM_FILE.bind(DecoratorsExtension)
-export const Model = DecoratorsExtension.MODEL.bind(DecoratorsExtension)
-export const Controller = DecoratorsExtension.CONTROLLER.bind(DecoratorsExtension)
-export const ExtrudeFromSvg = DecoratorsExtension.EXTRUDE_FROM_SVG.bind(DecoratorsExtension)
+export const WeCamera = DecoratorsExtension.CAMERA.bind(DecoratorsExtension)
+export const WeMesh = DecoratorsExtension.MESH.bind(DecoratorsExtension)
+export const WeLight = DecoratorsExtension.LIGHT.bind(DecoratorsExtension)
+export const WeObject3d = DecoratorsExtension.OBJECT3D.bind(DecoratorsExtension)
+export const WeEmptyObject = DecoratorsExtension.EMPTY_OBJECT.bind(DecoratorsExtension)
+export const WeGroup = DecoratorsExtension.GROUP.bind(DecoratorsExtension)
+export const WeAsyncGroup = DecoratorsExtension.ASYNC_GROUP.bind(DecoratorsExtension)
+export const WeFromFile = DecoratorsExtension.FROM_FILE.bind(DecoratorsExtension)
+export const WeModel = DecoratorsExtension.MODEL.bind(DecoratorsExtension)
+export const WeController = DecoratorsExtension.CONTROLLER.bind(DecoratorsExtension)
+export const WeExtrudeFromSvg = DecoratorsExtension.EXTRUDE_FROM_SVG.bind(DecoratorsExtension)
