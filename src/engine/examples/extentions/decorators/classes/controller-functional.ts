@@ -2,14 +2,19 @@ import {Object3D} from "three";
 import {DecorationTargetInterface} from "⚙️/examples/extentions/decorators/types/decoration-target.interface";
 import {BehaviorSubject, filter, take} from "rxjs";
 import {IProvider} from "⚙️/examples/extentions/decorators/types/provider.interface";
-import {InputParams} from "tweakpane";
+import {BindingApi} from "@tweakpane/core";
+import {BindingParams} from "@tweakpane/core/src/blade/common/api/params";
 
 export interface ControllerInit {
-    onControllerInit ?: () => void;
+    onControllerInit: () => void;
+}
+
+export interface BeforeDestroy {
+    beforeDestroy: () => void;
 }
 
 // @ts-ignore
-export abstract class ControllerFunctional implements ControllerInit, IProvider {
+export abstract class ControllerFunctional implements Partial<ControllerInit & BeforeDestroy>, IProvider {
     public __onInitListeners__: ((objects: {[key: string | number | symbol]: Object3D}) => void)[] = []
     public __objects__: {[key: string | number | symbol]: Object3D} = {}
     public __controllers__: {[key: string | number | symbol]: ControllerFunctional} = {}
@@ -43,7 +48,7 @@ export abstract class ControllerFunctional implements ControllerInit, IProvider 
         }
     }
 
-    public addTweak<K extends object>(obj: K, key: keyof K, params: InputParams & {onChangeFn: (value: K[keyof K]) => void}): void {
+    public addTweak<K extends object>(obj: K, key: keyof K, params: BindingParams & {onChangeFn: (value: K[keyof K]) => void}): void {
         this.__provider__.pipe(
             filter(p => !!p),
             take(1),

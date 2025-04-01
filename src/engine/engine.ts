@@ -45,7 +45,7 @@ export class Engine {
                 return __TestEngine.create(canvas, projectSettings)
             })
         } else {
-            return __ProdEngine.create(canvas, projectSettings)
+            return __ProdEngine.create(canvas, projectSettings);
         }
     }
 

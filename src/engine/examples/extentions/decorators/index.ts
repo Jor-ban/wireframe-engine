@@ -1,4 +1,3 @@
-import {EnginePluginInterface} from "⚙\uFE0F/types/EnginePluginInterface";
 import {EngineInterface} from "⚙️/types/Engine.interface";
 import {CameraJson} from "⚙️/lib/parsers/types/CameraJson.type";
 import {CameraParser} from "⚙️/lib/parsers/cameraParser";
@@ -19,14 +18,15 @@ import {ProjectSettings} from "⚙️/types/ProjectSettings.interface";
 import {ControllerFunctional} from "⚙️/examples/extentions/decorators/classes/controller-functional";
 import {ControllerParamsInterface} from "⚙️/examples/extentions/decorators/types/controller-params.interface";
 import {BehaviorSubject, combineLatest, filter, Observable, of, Subject, take} from "rxjs";
+import {EnginePluginInterface} from "@/engine";
 
 class DecoratorsExtensionFactory implements EnginePluginInterface {
     engine !: EngineInterface
     controllers: { [key: string | number | symbol]: Observable<ControllerFunctional> } = {}
-    private controllerClassToInstanceMap = new WeakMap<Function, Observable<ControllerFunctional | null>>()
-    private decoratorClassToInstanceMap = new WeakMap<Function, Observable<DecorationTargetInterface['prototype']>>()
+    private controllerClassToInstanceMap = new Map<Function, BehaviorSubject<ControllerFunctional | null>>()
+    private decoratorClassToInstanceMap = new Map<Function, BehaviorSubject<DecorationTargetInterface['prototype']>>()
 
-    beforeCreate(settings: ProjectSettings): void {
+    public beforeCreate(settings: ProjectSettings): void {
         if(settings['controllers']) {
             this.controllers = {}
             // TODO, mount controllers too
@@ -38,7 +38,7 @@ class DecoratorsExtensionFactory implements EnginePluginInterface {
             }
         }
     }
-    afterCreate(eng: EngineInterface): void {
+    public onInit(eng: EngineInterface): void {
         this.engine = eng
         combineLatest(this.controllers).pipe(take(1)).subscribe((controllersObj) => {
             Object.values(controllersObj).forEach(controller => {
@@ -46,7 +46,16 @@ class DecoratorsExtensionFactory implements EnginePluginInterface {
             })
         })
     }
-    getNewInstance() {
+    public beforeDestroy(): void {
+        this.controllerClassToInstanceMap.forEach((instance) => {
+            instance['beforeDestroy']?.();
+        })
+
+        this.decoratorClassToInstanceMap.forEach((instance) => {
+            instance['beforeDestroy']?.();
+        })
+    }
+    public getNewInstance() {
         return new DecoratorsExtensionFactory()
     }
     CAMERA(cameraJson: (CameraJson | THREE.Camera) & DecoratedObjectType) {

@@ -140,7 +140,7 @@ export class __DevEngine extends __DefaultEngine {
         window.addEventListener('beforeunload', () => {
             sessionStorage.setItem('devCamera', JSON.stringify({
                 position: this.devCamera.position,
-                rotation: this.devCamera.rotation.toVector3(),
+                rotation: this.devCamera.rotation,
             }))
         })
     }

@@ -20,7 +20,7 @@ export function logMemory(statsTab: TabPageApi | Pane | FolderApi, renderer: Web
                     </h3>`
             return ;
         }
-        const usedMemory = statsTab.addMonitor({'Used Memory (MB)': perf.memory.usedJSHeapSize / Math.pow(1000, 2)},
+        const usedMemory = statsTab.addBinding({'Used Memory (MB)': perf.memory.usedJSHeapSize / Math.pow(1000, 2)},
             'Used Memory (MB)', {
                 view: 'graph',
                 interval: 3000,
@@ -28,7 +28,7 @@ export function logMemory(statsTab: TabPageApi | Pane | FolderApi, renderer: Web
                 max: 3900,
             }
         )
-        const heap = statsTab.addMonitor({'Total Heap (MB)': perf.memory.totalJSHeapSize / Math.pow(1000, 2)},
+        const heap = statsTab.addBinding({'Total Heap (MB)': perf.memory.totalJSHeapSize / Math.pow(1000, 2)},
             'Total Heap (MB)', {
                 view: 'graph',
                 interval: 5000,
@@ -36,11 +36,16 @@ export function logMemory(statsTab: TabPageApi | Pane | FolderApi, renderer: Web
                 max: 3900,
             }
         )
-        const heapLimit = statsTab.addMonitor(
+        const heapLimit = statsTab.addBinding(
             {'Heap Limit (MB)': perf.memory.jsHeapSizeLimit / Math.pow(1000, 2)},
-            'Heap Limit (MB)'
+            'Heap Limit (MB)', {
+                view: 'graph',
+                interval: 5000,
+                min: 0,
+                max: 3900,
+            }
         )
-        const triangles = statsTab.addMonitor(
+        const triangles = statsTab.addBinding(
             renderer.info.render, 'triangles', {
                 interval: 3000,
             }

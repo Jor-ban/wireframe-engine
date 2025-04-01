@@ -4,6 +4,7 @@ import {AppController} from "@/app/app.controller";
 import {Engine, EngineModes} from "@/engine";
 import {CameraPlugin} from "@/app/plugins/camera.plugin";
 import {UIFramework} from "⚙️/examples/extentions/UIFramework";
+import {RaycasterPlugin} from "@/app/plugins/raycaster.plugin";
 
 void Engine.create('#canvas', {
     scene: {
@@ -25,6 +26,7 @@ void Engine.create('#canvas', {
         UIFramework,
         DecoratorsExtension,
         CameraPlugin,
+        RaycasterPlugin,
     ],
     orbitControls: {
         panning: true,

@@ -52,7 +52,7 @@ export class ActiveElementControls {
             this.pane.remove(child)
         }
         if(selectedObj !== null) {
-            this.pane.addInput(selectedObj, 'name').on('change', ({ value }) => {
+            this.pane.addBinding(selectedObj, 'name').on('change', ({ value }) => {
                 ChangeDetector.activeObjectUpdated$.next({
                     target: selectedObj,
                     changedPropertyName: 'name',
@@ -90,7 +90,7 @@ export class ActiveElementControls {
     }
     private forObject(child: WMesh, pane: FolderApi | TabPageApi) {
         this.addForObject3D(child, pane)
-        pane.addSeparator()
+        pane.addBlade({view: 'separator'})
         const tabs = pane.addTab({
             pages: [
                 {title: 'Mesh'},
@@ -154,10 +154,10 @@ export class ActiveElementControls {
         }, 500)
     }
     private addMeshOptions(child: WMesh, pane: FolderApi | TabPageApi) {
-        pane.addInput(child, 'castShadow')
-        pane.addInput(child, 'visible');
-        pane.addInput(child, 'receiveShadow');
-        pane.addInput(child, 'frustumCulled');
+        pane.addBinding(child, 'castShadow')
+        pane.addBinding(child, 'visible');
+        pane.addBinding(child, 'receiveShadow');
+        pane.addBinding(child, 'frustumCulled');
     }
     private updateMaterialsControls(mesh: WMesh, folder: FolderApi | TabPageApi) {
         folder.children.forEach(child => folder.remove(child))

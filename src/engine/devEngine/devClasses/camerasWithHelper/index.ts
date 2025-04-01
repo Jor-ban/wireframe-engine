@@ -42,7 +42,7 @@ export class CameraWithHelper extends PerspectiveCamera implements ElementWithHe
         })
     }
     dispose() {
-        super.parent?.remove(this)
+        this.parent?.remove(this)
         this.helper.parent?.remove(this.helper)
         this.helper.dispose()
     }
@@ -83,7 +83,7 @@ export class OrthographicCameraWithHelper extends OrthographicCamera implements 
         })
     }
     dispose() {
-        super.parent?.remove(this)
+        this.parent?.remove(this)
         this.helper.parent?.remove(this.helper)
         this.helper.dispose()
     }

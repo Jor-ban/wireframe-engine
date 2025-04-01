@@ -2,25 +2,34 @@ import {WeController} from "⚙️/examples/extentions/decorators";
 import {ControllerFunctional, ControllerInit} from "⚙️/examples/extentions/decorators/classes/controller-functional";
 import {RoomController} from "@/app/room/room.controller";
 import {cameraParameters} from "@/app/plugins/camera.plugin";
-import {Vector3} from "three";
+import {Box3, Vector3} from "three";
 import {UIFramework} from "⚙️/examples/extentions/UIFramework";
 import gsap from "gsap";
-import {UiController} from "@/app/ui/ui.controller";
+import { createApp } from 'vue';
+import App from './ui/app.vue'
+import {state} from "@/app/state/state";
+import {MeshParser} from "⚙️/lib/parsers/MeshParser";
+import {filter, skip, Subscription} from "rxjs";
 
 @WeController({
     autoMount: true,
     controllers: {
         RoomController,
-        UiController,
     },
     objects: [],
 })
 export class AppController extends ControllerFunctional implements ControllerInit {
     private readonly rc = this.getController(RoomController)
-    private readonly uic = this.getController(UiController)
+    private readonly subs: Subscription[] = []
 
     public onControllerInit(): void {
         this.addTweaks(this.rc)
+        this.initObjectListeners()
+        const vueContrainer = document.createElement('div')
+        vueContrainer.id = 'vueContainer'
+        UIFramework.htmlElement.appendChild(vueContrainer)
+        const app = createApp(App)
+        app.mount(vueContrainer)
     }
 
     private addTweaks(rc: RoomController) {
@@ -73,6 +82,49 @@ export class AppController extends ControllerFunctional implements ControllerIni
             y: sizes.y + (sizes.x * sizes.z) / 5,
             z: sizes.z / 2,
         })
+    }
+
+    private initObjectListeners(): void {
+        this.subs.push(
+            state.objectAddRequested$.pipe(filter(f => !!f)).subscribe((furniture) => {
+                MeshParser.parseUrlFileJson({
+                    url: furniture.file_url,
+                }).then((object) => {
+                    state.loadingInProgress$.next(false)
+                    this.rc.putOnSelectedPlace(object, furniture)
+                    const box = new Box3().setFromObject(object);
+                    const size = new Vector3();
+                    box.getSize(size); // size.x, size.y, size.z
+                    object.scale.set(
+                        (furniture.width ?? 1) / size.x,
+                        (furniture.height ?? 1) / size.y,
+                        (furniture.depth ?? 1) / size.z
+                    )
+                })
+            }),
+            state.activeObjectReplaceRequest$.pipe(filter(f => !!f)).subscribe((furniture) => {
+                MeshParser.parseUrlFileJson({
+                    url: furniture.file_url,
+                }).then((object) => {
+                    state.loadingInProgress$.next(false)
+                    this.rc.replaceActivePlace(object, furniture)
+                    const box = new Box3().setFromObject(object);
+                    const size = new Vector3();
+                    box.getSize(size); // size.x, size.y, size.z
+                    object.scale.set(
+                        (furniture.width ?? 1) / size.x,
+                        (furniture.height ?? 1) / size.y,
+                        (furniture.depth ?? 1) / size.z
+                    )
+                })
+            }),
+            state.activeObjectRemovalRequest$.pipe(skip(1)).subscribe(() => {
+                this.rc.clearActivePlace()
+            }),
+            state.activeObjectRotationRequest$.pipe(skip(1)).subscribe(() => {
+                this.rc.rotateActiveObject()
+            })
+        )
     }
 
     private showDimensions(sizes: Vector3) {

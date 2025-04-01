@@ -2,17 +2,18 @@ import {Euler, MeshStandardMaterial, Object3D, Scene} from "three";
 import {FolderApi, InputBindingApi, Pane, TabPageApi} from "tweakpane";
 import {debugParams} from "../../controller";
 import {WMesh} from "⚙️/lib";
+import {BindingApi} from "@tweakpane/core";
 
 export class Object3DControls {
-    static addScale(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+    static addScale(child: Object3D, pane: FolderApi | TabPageApi): BindingApi<unknown, Euler> {
         const scaleParams = {min: 0}
-        return pane.addInput(child, 'scale',{
+        return pane.addBinding(child, 'scale',{
             x: scaleParams,
             y: scaleParams,
             z: scaleParams
         })
     }
-    static addRotation(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
+    static addRotation(child: Object3D, pane: FolderApi | TabPageApi): BindingApi<unknown, Euler> {
         const rotationValues = {
             'rotation (deg)': {
                 x: Math.round(child.rotation.x * 180 / Math.PI),
@@ -20,7 +21,7 @@ export class Object3DControls {
                 z: Math.round(child.rotation.z * 180 / Math.PI)
             }
         }
-        return pane.addInput(rotationValues, 'rotation (deg)',{
+        return pane.addBinding(rotationValues, 'rotation (deg)',{
             x: {},
             y: {},
             z: {}
@@ -28,8 +29,8 @@ export class Object3DControls {
             child.rotation.set(value.x * Math.PI / 180, value.y * Math.PI / 180, value.z * Math.PI / 180)
         })
     }
-    static addRotationDeg(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
-        return pane.addInput(child, 'rotation', {
+    static addRotationDeg(child: Object3D, pane: FolderApi | TabPageApi): BindingApi<unknown, Euler> {
+        return pane.addBinding(child, 'rotation', {
             view: 'rotation',
             rotationMode: 'euler',
             order: 'XYZ',
@@ -38,8 +39,8 @@ export class Object3DControls {
             }
         })
     }
-    static addPositions(child: Object3D, pane: FolderApi | TabPageApi): InputBindingApi<unknown, Euler> {
-        return pane.addInput(child, 'position', {
+    static addPositions(child: Object3D, pane: FolderApi | TabPageApi): BindingApi<unknown, Euler> {
+        return pane.addBinding(child, 'position', {
             x: {},
             y: {},
             z: {}

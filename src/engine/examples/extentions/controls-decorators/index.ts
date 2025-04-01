@@ -21,7 +21,7 @@ class ControlsDecoratorsExtensionFactory implements EnginePluginInterface {
                     const name = config.name ?? propertyName
                     const value = config.defaultValue ?? (typeof config.type === 'string' ? '' : 0)
                     setTimeout(() => {
-                        (this.engine as any).testControls.pane.addInput(
+                        (this.engine as any).testControls.pane.addBinding(
                             { ...target, [name]: value },
                             name,
                             { ...config }
@@ -53,7 +53,7 @@ class ControlsDecoratorsExtensionFactory implements EnginePluginInterface {
             import('../../../devEngine/changeDetector/index').then(({ ChangeDetector }) => {
                 ChangeDetector.clickedObject$.subscribe((obj) => {
                     if (obj === target.__object) {
-                        (this.engine as any).devControls.rightControls.activeElementControls.meshTab.addInput(
+                        (this.engine as any).devControls.rightControls.activeElementControls.meshTab.addBinding(
                             { ...target, [name]: value },
                             name,
                             { ...config }

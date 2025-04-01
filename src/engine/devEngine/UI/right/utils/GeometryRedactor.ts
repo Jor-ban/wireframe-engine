@@ -10,7 +10,7 @@ import {
 import {TpChangeEvent} from "tweakpane";
 import {WTextGeometry} from "⚙️/lib";
 import {TextGeometryParameters} from "three/examples/jsm/geometries/TextGeometry";
-import { Font } from "three/examples/jsm/loaders/FontLoader";
+import {Font, FontData} from "three/examples/jsm/loaders/FontLoader";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
 
 export class GeometryRedactor {
@@ -40,8 +40,8 @@ export class GeometryRedactor {
     private static setParameter<T extends BufferGeometry>(geometry: T, change: TpChangeEvent<{ presetKey: keyof T }>): T['parameters'] {
         // @ts-ignore
         const parameters = geometry instanceof WTextGeometry ? geometry.parameters.options : geometry.parameters
-        if(change.presetKey) {
-            const key = change.presetKey
+        if(change['presetKey']) {
+            const key = change['presetKey'] ?? ''
             parameters[key] = change.value
         }
         return parameters
@@ -100,8 +100,10 @@ export class GeometryRedactor {
         )
     }
     static recreateTextGeometry(geometry: WTextGeometry, change: TpChangeEvent<any>): WTextGeometry {
-        const parameters: TextGeometryParameters = this.setParameter(geometry, change)
-        parameters.font = new Font(helvetiker)
+        const parameters: TextGeometryParameters = {
+            font: new Font(helvetiker as unknown as FontData),
+            ...this.setParameter(geometry, change),
+        }
         return new WTextGeometry(geometry.text, parameters)
     }
 }

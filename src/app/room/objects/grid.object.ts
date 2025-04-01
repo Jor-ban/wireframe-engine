@@ -14,11 +14,11 @@ import {Mesh, PlaneGeometry} from "three";
         type: 'standard',
         wireframe: true,
         transparent: true,
-        opacity: 0.12,
+        opacity: 0.5,
     },
     parameters: {
         x: 2,
-        y: 0.001,
+        y: 0.25,
         z: 3,
         rotateX: -90,
     }

@@ -34,7 +34,7 @@ export class GeometryControls {
     }
     addInputs<T extends Object>(geometry: T) {
         for(let param of Object.keys(geometry)) {
-            this.folder.addInput(geometry, param as keyof T)
+            this.folder.addBinding(geometry, param as keyof T)
                 .on('change', (event: TpChangeEvent<any>) => {
                     const oldGeometry = this.mesh.geometry
                     const newGeometry = GeometryRedactor.recreateGeometry(this.mesh.geometry, event)

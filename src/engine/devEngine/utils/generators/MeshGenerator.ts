@@ -4,7 +4,7 @@ import {
     PerspectiveCamera, PlaneGeometry, RingGeometry,
     SphereGeometry,
 } from "three";
-import {Font} from "three/examples/jsm/loaders/FontLoader";
+import {Font, FontData} from "three/examples/jsm/loaders/FontLoader";
 import {WMesh, WTextGeometry} from "../../../lib";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
 
@@ -37,9 +37,9 @@ export class MeshGenerator {
         const text = prompt("Enter text to add")
         if (text) {
             const textGeometry = new WTextGeometry(text, {
-                font: new Font(helvetiker),
+                font: new Font(helvetiker as unknown as FontData),
                 size: 0.5,
-                height: 0.2,
+                depth: 0.2,
                 curveSegments: 12,
                 bevelEnabled: true,
                 bevelThickness: 0.03,

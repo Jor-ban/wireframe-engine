@@ -1,5 +1,5 @@
 import {FolderApi, InputBindingApi, Pane, TabPageApi} from "tweakpane";
-import {Color, Scene, sRGBEncoding, Texture, WebGLCubeRenderTarget, WebGLRenderer} from "three";
+import {Color, Scene, Texture, WebGLCubeRenderTarget, WebGLRenderer} from "three";
 import {
     CubeTextureLoaderService,
     defaultSkybox,
@@ -8,9 +8,10 @@ import {
 import { WireframeLoaders } from "⚙️/shared/loaders";
 import { whiteTexture } from "⚙️/shared/consts/defaultTexture";
 import { FileInputField } from "⚙️/devEngine/utils/fileInputField";
+import {BindingApi} from "@tweakpane/core";
 
 export class SkyboxControls {
-    inputsList: (InputBindingApi<unknown, any> | FileInputField)[] = []
+    inputsList: (BindingApi<unknown, any> | FileInputField)[] = []
     scene: Scene
     renderer: WebGLRenderer
     folder: FolderApi
@@ -22,7 +23,7 @@ export class SkyboxControls {
             title: 'Skybox',
             expanded: true,
         });
-        this.folder.addInput({skyboxType: ''}, 'skyboxType', {
+        this.folder.addBinding({skyboxType: ''}, 'skyboxType', {
             options: {
                 'default': '',
                 'solid-color': 'solid-color',
@@ -52,7 +53,7 @@ export class SkyboxControls {
     private setSolidColor() {
         this.scene.environment = null
         this.scene.background = null
-        const color = this.folder.addInput({color: '#000000'}, 'color')
+        const color = this.folder.addBinding({color: '#000000'}, 'color')
             .on('change', ({ value }) => {
                 this.scene.background = new Color(value)
             })
@@ -77,7 +78,6 @@ export class SkyboxControls {
                     CubeTextureLoaderService.load(usingSkyboxArr, (texture) => {
                         this.scene.background = texture
                         this.scene.environment = texture
-                        texture.encoding = sRGBEncoding
                     })
                 }
             )

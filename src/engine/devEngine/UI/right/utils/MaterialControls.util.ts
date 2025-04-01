@@ -26,7 +26,7 @@ import {
     AddOperation, BasicDepthPacking,
     MixOperation,
     MultiplyOperation,
-    ObjectSpaceNormalMap, RGBADepthPacking,
+    ObjectSpaceNormalMap, RGBADepthPacking, Side,
     TangentSpaceNormalMap,
 } from 'three/src/constants';
 import { WMesh } from "⚙️/lib";
@@ -35,38 +35,38 @@ import { FileInputField } from '⚙️/devEngine/utils/fileInputField';
 export class MaterialControlsUtil {
     static addForMaterial(material: Material, folder: FolderApi | TabPageApi) {
         material.needsUpdate = true
-        folder.addInput(material, 'transparent')
-        folder.addInput(material, 'opacity', {min: 0, max: 1})
+        folder.addBinding(material, 'transparent')
+        folder.addBinding(material, 'opacity', {min: 0, max: 1})
             .on('change', ({value}) => {
                 material.opacity = value
             })
-        folder.addInput(material, 'visible')
-        folder.addInput({side: 0}, 'side', {
+        folder.addBinding(material, 'visible')
+        folder.addBinding({side: 0}, 'side', {
             options: {
                 'FrontSide': FrontSide,
                 'BackSide': BackSide,
                 'DoubleSide': DoubleSide,
             }
         }).on('change', ({value}) => {
-            material.side = value
+            material.side = value as Side
         })
-        folder.addInput(material, 'clipIntersection')
-        folder.addInput(material, 'clipShadows')
-        folder.addInput(material, 'colorWrite')
+        folder.addBinding(material, 'clipIntersection')
+        folder.addBinding(material, 'clipShadows')
+        folder.addBinding(material, 'colorWrite')
     }
     static addDetails(material: Material, folder: FolderApi | TabPageApi) {
         // TODO add clippingPlanes : Plane
         // TODO add depthFunc: DepthModes
-        folder.addInput(material, 'depthTest')
-        folder.addInput(material, 'depthWrite')
-        folder.addInput(material, 'alphaTest', {min: 0, max: 1})
-        folder.addInput(material, 'alphaToCoverage')
+        folder.addBinding(material, 'depthTest')
+        folder.addBinding(material, 'depthWrite')
+        folder.addBinding(material, 'alphaTest', {min: 0, max: 1})
+        folder.addBinding(material, 'alphaToCoverage')
         // TODO add blendDst : BlendingDsrFactor & blendDstAlpha ; number & blendEquation : BlendingEquation & blendEquationAlpha : number
         // TODO add blending : Blending & blendSrc : BlendingSrcFactor | BlendingDsrFactor & blendSrcAlpha : number
-        folder.addInput(material, 'polygonOffset')
-        folder.addInput(material, 'polygonOffsetFactor')
-        folder.addInput(material, 'polygonOffsetUnits')
-        folder.addInput({precision: 0}, 'precision', {
+        folder.addBinding(material, 'polygonOffset')
+        folder.addBinding(material, 'polygonOffsetFactor')
+        folder.addBinding(material, 'polygonOffsetUnits')
+        folder.addBinding({precision: 0}, 'precision', {
             options: {
                 'null': 0,
                 'highp': 1,
@@ -76,139 +76,139 @@ export class MaterialControlsUtil {
         }).on('change', ({value}) => {
             material.precision = value === 0 ? null : value === 1 ? 'highp' : value === 2 ? 'mediump' : 'lowp'
         })
-        folder.addInput(material, 'toneMapped')
-        folder.addInput(material, 'vertexColors')
+        folder.addBinding(material, 'toneMapped')
+        folder.addBinding(material, 'vertexColors')
         // TODO add format : PixelFormat
-        folder.addInput(material, 'stencilWrite')
+        folder.addBinding(material, 'stencilWrite')
         // TODO add stencilFunc: StencilFunc
-        folder.addInput(material, 'stencilRef')
-        folder.addInput(material, 'stencilWriteMask')
-        folder.addInput(material, 'stencilFuncMask')
+        folder.addBinding(material, 'stencilRef')
+        folder.addBinding(material, 'stencilWriteMask')
+        folder.addBinding(material, 'stencilFuncMask')
         // TODO add stencilFail : StencilOp & stencilZFail : StencilOp & stencilZPass : StencilOp
     }
     static addForToonMaterial(material: MeshToonMaterial, folder: FolderApi) {
         // TODO add onchange event
         this.addForColor(material, folder)
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForGradientMap(material, folder)
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForLightMap(material, folder)
-        folder.addInput(material, 'lightMapIntensity')
-        folder.addSeparator()   // -------------------------------------------------
+        folder.addBinding(material, 'lightMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -------------------------------------------------
         this.addForAoMap(material, folder)
-        folder.addInput(material, 'aoMapIntensity')
-        folder.addSeparator()   // -------------------------------------------------
+        folder.addBinding(material, 'aoMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -------------------------------------------------
         this.addForEmissiveMap(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
-        folder.addSeparator()   // -------------------------------------------------
+        folder.addBinding(material, 'emissiveIntensity')
+        folder.addBlade({ view: 'separator' })   // -------------------------------------------------
         this.addForBumpMap(material, folder)
-        folder.addInput(material, 'bumpScale')
-        folder.addSeparator()   // -------------------------------------------------
+        folder.addBinding(material, 'bumpScale')
+        folder.addBlade({ view: 'separator' })   // -------------------------------------------------
         this.addForNormalMap(material, folder)
         this.addForNormalMapTypes(material, folder)
-        folder.addInput(material, 'normalScale')
-        folder.addSeparator()   // -------------------------------------------------
+        folder.addBinding(material, 'normalScale')
+        folder.addBlade({ view: 'separator' })   // -------------------------------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // --------------------------------------------
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'wireframeLinecap')
-        folder.addInput(material, 'wireframeLinejoin')
+        folder.addBlade({ view: 'separator' }) // --------------------------------------------
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'wireframeLinecap')
+        folder.addBinding(material, 'wireframeLinejoin')
     }
     static addForMatcapMaterial(material: MeshMatcapMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        folder.addSeparator() // ------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // --------------------------------
+        folder.addBlade({ view: 'separator' }) // --------------------------------
         this.addForMatcap(material, folder)
-        folder.addSeparator() // --------------------------------
+        folder.addBlade({ view: 'separator' }) // --------------------------------
         this.addForBumpMap(material, folder)
-        folder.addInput(material, 'bumpScale')
-        folder.addSeparator()   // ---------------------------------
+        folder.addBinding(material, 'bumpScale')
+        folder.addBlade({ view: 'separator' })   // ---------------------------------
         this.addForNormalMap(material, folder)
-        folder.addInput(material, 'normalScale')
-        folder.addSeparator()   // ------------------------------------
+        folder.addBinding(material, 'normalScale')
+        folder.addBlade({ view: 'separator' })   // ------------------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator()   // ----------------------------------
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' })   // ----------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // -----------------------------------
-        folder.addInput(material, 'flatShading')
+        folder.addBlade({ view: 'separator' }) // -----------------------------------
+        folder.addBinding(material, 'flatShading')
     }
     static addForNormalMaterial(material: MeshNormalMaterial, folder: FolderApi) {
         this.addForNormalMap(material, folder)
-        folder.addInput(material, 'normalScale')
+        folder.addBinding(material, 'normalScale')
         this.addForNormalMapTypes(material, folder)
-        folder.addSeparator() // ----------------------------------
+        folder.addBlade({ view: 'separator' }) // ----------------------------------
         this.addForBumpMap(material, folder)
-        folder.addInput(material, 'bumpScale')
-        folder.addSeparator() // ----------------------------------
+        folder.addBinding(material, 'bumpScale')
+        folder.addBlade({ view: 'separator' }) // ----------------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator()   // -------------------------------
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'flatShading')
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' })   // -------------------------------
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'flatShading')
     }
     static addForPhongMaterial(material: MeshPhongMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
         this.addForSpecular(material, folder)
-        folder.addInput(material, 'shininess')
-        folder.addInput(material, 'reflectivity')
-        folder.addInput(material, 'refractionRatio')
-        folder.addSeparator()   // ------------------------------
+        folder.addBinding(material, 'shininess')
+        folder.addBinding(material, 'reflectivity')
+        folder.addBinding(material, 'refractionRatio')
+        folder.addBlade({ view: 'separator' })   // ------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForLightMap(material, folder)
-        folder.addInput(material, 'lightMapIntensity')
-        folder.addSeparator() // --------------------------------
+        folder.addBinding(material, 'lightMapIntensity')
+        folder.addBlade({ view: 'separator' }) // --------------------------------
         this.addForAoMap(material, folder)
-        folder.addInput(material, 'aoMapIntensity')
-        folder.addSeparator()   // -----------------------------
+        folder.addBinding(material, 'aoMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -----------------------------
         this.addForEmissiveMap(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
-        folder.addSeparator()   // ----------------------------
+        folder.addBinding(material, 'emissiveIntensity')
+        folder.addBlade({ view: 'separator' })   // ----------------------------
         this.addForBumpMap(material, folder)
-        folder.addInput(material, 'bumpScale')
-        folder.addSeparator()   // ------------------------------
+        folder.addBinding(material, 'bumpScale')
+        folder.addBlade({ view: 'separator' })   // ------------------------------
         this.addForNormalMap(material, folder)
         this.addForNormalMapTypes(material, folder)
-        folder.addInput(material, 'normalScale')
-        folder.addSeparator()   // -----------------------------
+        folder.addBinding(material, 'normalScale')
+        folder.addBlade({ view: 'separator' })   // -----------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator()   // -----------------------------
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' })   // -----------------------------
         this.addForSpecularMap(material, folder)
-        folder.addSeparator() // -----------------------------
+        folder.addBlade({ view: 'separator' }) // -----------------------------
         this.addForEnvMap(material, folder)
-        folder.addSeparator() // --------------------------
+        folder.addBlade({ view: 'separator' }) // --------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // --------------------------
+        folder.addBlade({ view: 'separator' }) // --------------------------
         this.addForCombine(material, folder)
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'wireframeLinejoin')
-        folder.addInput(material, 'flatShading')
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'wireframeLinejoin')
+        folder.addBinding(material, 'flatShading')
     }
     static addForDepthMaterial(material: MeshDepthMaterial, folder: FolderApi) {
         this.addForMap(material, folder)
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // -------------------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator() // -------------------------------------------------
-        folder.addInput({depthPacking: material.depthPacking}, 'depthPacking', {
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' }) // -------------------------------------------------
+        folder.addBinding({depthPacking: material.depthPacking}, 'depthPacking', {
             options: {
                 'Basic': BasicDepthPacking,
                 'RGBA': RGBADepthPacking,
@@ -216,134 +216,135 @@ export class MaterialControlsUtil {
         }).on('change', ({value}) => {
                 material.depthPacking = value
             })
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
     }
     static addForBasicMaterial(material: MeshBasicMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        folder.addInput(material, 'reflectivity')
-        folder.addInput(material, 'refractionRatio')
-        folder.addSeparator() // -------------------------------------
+        folder.addBinding(material, 'reflectivity')
+        folder.addBinding(material, 'refractionRatio')
+        folder.addBlade({ view: 'separator' }) // -------------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // -------------------------------------
+        folder.addBlade({ view: 'separator' }) // -------------------------------------
         this.addForAoMap(material, folder)
-        folder.addInput(material, 'aoMapIntensity')
-        folder.addSeparator()   // -----------------------------------
+        folder.addBinding(material, 'aoMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -----------------------------------
         this.addForLightMap(material, folder)
-        folder.addInput(material, 'lightMapIntensity')
-        folder.addSeparator()   // -----------------------------------
+        folder.addBinding(material, 'lightMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -----------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // ------------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------------
         this.addForSpecularMap(material, folder)
-        folder.addSeparator() // ------------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------------
         this.addForEnvMap(material, folder)
-        folder.addSeparator() // ---------------------------------
+        folder.addBlade({ view: 'separator' }) // ---------------------------------
         this.addForCombine(material, folder)
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'wireframeLinecap')
-        folder.addInput(material, 'wireframeLinejoin')
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'wireframeLinecap')
+        folder.addBinding(material, 'wireframeLinejoin')
     }
     static addForStandardMaterial(material: MeshStandardMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        folder.addInput(material, 'roughness')
-        folder.addInput(material, 'metalness')
-        folder.addSeparator() // ----------------------------------
+        folder.addBinding(material, 'roughness')
+        folder.addBinding(material, 'metalness')
+        folder.addBlade({ view: 'separator' }) // ----------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // ---------------------------------
+        folder.addBlade({ view: 'separator' }) // ---------------------------------
         this.addForLightMap(material, folder)
-        folder.addInput(material, 'lightMapIntensity')
-        folder.addSeparator()   // -------------------------------
+        folder.addBinding(material, 'lightMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -------------------------------
         this.addForAoMap(material, folder)
-        folder.addInput(material, 'aoMapIntensity')
-        folder.addSeparator()   // -------------------------------
+        folder.addBinding(material, 'aoMapIntensity')
+        folder.addBlade({ view: 'separator' })   // -------------------------------
         this.addForEmissiveMap(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
+        folder.addBinding(material, 'emissiveIntensity')
         this.addForEmissiveMap(material, folder)
-        folder.addSeparator() // -----------------------------
+        folder.addBlade({ view: 'separator' }) // -----------------------------
         this.addForBumpMap(material, folder)
-        folder.addSeparator()   // ----------------------------
+        folder.addBlade({ view: 'separator' })   // ----------------------------
         this.addForDisplacementMap(material, folder)
-        folder.addInput(material, 'displacementScale')
-        folder.addInput(material, 'displacementBias')
-        folder.addSeparator() // ------------------------------
+        folder.addBinding(material, 'displacementScale')
+        folder.addBinding(material, 'displacementBias')
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForRoughnessMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForMetalnessMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForEnvMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForNormalMapTypes(material, folder)
-        folder.addInput(material, 'normalScale')
-        folder.addInput(material, 'envMapIntensity')
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'flatShading')
+        folder.addBinding(material, 'normalScale')
+        folder.addBinding(material, 'envMapIntensity')
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'flatShading')
     }
     static addForLambertMaterial(material: MeshLambertMaterial, folder: FolderApi) {
         this.addForColor(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForEmissiveMap(material, folder)
-        folder.addInput(material, 'emissiveIntensity')
-        folder.addSeparator() // ------------------------------
+        folder.addBinding(material, 'emissiveIntensity')
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForAoMap(material, folder)
-        folder.addInput(material, 'aoMapIntensity')
-        folder.addSeparator() // ------------------------------
+        folder.addBinding(material, 'aoMapIntensity')
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForLightMap(material, folder)
-        folder.addInput(material, 'lightMapIntensity')
-        folder.addSeparator() // ------------------------------
+        folder.addBinding(material, 'lightMapIntensity')
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForAlphaMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForSpecularMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForEnvMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         this.addForCombine(material, folder)
-        folder.addInput(material, 'reflectivity')
-        folder.addInput(material, 'refractionRatio')
-        folder.addInput(material, 'wireframe')
-        folder.addInput(material, 'wireframeLinewidth')
-        folder.addInput(material, 'wireframeLinecap')
-        folder.addInput(material, 'wireframeLinejoin')
+        folder.addBinding(material, 'reflectivity')
+        folder.addBinding(material, 'refractionRatio')
+        folder.addBinding(material, 'wireframe')
+        folder.addBinding(material, 'wireframeLinewidth')
+        folder.addBinding(material, 'wireframeLinecap')
+        folder.addBinding(material, 'wireframeLinejoin')
     }
     static addForPhysicalMaterial(material: MeshPhysicalMaterial, folder: FolderApi) {
         this.addForStandardMaterial(material as MeshStandardMaterial, folder)
-        folder.addSeparator() // ------------------------------
-        folder.addInput(material, 'clearcoat')
+        folder.addBlade({ view: 'separator' }) // ------------------------------
+        folder.addBinding(material, 'clearcoat')
         this.addForClearcoatMap(material, folder)
-        folder.addSeparator() // ------------------------------
+        folder.addBlade({ view: 'separator' }) // ------------------------------
         FileInputField.addMapable(material, folder, 'clearcoatRoughnessMap')
-        folder.addInput(material, 'clearcoatRoughness')
+        folder.addBinding(material, 'clearcoatRoughness')
         FileInputField.addMapable(material, folder, 'clearcoatNormalMap')
-        folder.addSeparator()   // -----------------------------
+        folder.addBlade({ view: 'separator' })   // -----------------------------
         FileInputField.addMapable(material, folder, 'transmissionMap')
-        folder.addInput(material, 'transmission')
-        folder.addSeparator()   // -----------------------------
-        folder.addInput(material, 'specularIntensity')
+        folder.addBinding(material, 'transmission')
+        folder.addBlade({ view: 'separator' })   // -----------------------------
+        folder.addBinding(material, 'specularIntensity')
         this.addForSpecularColor(material, folder)
         FileInputField.addMapable(material, folder, 'specularIntensityMap')
         FileInputField.addMapable(material, folder, 'specularColorMap')
-        folder.addSeparator()   // -----------------------------
-        folder.addInput(material, 'reflectivity')
-        folder.addInput(material, 'ior')
-        folder.addInput(material, 'sheen')
+        folder.addBlade({ view: 'separator' })   // -----------------------------
+        folder.addBinding(material, 'reflectivity')
+        folder.addBinding(material, 'ior')
+        folder.addBinding(material, 'sheen')
         this.addForSheenColor(material, folder)
-        folder.addInput(material, 'sheenRoughness')
-        folder.addInput(material, 'attenuationDistance')
+        folder.addBinding(material, 'sheenRoughness')
+        folder.addBinding(material, 'attenuationDistance')
         this.addForAttenuationColor(material, folder)
     }
 
     private static addForNormalMapTypes(material:
         | MeshToonMaterial
         | MeshNormalMaterial
+        | MeshPhongMaterial
         | MeshStandardMaterial,
         folder: FolderApi
     ) {
-        folder.addInput({ 'Normal Map Type':  material.normalMapType }, 'Normal Map Type', {
+        folder.addBinding({ 'Normal Map Type':  material.normalMapType }, 'Normal Map Type', {
             options: {
                 'TangentSpaceNormalMap': TangentSpaceNormalMap,
                 'ObjectSpaceNormalMap': ObjectSpaceNormalMap,
@@ -355,10 +356,11 @@ export class MaterialControlsUtil {
 
     private static addForCombine(material:
         | MeshBasicMaterial
+        | MeshLambertMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
-        folder.addInput({ combine: material.combine }, 'combine', {
+        folder.addBinding({ combine: material.combine }, 'combine', {
             options: {
                 'Multiply': MultiplyOperation,
                 'Mix': MixOperation,
@@ -390,6 +392,7 @@ export class MaterialControlsUtil {
         | MeshToonMaterial
         | MeshBasicMaterial
         | MeshStandardMaterial
+        | MeshLambertMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
@@ -399,6 +402,7 @@ export class MaterialControlsUtil {
         | MeshStandardMaterial
         | MeshToonMaterial
         | MeshBasicMaterial
+        | MeshLambertMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
@@ -407,7 +411,9 @@ export class MaterialControlsUtil {
     private static addForBumpMap(material:
         | MeshToonMaterial
         | MeshNormalMaterial
-        | MeshMatcapMaterial,
+        | MeshMatcapMaterial
+        | MeshStandardMaterial
+        | MeshPhongMaterial,
         folder: FolderApi
     ) {
         FileInputField.addMapable(material, folder, 'bumpMap')
@@ -415,6 +421,7 @@ export class MaterialControlsUtil {
     private static addForNormalMap(material:
         | MeshToonMaterial
         | MeshNormalMaterial
+        | MeshPhongMaterial
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
@@ -424,6 +431,8 @@ export class MaterialControlsUtil {
         | MeshToonMaterial
         | MeshNormalMaterial
         | MeshDepthMaterial
+        | MeshPhongMaterial
+        | MeshStandardMaterial
         | MeshMatcapMaterial,
         folder: FolderApi
     ) {
@@ -435,6 +444,7 @@ export class MaterialControlsUtil {
         | MeshPhongMaterial
         | MeshBasicMaterial
         | MeshDepthMaterial
+        | MeshLambertMaterial
         | MeshMatcapMaterial,
         folder: FolderApi) {
         FileInputField.addMapable(material, folder, 'alphaMap')
@@ -447,6 +457,7 @@ export class MaterialControlsUtil {
     }
     private static addForSpecularMap(material:
         | MeshBasicMaterial
+        | MeshLambertMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
@@ -462,6 +473,7 @@ export class MaterialControlsUtil {
     private static addForEnvMap(material:
         | MeshStandardMaterial
         | MeshBasicMaterial
+        | MeshLambertMaterial
         | MeshPhongMaterial,
         folder: FolderApi
     ) {
@@ -477,7 +489,7 @@ export class MaterialControlsUtil {
         const headerName: string = typeof colorName === 'string' ? colorName : 'color'
         const obj: {[key: string]: string} = {}
         obj[headerName] = '#' + color.getHexString()
-        folder.addInput(obj, headerName)
+        folder.addBinding(obj, headerName)
             .on('change', ({value}) => {
                 color.set(new Color(value))
             })
@@ -512,7 +524,7 @@ export class MaterialControlsUtil {
     }
 
     static materialConverter(material: Material, mesh: WMesh, folder: FolderApi | TabPageApi, callback: () => void) {
-        folder.addInput({'Change Material Type': material.type}, 'Change Material Type', {
+        folder.addBinding({'Change Material Type': material.type}, 'Change Material Type', {
             options: {
                 'DepthMaterial': 'MeshDepthMaterial',
                 'ToonMaterial': 'MeshToonMaterial',

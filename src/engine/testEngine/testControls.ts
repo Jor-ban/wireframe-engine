@@ -1,10 +1,11 @@
-import {InputParams, Pane} from "tweakpane";
+import { Pane} from "tweakpane";
 import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import { WebGLRenderer } from "three";
 import { logMemory } from "⚙️/shared/PerformanceMonitors";
 import { TestBottomControls } from "⚙️/testEngine/UI/testBottomControls";
 import "./testStyles.css"
 import { TimeMachine } from "⚙️/services/timeMachine.service";
+import {BindingParams} from "@tweakpane/core/src/blade/common/api/params";
 
 export class TestControls {
     public pane: Pane
@@ -15,7 +16,7 @@ export class TestControls {
         new TestBottomControls()
         this.pane.registerPlugin(EssentialsPlugin);
         this.addFpsMeter()
-        this.pane.addInput({'Play/Pause': 1}, 'Play/Pause', {
+        this.pane.addBinding({'Play/Pause': 1}, 'Play/Pause', {
             view: 'radiogrid',
             groupName: 'Play/Pause',
             size: [2, 1],
@@ -35,8 +36,8 @@ export class TestControls {
         logMemory(others, renderer)
     }
 
-    public addTweak<K extends object>(obj: K, key: keyof K, params ?: InputParams & {onChangeFn: (value: K[keyof K]) => void}): void {
-        this.pane.addInput(obj, key, params).on('change', ({ value }) => {
+    public addTweak<K extends object>(obj: K, key: keyof K, params ?: BindingParams & {onChangeFn: (value: K[keyof K]) => void}): void {
+        this.pane.addBinding(obj, key, params).on('change', ({ value }) => {
             params?.onChangeFn?.(value)
         });
     }

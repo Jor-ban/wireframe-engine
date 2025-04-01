@@ -49,13 +49,13 @@ class GLTFControlsFactory {
         controlsRow.appendChild(pauseBtn)
 
         playBtn.addEventListener('click', () => {
-            map?.forEach(t => t !== timeMachine ?? t.pause())
+            map?.forEach(t => t !== timeMachine ? t.pause() : null)
             timeMachine?.play()
         })
         pauseBtn.addEventListener('click', () => {
             timeMachine?.pause()
         })
-        folder.addInput({
+        folder.addBinding({
             speed: timeMachine?.getTimeMultiplier() ?? 1
         }, 'speed', {
             min: 0,
@@ -64,7 +64,7 @@ class GLTFControlsFactory {
         }).on('change', ({ value }) => {
             timeMachine?.setTimeMultiplier(value)
         })
-        folder.addSeparator()
+        folder.addBlade({ view: 'separator' })
 
         const mixer = new AnimationMixer(gltf.scene)
         const action = mixer.clipAction(animation)

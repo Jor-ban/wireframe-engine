@@ -44,7 +44,7 @@ export class InstrumentsControls {
                 }
             })
         }
-        scene.add(this.tfControls)
+        scene.add(this.tfControls as unknown as Object3D)
         this.initListeners()
         this.addButtons()
     }

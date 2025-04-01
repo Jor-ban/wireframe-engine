@@ -1,7 +1,7 @@
 import { RendererParser } from "⚙️/lib/parsers/rendererParser";
 import { CanvasProportion } from "⚙️/lib/parsers/types/CanvasProportion.interface";
 import { RendererJson } from "⚙️/lib/parsers/types/RendererJson.type";
-import { NoToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer, WebGLRendererParameters } from "three";
+import { NoToneMapping, PCFSoftShadowMap, WebGLRenderer, WebGLRendererParameters } from "three";
 export class WRenderer extends WebGLRenderer {
 
     // @ts-ignore
@@ -17,8 +17,6 @@ export class WRenderer extends WebGLRenderer {
                 alpha: true,
                 antialias: true,
             })
-            wRenderer.physicallyCorrectLights = c.physicallyCorrectLights ?? false
-            wRenderer.outputEncoding = c.outputEncoding || sRGBEncoding
             wRenderer.toneMapping = c.toneMapping || NoToneMapping
             wRenderer.toneMappingExposure = c.toneMappingExposure ?? 1
             wRenderer.shadowMap.enabled = c.shadowMap?.enabled ?? false

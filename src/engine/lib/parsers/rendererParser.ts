@@ -1,5 +1,5 @@
 import { WRenderer } from '../classes/WRenderer';
-import {NoToneMapping, PCFSoftShadowMap, sRGBEncoding} from "three";
+import {NoToneMapping, PCFSoftShadowMap} from "three";
 import {RendererJson} from "./types/RendererJson.type";
 import {CanvasProportion} from "./types/CanvasProportion.interface";
 
@@ -12,8 +12,6 @@ export class RendererParser {
             alpha: renderer.alpha
         })
         wRenderer.setSize(sizes.width, sizes.height, sizes.updateStyle)
-        wRenderer.physicallyCorrectLights = renderer.physicallyCorrectLights ?? false
-        wRenderer.outputEncoding = renderer.encoding || sRGBEncoding
         wRenderer.toneMapping = renderer.toneMapping || NoToneMapping
         wRenderer.toneMappingExposure = renderer.toneMappingExposure ?? 1
         wRenderer.shadowMap.enabled = renderer.shadowMap ?? false

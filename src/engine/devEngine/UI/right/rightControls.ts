@@ -12,7 +12,7 @@ import { debugParams } from '../controller';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import * as CameraKitPlugin from '@tweakpane/plugin-camerakit';
 // @ts-ignore
-import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
+// import * as TweakpaneImagePlugin from 'tweakpane-image-plugin';
 import * as RotationPlugin from '@0b5vr/tweakpane-plugin-rotation';
 import { CameraControls } from './utils/CameraControls';
 import { LightControls } from './utils/LightControls';
@@ -20,6 +20,7 @@ import { ActiveElementControls } from './activeElementControls';
 import {logMemory} from "⚙️/shared/PerformanceMonitors";
 import {rightControlsWidth, topBarHeight} from "⚙️/shared/consts/controlsStyles";
 import {SkyboxControls} from "./utils/SkyboxControls";
+import {ToneMapping} from "three/src/constants";
 
 export class RightControls {
 	private rightPane !: Pane
@@ -59,7 +60,7 @@ export class RightControls {
 		this.rightPane.registerPlugin(EssentialsPlugin);
 		this.rightPane.registerPlugin(RotationPlugin);
 		this.rightPane.registerPlugin(CameraKitPlugin);
-		this.rightPane.registerPlugin(TweakpaneImagePlugin)
+		// this.rightPane.registerPlugin(TweakpaneImagePlugin)
 		const folders = this.rightPane.addTab({
 			pages: [
 				{title: 'Element'},
@@ -73,18 +74,18 @@ export class RightControls {
 
 	}
 	private addScene(pane: FolderApi | TabPageApi) : void {
-		pane.addInput(debugParams, 'axesHelperLength', {min: 0, max: 20})
+		pane.addBinding(debugParams, 'axesHelperLength', {min: 0, max: 20})
 			.on('change', ({value}) => {
 				this.axesHelper.scale.set(value, value, value)
 			});
 		// env map
-		pane.addInput(debugParams, 'envMapIntensity', {min: 0, max: 10, step: 0.01})
+		pane.addBinding(debugParams, 'envMapIntensity', {min: 0, max: 10, step: 0.01})
 			.on('change', ({value}) => {
 				debugParams.envMapIntensity = value
 				Object3DControls.updateAllMaterials(this.scene)
 			})
 		// tone mapping
-		pane.addInput({toneMapping: 0}, 'toneMapping', {
+		pane.addBinding({toneMapping: NoToneMapping}, 'toneMapping', {
 			options: {
 				None: NoToneMapping,
 				Linear: LinearToneMapping,
@@ -94,10 +95,10 @@ export class RightControls {
 				ACESFilmic: ACESFilmicToneMapping,
 			}
 		}).on('change', ({value}) => {
-			this.renderer.toneMapping = Number(value)
+			this.renderer.toneMapping = value as ToneMapping
 			Object3DControls.updateAllMaterials(this.scene)
 		})
-		pane.addInput({ shadowMap: this.renderer.shadowMap.enabled }, 'shadowMap')
+		pane.addBinding({ shadowMap: this.renderer.shadowMap.enabled }, 'shadowMap')
 		new SkyboxControls(pane, this.scene, this.renderer)
 	}
 }

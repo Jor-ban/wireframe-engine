@@ -11,7 +11,7 @@ import { MaterialJson } from "./types/MaterialJson.type";
 import { GeometryJson } from "./types/GeometryJson.type";
 import { TextGeometryParameters } from 'three/examples/jsm/geometries/TextGeometry';
 import { LightParser } from "./lightParser";
-import { Font } from 'three/examples/jsm/loaders/FontLoader';
+import {Font, FontData} from 'three/examples/jsm/loaders/FontLoader';
 import {WMesh, WTextGeometry} from "⚙️/lib";
 import { WireframeLoaders } from "⚙️/shared/loaders";
 import helvetiker from 'three/examples/fonts/helvetiker_regular.typeface.json?url'
@@ -128,7 +128,7 @@ export class MeshParser extends Object3dParser {
                             })
                         }
                     } else {
-                        font = new Font(helvetiker)
+                        font = new Font(helvetiker as unknown as FontData)
                     }
                     geometry.font = font
                     delete geometry.text

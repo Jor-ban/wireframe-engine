@@ -6,13 +6,12 @@ export class CameraControls {
     static addForCamera(camera: PerspectiveCamera | OrthographicCamera, folder: FolderApi | TabPageApi) {
         Object3DControls.addPositions(camera, folder)
         Object3DControls.addRotationDeg(camera, folder)
-        folder.addSeparator()
         if(camera instanceof PerspectiveCamera) {
             this.addForPerspectiveCamera(camera, folder)
         }
     }
     static addForPerspectiveCamera(camera: PerspectiveCamera, folder: FolderApi | TabPageApi) {
-        folder.addInput({'near-far': { min: camera.near, max: camera.far }}, 'near-far', {
+        folder.addBinding({'near-far': { min: camera.near, max: camera.far }}, 'near-far', {
             min: 0.1,
             max: 4096,
             step: 10,
@@ -21,7 +20,7 @@ export class CameraControls {
             camera.far = value.max
             camera.updateProjectionMatrix()
         })
-        folder.addInput(camera, 'fov', {
+        folder.addBinding(camera, 'fov', {
             view: 'cameraring',
             min: 1,
             max: 180
@@ -29,7 +28,7 @@ export class CameraControls {
             camera.fov = value
             camera.updateProjectionMatrix()
         });
-        folder.addInput(camera, 'filmGauge', {
+        folder.addBinding(camera, 'filmGauge', {
             view: 'cameraring',
             series: 1,
             // unit: {ticks: 10, pixels: 40, value: 0.2}
@@ -38,7 +37,7 @@ export class CameraControls {
             camera.updateProjectionMatrix()
         });
 
-        // folder.addInput(camera, 'aspect', {
+        // folder.addBinding(camera, 'aspect', {
         //     view: 'cameraring',
         //     series: 2,
         //     unit: {ticks: 10, pixels: 40, value: 0.2}
